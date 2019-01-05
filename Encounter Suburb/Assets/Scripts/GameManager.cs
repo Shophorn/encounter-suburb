@@ -7,24 +7,33 @@ public class GameManager : MonoBehaviour
 	public LevelInfo levelInfo;
 	private Level level = null;
 
+	public LevelInfo[] levelInfos;
+	private Level[] levels;
+	private int currentLevelIndex = 0;
+	
 	public GameObject playerTankPrefab;
 	private Transform playerTransform;
 
-	private MenuSystem menu;
-
+	private MenuSystem menuSystem;
+	
 	private void Awake()
 	{
-		menu = GetComponent<MenuSystem>();
+		menuSystem = GetComponent<MenuSystem>();
 	}
 	
 	private void Start()
 	{
-		menu.Show(MenuView.Main);
-		menu.mainMenu_Play.onClick.AddListener(() =>
+		EnemyTankControllerSystem.active = false;
+		menuSystem.Show(MenuView.Main);
+		menuSystem.mainMenu_Play.onClick.AddListener(() =>
 		{
-			menu.Hide();
+			menuSystem.Hide();
 			LoadLevel(0);
 		});				
+		
+		menuSystem.gameComplete_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
+		menuSystem.gameOver_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
+
 	}
 
 	private void LoadLevel(int index)
@@ -41,10 +50,11 @@ public class GameManager : MonoBehaviour
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
 
 		EnemyTankControllerSystem.playerTransform = playerTransform;
+		EnemyTankControllerSystem.active = true;
 		StartCoroutine(level.Spawn());
 
-		level.OnEnemiesDefeat += () => Debug.Log("Enemies defeated");
-		level.OnPlayerDefeat += () => Debug.Log("Player Defeated");
+		level.OnEnemiesDefeat += OnEnemiesDefeat;
+		level.OnPlayerDefeat += OnPlayerDefeat;
 	}
 	
 	private void OnPlayerDefeat()
@@ -52,6 +62,10 @@ public class GameManager : MonoBehaviour
 		// Unload level
 		// Store player progress to database etc.
 		// Load Menu level
+		
+		menuSystem.Show(MenuView.GameOver);
+		UnloadLevel();
+
 	}
 
 	private void OnEnemiesDefeat()
@@ -59,6 +73,18 @@ public class GameManager : MonoBehaviour
 		// Save player progress
 		// Unload level
 		// Load next level
+		menuSystem.Show(MenuView.LevelComplete);
+		UnloadLevel();
+	}
+
+	private void UnloadLevel()
+	{
+		EnemyTankControllerSystem.Clear();
+		EnemyTankControllerSystem.active = false;
+		Destroy(playerTransform.gameObject);
+		playerTransform = null;
+		level.Clear();
+		level = null;
 	}
 	
 	

@@ -19,6 +19,11 @@ public class Level
 	private int enemySpawnedCount = 0;
 
 	public Grid grid;
+
+	// These need to be destroyed on unload
+	private GameObject mapObject = null;
+	private Mesh mapMesh = null;
+	private Texture mapTexture = null;
 	
 	public IEnumerator Spawn()
 	{
@@ -44,19 +49,28 @@ public class Level
 			OnEnemiesDefeat();
 		}
 	}
+
+	public void Clear()
+	{	
+		UnityEngine.Object.Destroy(mapObject);
+		UnityEngine.Object.Destroy(mapMesh);
+		UnityEngine.Object.Destroy(mapTexture);
+	}
 	
 	public void BuildMap()
 	{
-		var mapObject = new GameObject("Map", typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
+		mapObject = new GameObject("Map", typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
 		mapObject.layer = LayerMask.NameToLayer("Ground");
 
 		map = Map.MockMap();
 		grid = new Grid(map);		
 		
-		var mapMesh = map.BuildMesh();
+		mapMesh = map.BuildMesh();
 		mapObject.GetComponent<MeshFilter>().mesh = mapMesh;
 		mapObject.GetComponent<MeshRenderer>().material = material;
-		material.mainTexture = map.CreateTexture(512);
+
+		mapTexture = map.CreateTexture(512);
+		material.mainTexture = mapTexture;
 
 		var collider = mapObject.GetComponent<MeshCollider>();
 		collider.inflateMesh = true;

@@ -33,7 +33,11 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	public static event Action OnEnemyKilled;
 
-	public float[] distances;
+	public static bool active
+	{
+		get { return instance.enabled; }
+		set { instance.enabled = value; }
+	}
 	
 	private void Awake()
 	{
@@ -44,13 +48,10 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	{
 		sqrEngageRange = engageRange * engageRange;
 		
-		
 		tanks = new Tank[maxCount];
 		paths = new Path[maxCount];
 		pathUpdateTimes = new float[maxCount];
 		targetBreakables = new Breakable[maxCount];
-		
-		distances = new float[maxCount];
 	}
 
 	private void Update()
@@ -96,7 +97,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			var wayPoint = paths[i].currentPoint;
 			var toWayPoint = wayPoint - tankPosition;
 
-			distances[i] = toWayPoint.sqrMagnitude;
 			const float sqrEpsilon = 0.001f;
 			if (toWayPoint.sqrMagnitude < sqrEpsilon)
 			{
@@ -182,6 +182,19 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		paths[index] = path;
 	}
 
+	public static void Clear()
+	{
+		for (int i = 0; i < instance.count; i++)
+		{
+			Destroy(instance.tanks[i].gameObject);
+		}
+
+		instance.tanks = null;
+		instance.paths = null;
+		instance.pathUpdateTimes = null;
+		instance.targetBreakables = null;
+	}
+	
 	private void OnDrawGizmos()
 	{
 		if (paths == null) return;
