@@ -465,6 +465,8 @@ MonoBehaviour:
   tankCollisionMask:
     serializedVersion: 2
     m_Bits: 807
+  playerTransform: {fileID: 0}
+  playerBasePosition: {x: 0, y: 0, z: 0}
   engageRange: 20
   preferredShootDistance: 10
   prefab: {fileID: 114528775350924774, guid: 07b12423eb48257429ab4da1697134b0, type: 2}
@@ -935,6 +937,7 @@ MonoBehaviour:
   levelInfos: []
   playerTankPrefab: {fileID: 1941843288241032, guid: 7ee7af2c3ab4a6f4c932e592d9c65882,
     type: 2}
+  enemyController: {fileID: 286161060}
 --- !u!4 &1063592053
 Transform:
   m_ObjectHideFlags: 0

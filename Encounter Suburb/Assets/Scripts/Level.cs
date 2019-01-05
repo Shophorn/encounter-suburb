@@ -24,17 +24,19 @@ public class Level
 	private GameObject mapObject = null;
 	private Mesh mapMesh = null;
 	private Texture mapTexture = null;
+
+	public EnemyTankControllerSystem enemyController;
 	
 	public IEnumerator Spawn()
 	{
-		EnemyTankControllerSystem.OnEnemyKilled += OnEnemyKilled;
+		enemyController.OnEnemyKilled += OnEnemyKilled;
 		
 		var delay = new WaitForSeconds(3);
 		for (int i = 0; i < count; i++)
 		{
 			int index = i % enemySpawnPoints.Length;
 			
-			EnemyTankControllerSystem.Spawn(enemySpawnPoints[index]);
+			enemyController.Spawn(enemySpawnPoints[index]);
 			enemySpawnedCount++;
 			
 			yield return delay;
@@ -120,7 +122,7 @@ public class Level
 		}
 
 		var basePosition = map.BasePosition();
-		EnemyTankControllerSystem.playerBasePosition = basePosition;
+		enemyController.playerBasePosition = basePosition;
 		var playerBase = GameObject.Instantiate(Bootstrap.basePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBase.GetComponent<Breakable>().OnBreak += () => OnPlayerDefeat?.Invoke();
 

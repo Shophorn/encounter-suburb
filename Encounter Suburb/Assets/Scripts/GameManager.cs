@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 	private Transform playerTransform;
 
 	private MenuSystem menuSystem;
+
+	public EnemyTankControllerSystem enemyController;
 	
 	private void Awake()
 	{
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour
 	
 	private void Start()
 	{
-		EnemyTankControllerSystem.active = false;
+		enemyController.enabled = false;
 		menuSystem.Show(MenuView.Main);
 		menuSystem.mainMenu_Play.onClick.AddListener(() =>
 		{
@@ -43,14 +45,15 @@ public class GameManager : MonoBehaviour
 		// Start Spawning enemies
 		
 		level = levelInfo.Level();
+		level.enemyController = enemyController;
 		
 		level.BuildMap();
 		PathFinder.grid = level.grid;
 		var playerPosition = level.map.PlayerSpawnPoint();
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
 
-		EnemyTankControllerSystem.playerTransform = playerTransform;
-		EnemyTankControllerSystem.active = true;
+		enemyController.playerTransform = playerTransform;
+		enemyController.enabled = true;
 		StartCoroutine(level.Spawn());
 
 		level.OnEnemiesDefeat += OnEnemiesDefeat;
@@ -79,8 +82,9 @@ public class GameManager : MonoBehaviour
 
 	private void UnloadLevel()
 	{
-		EnemyTankControllerSystem.Clear();
-		EnemyTankControllerSystem.active = false;
+		enemyController.Clear();
+		enemyController.enabled = false;
+		
 		Destroy(playerTransform.gameObject);
 		playerTransform = null;
 		level.Clear();

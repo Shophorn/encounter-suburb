@@ -19,8 +19,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private float[] pathUpdateTimes;
 	private Breakable[] targetBreakables;
  	
-	public static Transform playerTransform;
-	public static Vector3 playerBasePosition; 
+	public Transform playerTransform;
+	public Vector3 playerBasePosition; 
 	
 	public float engageRange = 10f;
 	private float sqrEngageRange;
@@ -29,21 +29,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	public Tank prefab;
 
-	private static EnemyTankControllerSystem instance;
+	public event Action OnEnemyKilled;
 
-	public static event Action OnEnemyKilled;
-
-	public static bool active
-	{
-		get { return instance.enabled; }
-		set { instance.enabled = value; }
-	}
-	
-	private void Awake()
-	{
-		instance = this;
-	}
-	
 	private void Start()
 	{
 		sqrEngageRange = engageRange * engageRange;
@@ -82,7 +69,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (paths[i] == null)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => instance.OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
 				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 				continue;
 			}
@@ -90,7 +77,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (pathUpdateTimes[i] < Time.time)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => instance.OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
 				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 			}
 			
@@ -144,28 +131,29 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			}
 		}
 	}
-
-	public static void Spawn(Vector3 position)
+	
+	public void Spawn(Vector3 position)
 	{
-		if (!instance.enabled) return;
-		if (instance.count >= instance.maxCount - 1) return;
+		if (!enabled) return;
+		if (count >= maxCount - 1) return;
 
-		int index = instance.count;
-		instance.count++;
+		int index = count;
+		count++;
 		
-		var newTank = Instantiate(instance.prefab, position, Quaternion.identity);
+		var newTank = Instantiate(prefab, position, Quaternion.identity);
 		newTank.GetComponent<Breakable>().OnBreak += () => newTank.gameObject.SetActive(false);
 
 		newTank.GetComponent<Breakable>().OnBreak += OnEnemyKilled;
-		newTank.OnCollideBreakable += breakable => instance.AddTargetBreakable(index, breakable);
+		newTank.OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
 
-		newTank.collisionMask = instance.tankCollisionMask;
+		newTank.collisionMask = tankCollisionMask;
 		
-		instance.tanks[index] = newTank;
+		tanks[index] = newTank;
 		
-		PathRequestManager.RequestPath(position, playerTransform.position, path => instance.OnReceivePath(index, path));
+		PathRequestManager.RequestPath(position, playerTransform.position, path => OnReceivePath(index, path));
 	}
-
+	
+	
 	private void AddTargetBreakable(int index, Breakable target)
 	{
 		targetBreakables[index] = target;
@@ -182,17 +170,17 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		paths[index] = path;
 	}
 
-	public static void Clear()
+	public void Clear()
 	{
-		for (int i = 0; i < instance.count; i++)
+		for (int i = 0; i < count; i++)
 		{
-			Destroy(instance.tanks[i].gameObject);
+			Destroy(tanks[i].gameObject);
 		}
 
-		instance.tanks = null;
-		instance.paths = null;
-		instance.pathUpdateTimes = null;
-		instance.targetBreakables = null;
+		tanks = null;
+		paths = null;
+		pathUpdateTimes = null;
+		targetBreakables = null;
 	}
 	
 	private void OnDrawGizmos()

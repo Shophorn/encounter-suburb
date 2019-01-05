@@ -19,6 +19,7 @@
           <e p="LevelInfo.cs" t="Include" />
           <e p="Map.cs" t="Include" />
           <e p="Maths.cs" t="Include" />
+          <e p="MenuSystem.cs" t="Include" />
           <e p="PathFinding" t="Include">
             <e p="Grid.cs" t="Include" />
             <e p="Node.cs" t="Include" />
