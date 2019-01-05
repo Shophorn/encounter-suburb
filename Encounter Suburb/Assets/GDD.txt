@@ -1,0 +1,51 @@
+Encounter Suburb (Battle City)
+
+Tank
+    - Move
+    - Shoot
+    - Turn turret
+    - Hp
+    - Prefabs
+    - Parts
+    
+Hero (Player)
+    - Control tank
+    - Draw aim cursors
+    
+    
+Villain Army (Enemy)
+    - Control multiple tanks ("AI")
+    - Spawn tanks to spawn points in map
+    - Target player or Base
+    
+Map
+    - From texture
+    - Spawn points
+    - Different terrains and different sizes
+    - Move camera to fit full arena
+    
+Level
+    - Villain Army
+    - Map
+
+
+Constant grid size, fits tank = 5 units
+Movement is still free
+
+Done:
+    If tanks collides with breakable, set it as target and don't move until it is broken.
+
+Next up:
+    
+    Water tiles do not block enemies, since pathfinding directs them away anyway.
+    Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
+    Make buffer check so that tank can stop even before it collides with breakable.
+      
+      
+   Clarify Enemy Tank Controller
+   
+   Disable Enemy Friendly Fire
+   
+   Properify Layer Usage(collisions)
+   
+   BoxColliders height should be enough(lot) so that heighst don't matter

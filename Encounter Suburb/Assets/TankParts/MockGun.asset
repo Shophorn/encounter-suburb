@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b040c9fc82de4509944375dc95f80323, type: 3}
+  m_Name: MockGun
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 11400000, guid: 94a5c0d4744c6af4dbbe6255bb5ba419, type: 2}
+  roundsPerSecond: 2
+  reloadTime: 0.5
