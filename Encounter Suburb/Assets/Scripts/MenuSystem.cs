@@ -17,12 +17,13 @@ public class MenuSystem : MonoBehaviour
 	[Header("Level Complete")]
 	public GameObject levelCompleteView;
 	public Button levelComplete_Next;
+	public Button levelComplete_Menu;
 	
 	[Header("Game Over")]
 	public GameObject gameOverView;
 	public Button gameOver_Menu;
 	
-	[Header("Game Completete")]
+	[Header("Game Complete")]
 	public GameObject gameCompleteView;
 	public Button gameComplete_Menu;
 

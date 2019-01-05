@@ -34,7 +34,7 @@ namespace PathFinding
 				
 				case TileType.WeakWall:
 				case TileType.StrongWall:
-				case TileType.BasePosition:
+				case TileType.PlayerBase:
 					return NodeType.Breakable;
 				
 				case TileType.Water:

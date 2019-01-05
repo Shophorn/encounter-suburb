@@ -7,11 +7,12 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[Obsolete("Do not use transform", true)]
 	private new Transform transform;
 	
-	private int maxCount = 20;
+	private int maxCount;
 	private int count = 0;
 
-	private float pathUpdateInterval = 0.2f;
+	private const float pathUpdateInterval = 0.2f;
 
+	public Tank prefab;
 	public LayerMask tankCollisionMask;
 	
 	private Tank [] tanks;
@@ -19,35 +20,34 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private float[] pathUpdateTimes;
 	private Breakable[] targetBreakables;
  	
-	public Transform playerTransform;
-	public Vector3 playerBasePosition; 
-	
-	public float engageRange = 10f;
-	private float sqrEngageRange;
-	
-	public float preferredShootDistance = 5f;
+	public Transform playerTransform { get; set; }
+	public Vector3 playerBasePosition { get; set; }
 
-	public Tank prefab;
+	public event Action OnTankDestroyed;
 
-	public event Action OnEnemyKilled;
-
-	private void Start()
+	public void Begin(int maxCount)
 	{
-		sqrEngageRange = engageRange * engageRange;
+		this.maxCount = maxCount;
+		count = 0;
 		
 		tanks = new Tank[maxCount];
 		paths = new Path[maxCount];
 		pathUpdateTimes = new float[maxCount];
 		targetBreakables = new Breakable[maxCount];
+
+		enabled = true;
 	}
 
+	public void Stop()
+	{
+		enabled = false;
+		Clear();
+	}
+	
 	private void Update()
 	{
 		var playerPosition = playerTransform.position;
 
-		Vector3 targetPosition;
-		float sqrDistanceToTarget;
-		
 		for (int i = 0; i < count; i++)
 		{
 			if (!tanks[i].gameObject.activeInHierarchy) continue;
@@ -55,7 +55,10 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			var tankPosition = tanks[i].transform.position;
 			float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
 
-			if (sqrDistanceToPlayer < sqrEngageRange)
+			Vector3 targetPosition;
+			float sqrDistanceToTarget;
+			
+			if (sqrDistanceToPlayer < tanks[i].sqrEngageRange)
 			{
 				targetPosition = playerPosition;
 				sqrDistanceToTarget = sqrDistanceToPlayer;
@@ -70,7 +73,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			{
 				int index = i;
 				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
-				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 				continue;
 			}
 
@@ -78,7 +80,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			{
 				int index = i;
 				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
-				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 			}
 			
 			var wayPoint = paths[i].currentPoint;
@@ -104,6 +105,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			
 			tanks[i].Drive(driveVector);
 
+			// Aim and Shoot
 			bool doShoot = false;
 			if (targetBreakables[i] != null)
 			{
@@ -116,11 +118,10 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				const float shootDotThreshold = 0.95f;
 				Vector3 toTarget = targetPosition - tankPosition;
 
-				if (Vector3.Dot(toTarget, tanks[i].turret.forward) > shootDotThreshold &&
-					sqrDistanceToTarget < tanks[i].gun.type.projectile.sqrMaxRange) ;
-				{
-					doShoot = true;
-				}
+				bool inRange = sqrDistanceToTarget < tanks[i].gun.type.projectile.sqrMaxRange;
+				bool inSight = Vector3.Dot(toTarget, tanks[i].turret.forward) > shootDotThreshold;
+
+				doShoot = inRange && inSight;
 			}
 
 			if (doShoot)
@@ -140,19 +141,19 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		int index = count;
 		count++;
 		
-		var newTank = Instantiate(prefab, position, Quaternion.identity);
-		newTank.GetComponent<Breakable>().OnBreak += () => newTank.gameObject.SetActive(false);
-
-		newTank.GetComponent<Breakable>().OnBreak += OnEnemyKilled;
-		newTank.OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
-
-		newTank.collisionMask = tankCollisionMask;
-		
-		tanks[index] = newTank;
+		tanks[index] = Instantiate(prefab, position, Quaternion.identity);
+		tanks[index].GetComponent<Breakable>().OnBreak += () => OnDestroyed(index);
+		tanks[index].OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
+		tanks[index].collisionMask = tankCollisionMask;
 		
 		PathRequestManager.RequestPath(position, playerTransform.position, path => OnReceivePath(index, path));
 	}
-	
+
+	private void OnDestroyed(int index)
+	{
+		tanks[index].gameObject.SetActive(false);
+		OnTankDestroyed?.Invoke();
+	}
 	
 	private void AddTargetBreakable(int index, Breakable target)
 	{
@@ -168,9 +169,10 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void OnReceivePath(int index, Path path)
 	{
 		paths[index] = path;
+		pathUpdateTimes[index] = Time.time + pathUpdateInterval;
 	}
 
-	public void Clear()
+	private void Clear()
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -181,25 +183,5 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		paths = null;
 		pathUpdateTimes = null;
 		targetBreakables = null;
-	}
-	
-	private void OnDrawGizmos()
-	{
-		if (paths == null) return;
-		
-		for (int i = 0; i < paths.Length; i++)
-		{
-			for (int j = 0; j < paths[i].points.Length; j++)
-			{
-				Gizmos.color = Color.green;
-				if (paths[i].currentIndex == j)
-				{
-					Gizmos.color = Color.red;
-				}
-				Gizmos.DrawSphere(paths[i].points[j], 0.5f);
-				var dir = paths[i].directions[j];
-				Gizmos.DrawRay(paths[i].points[j], new Vector3(dir.x, 0, dir.y) * 5f);
-			}
-		}
 	}
 }

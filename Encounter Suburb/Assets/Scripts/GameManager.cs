@@ -4,12 +4,10 @@ using UnityEngine;
 [RequireComponent(typeof(MenuSystem))]
 public class GameManager : MonoBehaviour
 {
-	public LevelInfo levelInfo;
-	private Level level = null;
-
-	public LevelInfo[] levelInfos;
-	private Level[] levels;
-	private int currentLevelIndex = 0;
+	public Texture2D[] maps;
+	public Material defaultMaterial;
+	private int currentLevelIndex = -1;
+	private Level currentLevel;
 	
 	public GameObject playerTankPrefab;
 	private Transform playerTransform;
@@ -17,58 +15,91 @@ public class GameManager : MonoBehaviour
 	private MenuSystem menuSystem;
 
 	public EnemyTankControllerSystem enemyController;
-	
+
 	private void Awake()
 	{
 		menuSystem = GetComponent<MenuSystem>();
 	}
-	
+
 	private void Start()
 	{
 		enemyController.enabled = false;
-		menuSystem.Show(MenuView.Main);
 		menuSystem.mainMenu_Play.onClick.AddListener(() =>
 		{
 			menuSystem.Hide();
-			LoadLevel(0);
-		});				
-		
+			LoadFirstLevel();
+		});
+
+		menuSystem.levelComplete_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
 		menuSystem.gameComplete_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
 		menuSystem.gameOver_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
+		
+		menuSystem.levelComplete_Next.onClick.AddListener(() =>
+		{
+			menuSystem.Hide();
+			LoadNextLevel();
+		});
 
+		menuSystem.Show(MenuView.Main);
 	}
 
-	private void LoadLevel(int index)
+	private void LoadFirstLevel()
 	{
+		Debug.Log("Load First Level");
+		
+		currentLevelIndex = -1;
+		LoadNextLevel();
+	}
+	
+	private void LoadNextLevel()
+	{
+		Debug.Log("Load Level");
+		
 		// Create Map
 		// Spawn player
 		// Start Spawning enemies
+		currentLevelIndex++;
+		currentLevel = new Level
+		{
+			map = Map.FromTexture(maps[currentLevelIndex]),
+			count = 5,
+			enemyController = enemyController,
+			material = defaultMaterial
+		};
+
+		currentLevel.BuildMap();
+		PathFinder.grid = currentLevel.grid;
 		
-		level = levelInfo.Level();
-		level.enemyController = enemyController;
-		
-		level.BuildMap();
-		PathFinder.grid = level.grid;
-		var playerPosition = level.map.PlayerSpawnPoint();
+		var playerPosition = currentLevel.map.PlayerSpawnPoint();
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
 
 		enemyController.playerTransform = playerTransform;
-		enemyController.enabled = true;
-		StartCoroutine(level.Spawn());
+		enemyController.Begin(20);
+		StartCoroutine(currentLevel.Spawn());
 
-		level.OnEnemiesDefeat += OnEnemiesDefeat;
-		level.OnPlayerDefeat += OnPlayerDefeat;
+		currentLevel.OnEnemiesDefeat += OnEnemiesDefeat;
+		currentLevel.OnPlayerDefeat += OnPlayerDefeat;
 	}
-	
+
+	private void UnloadLevel()
+	{
+		enemyController.Stop();
+
+		Destroy(playerTransform.gameObject);
+		playerTransform = null;
+		
+		currentLevel.Clear();
+		currentLevel = null;
+	}
+
 	private void OnPlayerDefeat()
 	{
 		// Unload level
 		// Store player progress to database etc.
 		// Load Menu level
-		
-		menuSystem.Show(MenuView.GameOver);
-		UnloadLevel();
 
+		UnloadLevel();
+		menuSystem.Show(MenuView.GameOver);
 	}
 
 	private void OnEnemiesDefeat()
@@ -76,43 +107,17 @@ public class GameManager : MonoBehaviour
 		// Save player progress
 		// Unload level
 		// Load next level
-		menuSystem.Show(MenuView.LevelComplete);
+	
 		UnloadLevel();
-	}
 
-	private void UnloadLevel()
-	{
-		enemyController.Clear();
-		enemyController.enabled = false;
-		
-		Destroy(playerTransform.gameObject);
-		playerTransform = null;
-		level.Clear();
-		level = null;
-	}
-	
-	
-	private void OnDrawGizmos()
-	{
-		if (level == null) return;
-
-		var grid = level.grid;
-
-		for (int y = 0; y < grid.size; y++)
+		if (currentLevelIndex == maps.Length - 1)
 		{
-			for (int x = 0; x < grid.size; x++)
-			{
-				switch (grid.nodes[x,y].type)
-				{
-					case NodeType.Open: 		Gizmos.color = Color.green; 	break;
-					case NodeType.Breakable:	Gizmos.color = Color.yellow;	break;
-					case NodeType.Impassable:	Gizmos.color = Color.red;		break;
-					case NodeType.Error: 		Gizmos.color = Color.magenta;	break;
-				}
-				
-				Gizmos.DrawCube(grid.NodeWorldPosition(new Vector2Int(x,y)), Vector3.one * grid.scale * 0.9f); 
-				
-			}
+			menuSystem.Show(MenuView.GameComplete);
 		}
+		else
+		{
+			menuSystem.Show(MenuView.LevelComplete);
+		}
+		
 	}
 }

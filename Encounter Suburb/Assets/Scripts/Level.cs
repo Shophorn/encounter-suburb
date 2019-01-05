@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Grid = PathFinding.Grid;
 
+[Serializable]
 public class Level
 {
 	public Map map;
@@ -29,7 +30,7 @@ public class Level
 	
 	public IEnumerator Spawn()
 	{
-		enemyController.OnEnemyKilled += OnEnemyKilled;
+		enemyController.OnTankDestroyed += OnTankDestroyed;
 		
 		var delay = new WaitForSeconds(3);
 		for (int i = 0; i < count; i++)
@@ -43,7 +44,7 @@ public class Level
 		}
 	}
 
-	private void OnEnemyKilled()
+	private void OnTankDestroyed()
 	{
 		enemyKilledCount++;
 		if (enemySpawnedCount == count && enemyKilledCount == count)
@@ -57,6 +58,9 @@ public class Level
 		UnityEngine.Object.Destroy(mapObject);
 		UnityEngine.Object.Destroy(mapMesh);
 		UnityEngine.Object.Destroy(mapTexture);
+
+		OnPlayerDefeat = null;
+		OnEnemiesDefeat = null;
 	}
 	
 	public void BuildMap()
@@ -64,7 +68,6 @@ public class Level
 		mapObject = new GameObject("Map", typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
 		mapObject.layer = LayerMask.NameToLayer("Ground");
 
-		map = Map.MockMap();
 		grid = new Grid(map);		
 		
 		mapMesh = map.BuildMesh();

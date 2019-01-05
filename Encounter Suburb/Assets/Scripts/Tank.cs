@@ -13,6 +13,12 @@ public class Tank : MonoBehaviour
 	public LayerMask collisionMask;
 
 	public event Action<Breakable> OnCollideBreakable;
+
+	public float engageRange = 15f;
+	public float sqrEngageRange { get; private set; }
+	
+	public float preferredShootDistance = 5f;
+	public float sqrPreferredShootDistance { get; private set; }
 	
 	private void Awake()
 	{
@@ -35,6 +41,9 @@ public class Tank : MonoBehaviour
 				collisionRayPoints[i] = new Vector3(xx, yy, max.z); 
 			}
 		}
+
+		sqrEngageRange = engageRange * engageRange;
+		sqrPreferredShootDistance = preferredShootDistance * preferredShootDistance;
 	}
 
 	/// <summary>
@@ -107,4 +116,5 @@ public class Tank : MonoBehaviour
 
 		return drive - skinWidth;
 	}
+	
 }

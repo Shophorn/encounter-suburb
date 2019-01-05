@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class LevelInfo : ScriptableObject
 {
-	public Map map;
+//	public Map map;
+	public Texture2D mapImage;
 	public int count;
 	public Material material;
 
@@ -13,7 +14,7 @@ public class LevelInfo : ScriptableObject
 	{
 		return new Level()
 		{
-			map = map,
+			map = Map.FromTexture(mapImage),
 			count = count,
 			material = material
 		};
