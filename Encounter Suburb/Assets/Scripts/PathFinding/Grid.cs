@@ -10,11 +10,13 @@ namespace PathFinding
 		private float halfScale;
 		
 		public Node[,] nodes;
+
+		private const int resolutionMultiplier = 3;
 		
 		public Grid(Map map)
 		{
-			size = map.size;
-			scale = Map.SCALE;
+			size = map.size * resolutionMultiplier;
+			scale = Map.SCALE / resolutionMultiplier;
 			halfScale = scale * 0.5f;
 			nodes = new Node[size, size];
 
@@ -22,9 +24,11 @@ namespace PathFinding
 			{
 				for (int x = 0; x < size; x++)
 				{
-					nodes[x, y] = new Node();
-					nodes[x, y].type = Node.FromMapTile(map.tiles[x, y]);
-					nodes[x, y].gridPosition = new Vector2Int(x,y);
+					nodes[x, y] = new Node
+					{
+						type = Node.FromMapTile(map.tiles[x / resolutionMultiplier, y / resolutionMultiplier]),
+						gridPosition = new Vector2Int(x, y)
+					};
 				}
 			}
 		}

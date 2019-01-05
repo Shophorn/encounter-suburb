@@ -66,10 +66,14 @@ public class Tank : MonoBehaviour
 		float drive = dot < driveDotThreshold ? 0f : (magnitude * hull.forwardSpeed * Time.deltaTime);
 		transform.Translate(Vector3.forward * Collide(drive), Space.Self);
 
+		var turretRotation = turret.transform.rotation;
+		
 		Quaternion targetRotation = Quaternion.LookRotation(input, transform.up);
 		transform.rotation = 
 			Quaternion.RotateTowards(transform.rotation, targetRotation, hull.steerStationarySpeed * Time.deltaTime);
 
+
+		turret.transform.rotation = turretRotation;
 	}
 
 	private float Collide(float drive)

@@ -34,10 +34,10 @@ Movement is still free
 
 Done:
     If tanks collides with breakable, set it as target and don't move until it is broken.
+    Water tiles do not block enemies, since pathfinding directs them away anyway.
 
 Next up:
     
-    Water tiles do not block enemies, since pathfinding directs them away anyway.
     Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
     Make buffer check so that tank can stop even before it collides with breakable.
       
@@ -49,3 +49,5 @@ Next up:
    Properify Layer Usage(collisions)
    
    BoxColliders height should be enough(lot) so that heighst don't matter
+   
+   Clean Gun/Tank/Projectile/Turret hierarchy

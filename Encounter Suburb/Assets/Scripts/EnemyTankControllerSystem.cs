@@ -23,6 +23,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	public static Vector3 playerBasePosition; 
 	
 	public float engageRange = 10f;
+	private float sqrEngageRange;
+	
 	public float preferredShootDistance = 5f;
 
 	public Tank prefab;
@@ -40,6 +42,9 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	
 	private void Start()
 	{
+		sqrEngageRange = engageRange * engageRange;
+		
+		
 		tanks = new Tank[maxCount];
 		paths = new Path[maxCount];
 		pathUpdateTimes = new float[maxCount];
@@ -51,16 +56,32 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void Update()
 	{
 		var playerPosition = playerTransform.position;
+
+		Vector3 targetPosition;
+		float sqrDistanceToTarget;
 		
 		for (int i = 0; i < count; i++)
 		{
 			if (!tanks[i].gameObject.activeInHierarchy) continue;
 
 			var tankPosition = tanks[i].transform.position;
+			float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
+
+			if (sqrDistanceToPlayer < sqrEngageRange)
+			{
+				targetPosition = playerPosition;
+				sqrDistanceToTarget = sqrDistanceToPlayer;
+			}
+			else
+			{
+				targetPosition = playerBasePosition;
+				sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
+			}
+			
 			if (paths[i] == null)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, playerTransform.position, (path) => instance.OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => instance.OnReceivePath(index, path));
 				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 				continue;
 			}
@@ -68,7 +89,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (pathUpdateTimes[i] < Time.time)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, playerTransform.position, (path) => instance.OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => instance.OnReceivePath(index, path));
 				pathUpdateTimes[i] = Time.time + pathUpdateInterval;
 			}
 			
@@ -96,14 +117,31 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			
 			tanks[i].Drive(driveVector);
 
+			bool doShoot = false;
 			if (targetBreakables[i] != null)
 			{
 				tanks [i].turret.AimAt(targetBreakables[i].transform.position);
+				doShoot = true;
 			}
-			
-			tanks[i].collider.enabled = false;
-			tanks[i].gun.Fire();
-			tanks[i].collider.enabled = true;			
+			else
+			{
+				tanks[i].turret.AimAt(targetPosition);
+				const float shootDotThreshold = 0.95f;
+				Vector3 toTarget = targetPosition - tankPosition;
+
+				if (Vector3.Dot(toTarget, tanks[i].turret.forward) > shootDotThreshold &&
+					sqrDistanceToTarget < tanks[i].gun.type.projectile.sqrMaxRange) ;
+				{
+					doShoot = true;
+				}
+			}
+
+			if (doShoot)
+			{
+				tanks[i].collider.enabled = false;
+				tanks[i].gun.Fire();
+				tanks[i].collider.enabled = true;
+			}
 		}
 	}
 

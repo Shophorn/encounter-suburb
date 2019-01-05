@@ -11,5 +11,6 @@ public class ProjectileType : ScriptableObject
 	public float blastRadius = 2.0f;
 	public ParticleSystem blastFX;
 	public float maxRange = 10f;
+	public float sqrMaxRange => maxRange * maxRange;
 	public bool explodeOnMaxRange = false;
 }
