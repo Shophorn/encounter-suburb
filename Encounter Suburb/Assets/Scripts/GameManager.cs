@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using PathFinding;
 using UnityEngine;
 
+[RequireComponent(typeof(MenuSystem))]
 public class GameManager : MonoBehaviour
 {
 	public LevelInfo levelInfo;
@@ -10,12 +10,29 @@ public class GameManager : MonoBehaviour
 	public GameObject playerTankPrefab;
 	private Transform playerTransform;
 
+	private MenuSystem menu;
+
+	private void Awake()
+	{
+		menu = GetComponent<MenuSystem>();
+	}
+	
 	private void Start()
+	{
+		menu.Show(MenuView.Main);
+		menu.mainMenu_Play.onClick.AddListener(() =>
+		{
+			menu.Hide();
+			LoadLevel(0);
+		});				
+	}
+
+	private void LoadLevel(int index)
 	{
 		// Create Map
 		// Spawn player
 		// Start Spawning enemies
-
+		
 		level = levelInfo.Level();
 		
 		level.BuildMap();
@@ -28,9 +45,23 @@ public class GameManager : MonoBehaviour
 
 		level.OnEnemiesDefeat += () => Debug.Log("Enemies defeated");
 		level.OnPlayerDefeat += () => Debug.Log("Player Defeated");
-
+	}
+	
+	private void OnPlayerDefeat()
+	{
+		// Unload level
+		// Store player progress to database etc.
+		// Load Menu level
 	}
 
+	private void OnEnemiesDefeat()
+	{
+		// Save player progress
+		// Unload level
+		// Load next level
+	}
+	
+	
 	private void OnDrawGizmos()
 	{
 		if (level == null) return;

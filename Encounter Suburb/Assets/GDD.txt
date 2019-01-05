@@ -51,3 +51,11 @@ Next up:
    BoxColliders height should be enough(lot) so that heighst don't matter
    
    Clean Gun/Tank/Projectile/Turret hierarchy
+   
+   Effects
+        VFX
+        SFX
+   
+   Map loading from image file.
+        named levels
+        secret word to get to level
