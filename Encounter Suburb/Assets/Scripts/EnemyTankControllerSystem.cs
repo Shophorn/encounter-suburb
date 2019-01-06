@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using PathFinding;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	public Tank prefab;
 	public LayerMask tankCollisionMask;
+	public ParticleSystem explosion;
 	
 	private Tank [] tanks;
 	private Path [] paths;
@@ -152,7 +154,9 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void OnDestroyed(int index)
 	{
 		tanks[index].gameObject.SetActive(false);
-		OnTankDestroyed?.Invoke();
+		OnTankDestroyed.Invoke();
+
+		Instantiate(explosion, tanks[index].transform.position, Quaternion.identity);
 	}
 	
 	private void AddTargetBreakable(int index, Breakable target)

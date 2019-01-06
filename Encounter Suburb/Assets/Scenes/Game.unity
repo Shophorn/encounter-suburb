@@ -578,6 +578,8 @@ MonoBehaviour:
   tankCollisionMask:
     serializedVersion: 2
     m_Bits: 807
+  explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
+    type: 2}
 --- !u!114 &286161061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1154,8 +1156,10 @@ MonoBehaviour:
   levelStartView: {fileID: 125856371}
   nextLevelNameText: {fileID: 957421814}
   timeCounterText: {fileID: 1611695210}
+  startCounterCount: 5
   levelEndLabel: {fileID: 1982959099}
   levelEndText: {fileID: 86245798}
+  endMessageViewTime: 2
   gameOverView: {fileID: 36508318}
   gameOver_Menu: {fileID: 126618900}
   gameCompleteView: {fileID: 2039256256}
@@ -1589,7 +1593,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2022992277
