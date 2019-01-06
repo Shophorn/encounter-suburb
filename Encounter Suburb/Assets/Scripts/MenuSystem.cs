@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +11,7 @@ public enum MenuView
 public class MenuSystem : MonoBehaviour
 {
 	public GameObject canvasObject;
+	public GameObject backGround;
 	
 	[Header("Main Menu")]
 	public GameObject mainMenuView;
@@ -18,6 +21,17 @@ public class MenuSystem : MonoBehaviour
 	public GameObject levelCompleteView;
 	public Button levelComplete_Next;
 	public Button levelComplete_Menu;
+	
+	[Header("Level Start")]
+	public GameObject levelStartView;
+	public Text nextLevelNameText;
+	public Text timeCounterText;
+	public int startCounterCount = 5;
+	
+	[Header("Level End")]
+	public GameObject levelEndLabel;
+	public Text levelEndText;
+	public float endMessageViewTime = 2f;
 	
 	[Header("Game Over")]
 	public GameObject gameOverView;
@@ -46,10 +60,51 @@ public class MenuSystem : MonoBehaviour
 	{
 		canvasObject.SetActive(false);
 		
+		backGround.SetActive(true); // This defaults to true, but can be set false when showing
+		
 		mainMenuView.SetActive(false);
 		levelCompleteView.SetActive(false);
+		levelStartView.SetActive(false);
+		levelEndLabel.SetActive(false);
 		gameOverView.SetActive(false);
 		gameCompleteView.SetActive(false);
 	}
-	
+
+	public void ShowLevelStartInfo(string mapName, int number, Action callback)
+	{
+		Hide();
+		canvasObject.SetActive(true);
+		levelStartView.SetActive(true);
+		
+		nextLevelNameText.text = $"{number : 000} {mapName}";
+		StartCoroutine(DoCountdownTimer(callback));
+	}
+
+	private IEnumerator DoCountdownTimer(Action callback)
+	{
+		for (int i = startCounterCount; i >= 0; i--)
+		{
+			timeCounterText.text = i.ToString();
+			yield return new WaitForSeconds(1);
+		}
+
+		Hide();
+		callback();
+	}
+
+	public void ShowEndStatus(string message, Action callback)
+	{
+		Hide();
+		backGround.SetActive(false);
+		canvasObject.SetActive(true);
+		
+		levelEndLabel.SetActive(true);
+		levelEndText.text = message;
+
+		this.Invoke(endMessageViewTime, () =>
+		{
+			Hide();
+			callback();
+		});
+	}
 }
