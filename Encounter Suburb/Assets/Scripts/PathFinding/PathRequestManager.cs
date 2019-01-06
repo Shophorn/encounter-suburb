@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace PathFinding
 {
+
 	public static class PathRequestManager
 	{
 		private struct PathRequest
@@ -34,7 +35,7 @@ namespace PathFinding
 			isProcessing = true;
 			
 			var request = pathRequests.Dequeue();
-			var path = PathFinder.FindPath(request.start, request.end, false);
+			var path = PathFinder.instance.FindPath(request.start, request.end, false);
 
 			request.callBack(path);
 

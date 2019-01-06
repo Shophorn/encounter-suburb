@@ -68,7 +68,8 @@ public class GameManager : MonoBehaviour
 		};
 
 		currentLevel.BuildMap();
-		PathFinder.grid = currentLevel.grid;
+//		PathFinder.grid = currentLevel.grid;
+		PathFinder.instance = new PathFinder(currentLevel.grid);
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
@@ -90,6 +91,8 @@ public class GameManager : MonoBehaviour
 		
 		currentLevel.Clear();
 		currentLevel = null;
+
+		PathFinder.instance = null;
 	}
 
 	private void OnPlayerDefeat()

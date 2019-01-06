@@ -3,14 +3,21 @@ using UnityEngine;
 
 namespace PathFinding
 {
-	public static class PathFinder
+	public  class PathFinder
 	{
 		private const int alignedCost = 10;
 		private const int diagonalCost = 14;
-		
-		public static Grid grid;
 
-		public static Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakablesOverDetour = false)
+		private readonly Grid grid;
+
+		public static PathFinder instance;
+
+		public PathFinder(Grid grid)
+		{
+			this.grid = grid;
+		}
+		
+		public Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakablesOverDetour = false)
 		{
 			Node start = grid.NodeFromWorldPoint(startPosition);
 			Node end = grid.NodeFromWorldPoint(endPosition);
@@ -58,7 +65,7 @@ namespace PathFinding
 			return null;
 		}
 
-		private static Path BuildPathFromNodes(Node start, Node end)
+		private Path BuildPathFromNodes(Node start, Node end)
 		{
 			// Retrace
 			var path = new List<Node>();

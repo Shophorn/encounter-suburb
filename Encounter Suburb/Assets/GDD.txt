@@ -1,34 +1,5 @@
 Encounter Suburb (Battle City)
 
-Tank
-    - Move
-    - Shoot
-    - Turn turret
-    - Hp
-    - Prefabs
-    - Parts
-    
-Hero (Player)
-    - Control tank
-    - Draw aim cursors
-    
-    
-Villain Army (Enemy)
-    - Control multiple tanks ("AI")
-    - Spawn tanks to spawn points in map
-    - Target player or Base
-    
-Map
-    - From texture
-    - Spawn points
-    - Different terrains and different sizes
-    - Move camera to fit full arena
-    
-Level
-    - Villain Army
-    - Map
-
-
 Constant grid size, fits tank = 5 units
 Movement is still free
 
@@ -40,6 +11,15 @@ Done:
 Next up:
     PathFinding to non-singleton
     PathFinding weights so that tanks would avoid sticking to walls
+    
+    Smooth water colliders.
+    Make collision detection better, maybe using longer rays.
+   
+   Enemy tank types:
+        Hunter - Always goes for player : fast light gun
+        Pummel - Always goes for base :  slow short-ranged powerful gun
+        Grunt - Moves to base but also engages player : medium gun
+        Heavy - Bigger version of grunt : Fast powerful gun 
     
     Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
     Make buffer check so that tank can stop even before it collides with breakable.
