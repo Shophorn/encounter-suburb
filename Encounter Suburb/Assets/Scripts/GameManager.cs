@@ -5,9 +5,10 @@ using Grid = PathFinding.Grid;
 [RequireComponent(typeof(MenuSystem))]
 public class GameManager : MonoBehaviour
 {
-	public Texture2D[] maps;
+	private Texture2D[] maps;
 	public Material defaultMaterial;
 	private int currentLevelIndex = -1;
+	private int nextLevelIndex => currentLevelIndex + 1;
 	private Level currentLevel = null;
 	
 	public GameObject playerTankPrefab;
@@ -38,24 +39,39 @@ public class GameManager : MonoBehaviour
 		menuSystem.levelComplete_Next.onClick.AddListener(() =>
 		{
 			menuSystem.Hide();
-			LoadNextLevel();
+			menuSystem.ShowLevelStartInfo(maps[nextLevelIndex].name, nextLevelIndex + 1, LoadNextLevel);
 		});
 
 		menuSystem.Show(MenuView.Main);
+		
+		LoadMaps();
+	}
+
+	private void LoadMaps()
+	{
+		maps = Resources.LoadAll<Texture2D>("Maps");
+
+		foreach (var map in maps)
+		{
+			var array = map.name.Split('_');
+			var nameString = array[1];
+			for (int i = 2; i < array.Length; i++)
+			{
+				nameString += " " + array[i];
+			}
+
+			map.name = nameString;
+		}
 	}
 
 	private void LoadFirstLevel()
 	{
-		Debug.Log("Load First Level");
-		
 		currentLevelIndex = -1;
-		LoadNextLevel();
+		menuSystem.ShowLevelStartInfo(maps[0].name, 1, LoadNextLevel);
 	}
 	
 	private void LoadNextLevel()
 	{
-		Debug.Log("Load Level");
-		
 		// Create Map
 		// Spawn player
 		// Start Spawning enemies
@@ -69,8 +85,6 @@ public class GameManager : MonoBehaviour
 		};
 
 		currentLevel.BuildMap();
-//		PathFinder.grid = currentLevel.grid;
-//		PathFinder.instance = new PathFinder(currentLevel.grid);
 		PathFinder.CreateInstance(currentLevel.grid);
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
@@ -102,9 +116,11 @@ public class GameManager : MonoBehaviour
 		// Unload level
 		// Store player progress to database etc.
 		// Load Menu level
-
-		UnloadLevel();
-		menuSystem.Show(MenuView.GameOver);
+		menuSystem.ShowEndStatus("DEFEAT", () =>
+		{
+			UnloadLevel();
+			menuSystem.Show(MenuView.GameOver);
+		});
 	}
 
 	private void OnEnemiesDefeat()
@@ -113,16 +129,18 @@ public class GameManager : MonoBehaviour
 		// Unload level
 		// Load next level
 	
-		UnloadLevel();
-
-		if (currentLevelIndex == maps.Length - 1)
+		menuSystem.ShowEndStatus("VICTORY!", () =>
 		{
-			menuSystem.Show(MenuView.GameComplete);
-		}
-		else
-		{
-			menuSystem.Show(MenuView.LevelComplete);
-		}
+			UnloadLevel();
+			if (currentLevelIndex == maps.Length - 1)
+			{
+				menuSystem.Show(MenuView.GameComplete);
+			}
+			else
+			{
+				menuSystem.Show(MenuView.LevelComplete);
+			}
+		});
 	}
 
 	private void OnDrawGizmos()

@@ -61,22 +61,6 @@ public class Map
 
 		var pixels = texture.GetPixels32();
 		
-		var tester = new Dictionary<Color32, int>();
-		for (int i = 0; i < pixels.Length; i++)
-		{
-			if (!tester.ContainsKey(pixels[i]))
-			{
-				tester.Add(pixels[i], 0);
-			}
-			tester[pixels[i]]++;
-		}
-
-		foreach (var pair in tester)
-		{
-			Debug.Log($"[Color] {pair.Key} : {pair.Value}");
-		}
-		
-		
 		for (int h = 0; h < size; h++)
 		{
 			for (int w = 0; w < size; w++)

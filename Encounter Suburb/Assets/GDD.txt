@@ -11,34 +11,32 @@ Done:
     PathFinding weights so that tanks would avoid sticking to walls
 
 Next up:
-    
-    Smooth water colliders.
+    Move camera to properly view different sized maps
+      
     Make collision detection better, maybe using longer rays.
+    Make buffer check so that tank can stop even before it collides with breakable.
+    Enemies check real line of sight with raycast
+    Disable Enemy Friendly Fire
+    
+    Smooth water colliders -> Marching squares
    
+    Clean Gun/Tank/Projectile/Turret hierarchy
     Enemy tank types:
         Hunter - Always goes for player : fast light gun
         Pummel - Always goes for base :  slow short-ranged powerful gun
         Grunt - Moves to base but also engages player : medium gun
         Heavy - Bigger version of grunt : Fast powerful gun 
-    
-    
-    Make buffer check so that tank can stop even before it collides with breakable.
-    Enemies check real line of sight with raycast
-    
       
     Clarify Enemy Tank Controller
     
-    Disable Enemy Friendly Fire
-    
     Properify Layer Usage(collisions)
     
-    BoxColliders height should be enough(lot) so that heights don't matter
+    BoxColliders' height should be enough(lot) so that heights don't matter
     
-    Clean Gun/Tank/Projectile/Turret hierarchy
     
     Effects
         VFX
         SFX
     
     named levels
-    secret word to get to level
+    secret word to get to level 
