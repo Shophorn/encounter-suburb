@@ -1,5 +1,6 @@
 using PathFinding;
 using UnityEngine;
+using Grid = PathFinding.Grid;
 
 [RequireComponent(typeof(MenuSystem))]
 public class GameManager : MonoBehaviour
@@ -7,7 +8,7 @@ public class GameManager : MonoBehaviour
 	public Texture2D[] maps;
 	public Material defaultMaterial;
 	private int currentLevelIndex = -1;
-	private Level currentLevel;
+	private Level currentLevel = null;
 	
 	public GameObject playerTankPrefab;
 	private Transform playerTransform;
@@ -69,7 +70,8 @@ public class GameManager : MonoBehaviour
 
 		currentLevel.BuildMap();
 //		PathFinder.grid = currentLevel.grid;
-		PathFinder.instance = new PathFinder(currentLevel.grid);
+//		PathFinder.instance = new PathFinder(currentLevel.grid);
+		PathFinder.CreateInstance(currentLevel.grid);
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
@@ -92,7 +94,7 @@ public class GameManager : MonoBehaviour
 		currentLevel.Clear();
 		currentLevel = null;
 
-		PathFinder.instance = null;
+		PathFinder.ClearInstance();
 	}
 
 	private void OnPlayerDefeat()
@@ -121,6 +123,28 @@ public class GameManager : MonoBehaviour
 		{
 			menuSystem.Show(MenuView.LevelComplete);
 		}
-		
+	}
+
+	private void OnDrawGizmos()
+	{
+		if (currentLevel == null) return;
+
+		Grid grid = currentLevel.grid;
+		for (int y = 0; y < grid.size; y++)
+		{
+			for (int x = 0; x < grid.size; x++)
+			{
+				float value = grid.nodes[x, y].preferDriveAroundPenalty / 10f;
+				if (value < 0)
+				{
+					value = 1f;
+				}
+				
+				value = 1f - value;
+				
+				Gizmos.color = new Color(value, value, value, 1);
+				Gizmos.DrawCube(grid.NodeWorldPosition(new Vector2Int(x, y)), Vector3.one * 2f / 3f);
+			}
+		}
 	}
 }

@@ -5,11 +5,11 @@ namespace PathFinding
 {
 	public class Grid
 	{
-		public int size;
-		public float scale;
-		private float halfScale;
+		public readonly int size;
+		private readonly float scale;
+		private readonly float halfScale;
 		
-		public Node[,] nodes;
+		public readonly Node[,] nodes;
 
 		private const int resolutionMultiplier = 3;
 		
@@ -24,13 +24,70 @@ namespace PathFinding
 			{
 				for (int x = 0; x < size; x++)
 				{
+					// Add variables, use constructor
 					nodes[x, y] = new Node
-					{
-						type = Node.FromMapTile(map.tiles[x / resolutionMultiplier, y / resolutionMultiplier]),
-						gridPosition = new Vector2Int(x, y)
-					};
+					(
+						x, y,
+						map.tiles[x / resolutionMultiplier, y / resolutionMultiplier]
+					);
 				}
 			}
+			
+			// Blur
+			const int kernelExtents = 3;
+			const int kernelSize = 1 + 2 * kernelExtents;
+			const int kernelArea = kernelSize * kernelSize;
+			
+			// Horizontal Pass
+			var horizontalBlurPass = new Vector2Int[size, size];
+			for (int y = 0; y < size; y++)
+			{
+				for (int x = -kernelExtents; x <= kernelExtents; x++)
+				{
+					int xx = Mathf.Clamp(x, 0, size - 1);
+					horizontalBlurPass[0, y].x += nodes[xx, y].preferBreakWallsPenalty;
+					horizontalBlurPass[0, y].y += nodes[xx, y].preferDriveAroundPenalty;
+				}
+				
+				for (int x = 1; x < size; x++)
+				{
+					Node remove = nodes[Mathf.Clamp(x - kernelExtents, 0, size - 1), y];
+					Node add = nodes[Mathf.Clamp(x + kernelExtents, 0, size - 1), y];
+					var previous = horizontalBlurPass[x - 1, y];
+					
+					horizontalBlurPass[x, y].x = previous.x - remove.preferBreakWallsPenalty + add.preferBreakWallsPenalty;
+					horizontalBlurPass[x, y].y = previous.y - remove.preferDriveAroundPenalty + add.preferDriveAroundPenalty;
+				}
+			}
+
+			// Vertical Pass
+			var verticalBlurPass = new Vector2Int[size, size];
+			for (int x = 0; x < size; x++)
+			{
+				for (int y = 0; y < size; y++)
+				{
+					for (int yy = y - kernelExtents; yy <= y + kernelExtents; yy++)
+					{
+						int yyy = Mathf.Clamp(yy, 0, size - 1);
+						verticalBlurPass[x, y] += horizontalBlurPass[x, yyy];
+					}
+				}
+			}
+
+			// Write Results
+			for (int y = 0; y < size; y++)
+			{
+				for (int x = 0; x < size; x++)
+				{
+					// Impassable can stay where they are
+					if (nodes[x, y].type == NodeType.Impassable) continue;
+					
+					nodes[x, y].preferBreakWallsPenalty = Mathf.RoundToInt((float)verticalBlurPass[x, y].x / kernelArea);
+					nodes[x, y].preferDriveAroundPenalty = Mathf.RoundToInt((float)verticalBlurPass[x, y].y / kernelArea);
+				}
+			}
+
+
 		}
 
 		public Node[] GetNodeNeighbours(Node node)

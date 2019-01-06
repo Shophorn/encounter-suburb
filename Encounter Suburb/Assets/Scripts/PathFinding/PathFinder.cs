@@ -3,18 +3,24 @@ using UnityEngine;
 
 namespace PathFinding
 {
-	public  class PathFinder
+	public class PathFinder
 	{
 		private const int alignedCost = 10;
 		private const int diagonalCost = 14;
 
-		private readonly Grid grid;
+		private Grid grid;
 
-		public static PathFinder instance;
+		public static PathFinder instance { get; private set; }
 
-		public PathFinder(Grid grid)
+		public static void CreateInstance(Grid grid)
 		{
-			this.grid = grid;
+			instance = new PathFinder();
+			instance.grid = grid;
+		}
+
+		public static void ClearInstance()
+		{
+			instance = null;
 		}
 		
 		public Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakablesOverDetour = false)
@@ -45,8 +51,9 @@ namespace PathFinding
 						continue;
 					}
 
-					int distanceCostMultiplier = neighbours[i].type == NodeType.Open || preferBreakablesOverDetour ? 1 : 2;
-					int newMovementCost = current.gCost + Distance(current, neighbours[i]) * distanceCostMultiplier;
+//					int distanceCostMultiplier = neighbours[i].type == NodeType.Open || preferBreakablesOverDetour ? 1 : 2;
+//					int newMovementCost = current.gCost + Distance(current, neighbours[i]) * distanceCostMultiplier;
+					int newMovementCost = current.gCost + Distance(current, neighbours[i]) + neighbours[i].preferDriveAroundPenalty;
 					if (newMovementCost < neighbours[i].gCost || !openSet.Contains(neighbours[i]))
 					{
 						neighbours[i].gCost = newMovementCost;
@@ -58,7 +65,6 @@ namespace PathFinding
 						else
 							openSet.RefreshItem(neighbours[i]);
 					}
-
 				}
 			}
 

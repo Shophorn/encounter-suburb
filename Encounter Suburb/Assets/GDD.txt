@@ -7,22 +7,24 @@ Done:
     If tanks collides with breakable, set it as target and don't move until it is broken.
     Water tiles do not block enemies, since pathfinding directs them away anyway.
     Map loading from image file.
+    Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
+    PathFinding weights so that tanks would avoid sticking to walls
 
 Next up:
-    PathFinding to non-singleton
-    PathFinding weights so that tanks would avoid sticking to walls
     
     Smooth water colliders.
     Make collision detection better, maybe using longer rays.
    
-   Enemy tank types:
+    Enemy tank types:
         Hunter - Always goes for player : fast light gun
         Pummel - Always goes for base :  slow short-ranged powerful gun
         Grunt - Moves to base but also engages player : medium gun
         Heavy - Bigger version of grunt : Fast powerful gun 
     
-    Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
+    
     Make buffer check so that tank can stop even before it collides with breakable.
+    Enemies check real line of sight with raycast
+    
       
     Clarify Enemy Tank Controller
     

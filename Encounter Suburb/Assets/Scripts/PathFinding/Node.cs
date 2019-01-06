@@ -18,10 +18,23 @@ namespace PathFinding
 		public int fCost => gCost + hCost;
 
 		public Node parent;
+
+		public int preferBreakWallsPenalty;
+		public int preferDriveAroundPenalty;
 		
 		public Vector2Int gridPosition;
+		
+		// Create constructor
+		public Node(int x, int y, TileType tileType)
+		{
+			gridPosition = new Vector2Int(x, y);
+			type = FromMapTile(tileType);
+			preferBreakWallsPenalty = GetPenalty(tileType, true);
+			preferDriveAroundPenalty = GetPenalty(tileType, false);
+		}
 
-		public static NodeType FromMapTile(TileType tileType)
+
+		private static NodeType FromMapTile(TileType tileType)
 		{
 			switch (tileType)
 			{
@@ -44,6 +57,32 @@ namespace PathFinding
 			return NodeType.Error;
 		}
 
+		private static int GetPenalty(TileType tileType, bool preferBreakWalls)
+		{
+			switch (tileType)
+			{
+				case TileType.Ground:
+				case TileType.Ice:
+				case TileType.Woods:
+				case TileType.EnemySpawn:
+				case TileType.PlayerSpawn:
+					return 0;
+				
+				case TileType.WeakWall:
+				case TileType.PlayerBase:
+					return preferBreakWalls ? 2 : 5;
+				
+				case TileType.StrongWall:
+					return preferBreakWalls ? 4 : 10;
+					
+				case TileType.Water:
+					return 20;
+				
+			}
+
+			return -1;
+		}
+		
 		int IComparable<Node>.CompareTo(Node other)
 		{
 			int compare = fCost.CompareTo(other.fCost);
