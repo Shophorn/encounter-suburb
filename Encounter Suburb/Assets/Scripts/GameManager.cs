@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
 	private MenuSystem menuSystem;
 
 	public EnemyTankControllerSystem enemyController;
+	
+	[Header("Camera Position Values")]
+	public float cameraAngle = 50f;
+	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
 	private void Awake()
 	{
@@ -50,18 +54,6 @@ public class GameManager : MonoBehaviour
 	private void LoadMaps()
 	{
 		maps = Resources.LoadAll<Texture2D>("Maps");
-
-		foreach (var map in maps)
-		{
-			var array = map.name.Split('_');
-			var nameString = array[1];
-			for (int i = 2; i < array.Length; i++)
-			{
-				nameString += " " + array[i];
-			}
-
-			map.name = nameString;
-		}
 	}
 
 	private void LoadFirstLevel()
@@ -85,6 +77,7 @@ public class GameManager : MonoBehaviour
 		};
 
 		currentLevel.BuildMap();
+		PositionCamera();
 		PathFinder.CreateInstance(currentLevel.grid);
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
@@ -164,5 +157,34 @@ public class GameManager : MonoBehaviour
 				Gizmos.DrawCube(grid.NodeWorldPosition(new Vector2Int(x, y)), Vector3.one * 2f / 3f);
 			}
 		}
+	}
+
+	private void OnGUI()
+	{
+		var screenPosition = Input.mousePosition;
+		screenPosition.x = (screenPosition.x - (Screen.width / 2)) / (Screen.width / 2);
+		screenPosition.y = (screenPosition.y - (Screen.height / 2)) / (Screen.height / 2);
+		
+		GUI.Label(new Rect(10, 10, 200, 40), $"X: {screenPosition.x : 0.000} / {Input.mousePosition.x : 0.000}\nY: {screenPosition.y : 0.000} / {Input.mousePosition.y : 0.000}");
+	}
+
+	private void PositionCamera()
+	{
+		float cos = Mathf.Cos(Mathf.Deg2Rad * cameraAngle);
+		float sin = Mathf.Sin(Mathf.Deg2Rad * cameraAngle);
+
+		float size = currentLevel.map.size;
+		float y = cameraPosRatio.y * size;
+		float z = cameraPosRatio.z * size;
+
+		var cameraTransform = Camera.main.transform;
+		cameraTransform.position = new Vector3
+		(
+			x: size,
+			y: cos * y - sin * z,
+			z: sin * y + cos * z + size
+		);
+
+		cameraTransform.rotation = Quaternion.Euler(cameraAngle, 0, 0);
 	}
 }

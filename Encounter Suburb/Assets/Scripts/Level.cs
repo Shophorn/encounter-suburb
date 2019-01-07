@@ -128,6 +128,5 @@ public class Level
 		enemyController.playerBasePosition = basePosition;
 		var playerBase = GameObject.Instantiate(Bootstrap.basePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBase.GetComponent<Breakable>().OnBreak += () => OnPlayerDefeat?.Invoke();
-
 	}
 }

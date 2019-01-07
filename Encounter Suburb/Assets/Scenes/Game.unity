@@ -746,13 +746,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0.38268277, y: -0, z: -0, w: 0.92387986}
-  m_LocalPosition: {x: 32, y: 62.6, z: -38.5}
+  m_LocalRotation: {x: 0.42261827, y: -0, z: -0, w: 0.9063079}
+  m_LocalPosition: {x: 24, y: 54.85005, z: -27.31155}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 45.000004, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &751490284
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,6 +1122,8 @@ MonoBehaviour:
   playerTankPrefab: {fileID: 1941843288241032, guid: 7ee7af2c3ab4a6f4c932e592d9c65882,
     type: 2}
   enemyController: {fileID: 286161060}
+  cameraAngle: 50
+  cameraPosRatio: {x: 1, y: -0.16875, z: -3.125}
 --- !u!4 &1063592053
 Transform:
   m_ObjectHideFlags: 0
