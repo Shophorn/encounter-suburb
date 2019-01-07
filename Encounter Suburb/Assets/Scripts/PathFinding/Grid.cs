@@ -6,8 +6,6 @@ namespace PathFinding
 	public class Grid
 	{
 		public readonly int size;
-		private readonly float scale;
-		private readonly float halfScale;
 		
 		public readonly Node[,] nodes;
 
@@ -16,8 +14,6 @@ namespace PathFinding
 		public Grid(Map map)
 		{
 			size = map.size * resolutionMultiplier;
-			scale = Map.SCALE / resolutionMultiplier;
-			halfScale = scale * 0.5f;
 			nodes = new Node[size, size];
 
 			for (int y = 0; y < size; y++)
@@ -116,8 +112,11 @@ namespace PathFinding
 		
 		public Vector2Int NodeIndexFromWorldPoint(Vector3 worldPoint)
 		{
-			int x = (int) (worldPoint.x / scale);
-			int y = (int) (worldPoint.z / scale);
+//			int x = (int) (worldPoint.x / scale);
+//			int y = (int) (worldPoint.z / scale);
+			
+			int x = (int) (worldPoint.x);
+			int y = (int) (worldPoint.z);
 			
 			x = Mathf.Clamp(x, 0, size - 1);
 			y = Mathf.Clamp(y, 0, size - 1);
@@ -127,9 +126,12 @@ namespace PathFinding
 
 		public Node NodeFromWorldPoint(Vector3 worldPoint)
 		{
-			int x = (int) (worldPoint.x / scale);
-			int y = (int) (worldPoint.z / scale);
+//			int x = (int) (worldPoint.x / scale);
+//			int y = (int) (worldPoint.z / scale);
 
+			int x = (int) (worldPoint.x);
+			int y = (int) (worldPoint.z);
+			
 			x = Mathf.Clamp(x, 0, size - 1);
 			y = Mathf.Clamp(y, 0, size - 1);
 			
@@ -144,7 +146,7 @@ namespace PathFinding
 
 		public Vector3 NodeWorldPosition(Vector2Int point)
 		{
-			return new Vector3(point.x * scale + halfScale, 0f, point.y * scale + halfScale);
+			return new Vector3(point.x + 0.5f, 0f, point.y + 0.5f);
 		}
 	}
 }

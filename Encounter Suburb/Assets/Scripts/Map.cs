@@ -47,8 +47,6 @@ public class Map
 		{ new Color32(128, 128, 128, 255),	TileType.PlayerBase  }
 	};
 	
-	public const float SCALE = 2f;
-	
 	public int size;
 	public TileType [,] tiles;
 
@@ -87,7 +85,7 @@ public class Map
 		{
 			for (int x = 0; x < size + 1; x++, v++)
 			{
-				vertices[v] = new Vector3(SCALE * x, 0, SCALE * y);
+				vertices[v] = new Vector3(x, 0, y);
 				uvs [v] = new Vector2((float)x/size, (float)y / size);
 			}
 		}
@@ -170,7 +168,7 @@ public class Map
 			{
 				if (tiles[x, y] == type)
 				{
-					points.Add(new Vector3(x * SCALE, 0, y * SCALE));
+					points.Add(new Vector3(x, 0, y));
 				}
 			}
 		}
@@ -188,7 +186,7 @@ public class Map
 			{
 				if (tiles[x, y] == TileType.EnemySpawn && tiles[x + 1, y + 1] == TileType.EnemySpawn)
 				{
-					points.Add(new Vector3(x + 1, 0, y + 1) * SCALE);
+					points.Add(new Vector3(x + 1, 0, y + 1));
 				}
 			}
 		}
@@ -204,11 +202,11 @@ public class Map
 			{
 				if (tiles[x, y] == TileType.PlayerSpawn)
 				{
-					return new Vector3(x + 1, 0, y + 1) * SCALE;
+					return new Vector3(x + 1, 0, y + 1);
 				}
 			}
 		}
-		return new Vector3(size / 2, 0, size / 2) * SCALE;
+		return new Vector3(size / 2, 0, size / 2);
 	}
 
 	
@@ -223,7 +221,7 @@ public class Map
 			{
 				if (tiles[x, y] == TileType.PlayerBase)
 				{
-					baseTilePositions.Add(new Vector3(x, 0, y) * SCALE);
+					baseTilePositions.Add(new Vector3(x, 0, y));
 				}
 			}
 		}
@@ -240,7 +238,7 @@ public class Map
 		}
 
 		point /= baseTilePositions.Count;
-		point += new Vector3(SCALE * 0.5f, 0, SCALE * 0.5f);
+		point += new Vector3(0.5f, 0, 0.5f);
 
 		return point;
 	}

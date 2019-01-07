@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d69727aeebc42a6bb8af872677c92bf, type: 3}
   m_Name: PlayerHull
   m_EditorClassIdentifier: 
-  forwardSpeed: 12
-  backwardSpeed: 8
+  forwardSpeed: 6
+  backwardSpeed: 4
   steerMovingSpeed: 60
   steerStationarySpeed: 360

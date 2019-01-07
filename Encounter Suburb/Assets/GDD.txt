@@ -40,3 +40,5 @@ Next up:
     
     named levels
     secret word to get to level 
+    
+    Breakable hp to affect pathfinding weights

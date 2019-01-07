@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
 	public EnemyTankControllerSystem enemyController;
 	
+	// Shouldn't really mess with these, values are found working by experiment
 	[Header("Camera Position Values")]
 	public float cameraAngle = 50f;
 	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
@@ -173,14 +174,15 @@ public class GameManager : MonoBehaviour
 		float cos = Mathf.Cos(Mathf.Deg2Rad * cameraAngle);
 		float sin = Mathf.Sin(Mathf.Deg2Rad * cameraAngle);
 
-		float size = currentLevel.map.size;
+		float size = currentLevel.map.size * 0.5f;
+		float x = cameraPosRatio.x * size;
 		float y = cameraPosRatio.y * size;
 		float z = cameraPosRatio.z * size;
 
 		var cameraTransform = Camera.main.transform;
 		cameraTransform.position = new Vector3
 		(
-			x: size,
+			x: x,
 			y: cos * y - sin * z,
 			z: sin * y + cos * z + size
 		);

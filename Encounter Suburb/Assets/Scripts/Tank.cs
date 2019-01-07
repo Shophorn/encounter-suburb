@@ -14,10 +14,10 @@ public class Tank : MonoBehaviour
 
 	public event Action<Breakable> OnCollideBreakable;
 
-	public float engageRange = 15f;
+	public float engageRange = 5f;
 	public float sqrEngageRange { get; private set; }
 	
-	public float preferredShootDistance = 5f;
+	public float preferredShootDistance = 3f;
 	public float sqrPreferredShootDistance { get; private set; }
 	
 	private void Awake()

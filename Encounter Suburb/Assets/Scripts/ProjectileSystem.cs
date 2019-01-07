@@ -33,11 +33,12 @@ public class ProjectileSystem : MonoBehaviour
 			int count = list.Count;
 
 			float step = type.speed * Time.deltaTime;
+			float radius = type.collisionRadius;
 			
 			for (int i = 0; i < count; i++)
 			{
 				RaycastHit hitInfo;
-				if (Physics.SphereCast(list[i].position, type.collisionRadius, list[i].direction, out hitInfo, step, hitMask))
+				if (Physics.SphereCast(list[i].position, radius, list[i].direction, out hitInfo, step, hitMask))
 				{
 					var hittable = hitInfo.transform.GetComponent<IHittable>();
 					hittable?.Hit(type.damage);
@@ -60,7 +61,7 @@ public class ProjectileSystem : MonoBehaviour
 				
 				list[i] = current;
 				
-				toRender[i] = Matrix4x4.TRS(current.position, current.rotation, Vector3.one);
+				toRender[i] = Matrix4x4.TRS(current.position, current.rotation, Vector3.one * radius);
 			}
 			
 			Graphics.DrawMeshInstanced(pair.Key.mesh, 0, pair.Key.material, toRender, count);

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d69727aeebc42a6bb8af872677c92bf, type: 3}
   m_Name: MockHull
   m_EditorClassIdentifier: Assembly-CSharp::TankType
-  forwardSpeed: 6
-  backwardSpeed: 5
+  forwardSpeed: 3
+  backwardSpeed: 2.5
   steerMovingSpeed: 45
   steerStationarySpeed: 90
