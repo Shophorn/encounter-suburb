@@ -117,7 +117,6 @@ public class Map
 		return mesh;
 	}
 
-
 	public Texture2D CreateTexture(int resolution)
 	{
 		var pixels = new Color32[resolution * resolution];

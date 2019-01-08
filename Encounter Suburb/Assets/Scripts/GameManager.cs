@@ -77,10 +77,10 @@ public class GameManager : MonoBehaviour
 		// Spawn player
 		// Start Spawning enemies
 		currentLevelIndex++;
-		currentLevel = new Level
+		currentLevel = new Level(maps[currentLevelIndex])
 		{
-			map = Map.FromTexture(maps[currentLevelIndex]),
-			count = 5,
+//			map = Map.FromTexture(maps[currentLevelIndex]),
+//			count = 5,
 			enemyController = enemyController,
 			material = defaultMaterial
 		};
