@@ -18,12 +18,12 @@ namespace PathFinding
 			instance.grid = grid;
 		}
 
-		public static void ClearInstance()
+		public static void DeleteInstance()
 		{
 			instance = null;
 		}
 		
-		public Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakablesOverDetour = false)
+		public Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakThings)
 		{
 			Node start = grid.NodeFromWorldPoint(startPosition);
 			Node end = grid.NodeFromWorldPoint(endPosition);
@@ -45,15 +45,18 @@ namespace PathFinding
 				var neighbours = grid.GetNodeNeighbours(current);
 				for (int i = 0; i < neighbours.Length; i++)
 				{
-					bool walkable = neighbours[i].type == NodeType.Open || neighbours[i].type == NodeType.Breakable;
-					if (!walkable || closedSet.Contains(neighbours[i]))
+//					bool walkable = neighbours[i].type == NodeType.Open || neighbours[i].type == NodeType.Breakable;
+//					if (!walkable || closedSet.Contains(neighbours[i]))
+					if (neighbours[i].type == NodeType.Impassable || closedSet.Contains(neighbours[i]))
 					{
 						continue;
 					}
 
-//					int distanceCostMultiplier = neighbours[i].type == NodeType.Open || preferBreakablesOverDetour ? 1 : 2;
-//					int newMovementCost = current.gCost + Distance(current, neighbours[i]) * distanceCostMultiplier;
-					int newMovementCost = current.gCost + Distance(current, neighbours[i]) + neighbours[i].preferDriveAroundPenalty;
+					int penalty = preferBreakThings
+						? neighbours[i].preferBreakWallsPenalty
+						: neighbours[i].preferDriveAroundPenalty;
+					
+					int newMovementCost = current.gCost + Distance(current, neighbours[i]) + penalty;
 					if (newMovementCost < neighbours[i].gCost || !openSet.Contains(neighbours[i]))
 					{
 						neighbours[i].gCost = newMovementCost;

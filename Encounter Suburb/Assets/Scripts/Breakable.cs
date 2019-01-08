@@ -11,6 +11,7 @@ public class Breakable : MonoBehaviour, IHittable
 	
 	public event Action OnBreak;
 	public bool doDestroyOnBreak;
+	public ParticleSystem breakFXPrefab;
 	
 	private void Start()
 	{
@@ -29,6 +30,11 @@ public class Breakable : MonoBehaviour, IHittable
 			if (doDestroyOnBreak)
 			{
 				Destroy(gameObject);
+			}
+
+			if (breakFXPrefab != null)
+			{
+				Instantiate(breakFXPrefab, transform.position, Quaternion.identity);
 			}
 
 			hp = 0;

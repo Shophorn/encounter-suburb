@@ -73,14 +73,14 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (paths[i] == null)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, tanks[i].preferBreakWalls, (path) => OnReceivePath(index, path));
 				continue;
 			}
 
 			if (pathUpdateTimes[i] < Time.time)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, (path) => OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, tanks[i].preferBreakWalls, (path) => OnReceivePath(index, path));
 			}
 			
 			var wayPoint = paths[i].currentPoint;
@@ -147,12 +147,14 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		tanks[index].OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
 		tanks[index].collisionMask = tankCollisionMask;
 		
-		PathRequestManager.RequestPath(position, playerTransform.position, path => OnReceivePath(index, path));
+		PathRequestManager.RequestPath(position, playerTransform.position, tanks[index].preferBreakWalls, path => OnReceivePath(index, path));
 	}
 
 	private void OnDestroyed(int index)
 	{
 		tanks[index].gameObject.SetActive(false);
+		paths[index] = null;
+		
 		OnTankDestroyed.Invoke();
 
 		Instantiate(explosion, tanks[index].transform.position, Quaternion.identity);
@@ -186,5 +188,26 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		paths = null;
 		pathUpdateTimes = null;
 		targetBreakables = null;
+	}
+
+	private void OnDrawGizmosSelected()
+	{
+		if (paths == null || !Application.isPlaying) return;
+		
+		Gizmos.color = Color.green;
+		for (int i = 0; i < paths.Length; i++)
+		{
+			if (paths[i] == null) continue;
+			
+			Gizmos.DrawSphere(paths[i].points[0] + Vector3.up * 0.5f, 0.15f);
+			
+			for (int j = 1; j < paths[i].points.Length; j++)
+			{
+				var a = paths[i].points[j - 1] + Vector3.up * 0.5f;
+				var b = paths[i].points[j] + Vector3.up * 0.5f;
+				Gizmos.DrawSphere(paths[i].points[i] + Vector3.up * 0.5f, 0.15f);
+				Gizmos.DrawLine(a,b);
+			}
+		}
 	}
 }

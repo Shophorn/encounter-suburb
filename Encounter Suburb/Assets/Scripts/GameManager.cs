@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 	public float cameraAngle = 50f;
 	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
+	public int skipToLevelIndex = -1;
+	
 	private void Awake()
 	{
 		menuSystem = GetComponent<MenuSystem>();
@@ -60,6 +62,12 @@ public class GameManager : MonoBehaviour
 	private void LoadFirstLevel()
 	{
 		currentLevelIndex = -1;
+
+		if (skipToLevelIndex >= 0 && skipToLevelIndex < maps.Length)
+		{
+			currentLevelIndex = skipToLevelIndex - 1;
+		}
+		
 		menuSystem.ShowLevelStartInfo(maps[0].name, 1, LoadNextLevel);
 	}
 	
@@ -83,7 +91,8 @@ public class GameManager : MonoBehaviour
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
 		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
-
+		playerTransform.GetComponent<Breakable>().OnBreak += OnPlayerDefeat;
+			
 		enemyController.playerTransform = playerTransform;
 		enemyController.Begin(20);
 		StartCoroutine(currentLevel.Spawn());
@@ -99,17 +108,14 @@ public class GameManager : MonoBehaviour
 		Destroy(playerTransform.gameObject);
 		playerTransform = null;
 		
-		currentLevel.Clear();
+		currentLevel.Dispose();
 		currentLevel = null;
 
-		PathFinder.ClearInstance();
+		PathFinder.DeleteInstance();
 	}
 
 	private void OnPlayerDefeat()
 	{
-		// Unload level
-		// Store player progress to database etc.
-		// Load Menu level
 		menuSystem.ShowEndStatus("DEFEAT", () =>
 		{
 			UnloadLevel();
@@ -119,10 +125,6 @@ public class GameManager : MonoBehaviour
 
 	private void OnEnemiesDefeat()
 	{
-		// Save player progress
-		// Unload level
-		// Load next level
-	
 		menuSystem.ShowEndStatus("VICTORY!", () =>
 		{
 			UnloadLevel();
@@ -137,9 +139,9 @@ public class GameManager : MonoBehaviour
 		});
 	}
 
-	private void OnDrawGizmos()
+	private void OnDrawGizmosSelected()
 	{
-		if (currentLevel == null) return;
+		if (currentLevel == null || !Application.isPlaying) return;
 
 		Grid grid = currentLevel.grid;
 		for (int y = 0; y < grid.size; y++)
@@ -155,18 +157,9 @@ public class GameManager : MonoBehaviour
 				value = 1f - value;
 				
 				Gizmos.color = new Color(value, value, value, 1);
-				Gizmos.DrawCube(grid.NodeWorldPosition(new Vector2Int(x, y)), Vector3.one * 2f / 3f);
+				Gizmos.DrawCube(grid.NodeWorldPosition(x, y), Vector3.one * 0.2f);
 			}
 		}
-	}
-
-	private void OnGUI()
-	{
-		var screenPosition = Input.mousePosition;
-		screenPosition.x = (screenPosition.x - (Screen.width / 2)) / (Screen.width / 2);
-		screenPosition.y = (screenPosition.y - (Screen.height / 2)) / (Screen.height / 2);
-		
-		GUI.Label(new Rect(10, 10, 200, 40), $"X: {screenPosition.x : 0.000} / {Input.mousePosition.x : 0.000}\nY: {screenPosition.y : 0.000} / {Input.mousePosition.y : 0.000}");
 	}
 
 	private void PositionCamera()

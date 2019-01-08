@@ -416,6 +416,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   engageRange: 15
   preferredShootDistance: 5
+  preferBreakWalls: 0
 --- !u!114 &114550111218480418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -433,6 +434,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   tank: {fileID: 114502750998068516}
+  explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
+    type: 2}
 --- !u!114 &114967119641475954
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -444,8 +447,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8914df5b83624339b8d61c66e2ad57a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 10
-  doDestroyOnBreak: 0
+  maxHp: 50
+  doDestroyOnBreak: 1
 --- !u!212 &212247051162430018
 SpriteRenderer:
   m_ObjectHideFlags: 1

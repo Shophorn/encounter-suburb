@@ -18,21 +18,24 @@ namespace PathFinding
 		public int fCost => gCost + hCost;
 
 		public Node parent;
+		
+		public readonly int preferBreakWallsPenaltyRaw;
+		public readonly int preferDriveAroundPenaltyRaw;
 
 		public int preferBreakWallsPenalty;
 		public int preferDriveAroundPenalty;
 		
 		public Vector2Int gridPosition;
 		
-		// Create constructor
 		public Node(int x, int y, TileType tileType)
 		{
 			gridPosition = new Vector2Int(x, y);
 			type = FromMapTile(tileType);
-			preferBreakWallsPenalty = GetPenalty(tileType, true);
-			preferDriveAroundPenalty = GetPenalty(tileType, false);
-		}
 
+			// Store raw values, so we can reblur when we update grid
+			preferBreakWallsPenaltyRaw = preferBreakWallsPenalty = GetPenalty(tileType, true);
+			preferDriveAroundPenaltyRaw = preferDriveAroundPenalty = GetPenalty(tileType, false);
+		}
 
 		private static NodeType FromMapTile(TileType tileType)
 		{
@@ -70,10 +73,10 @@ namespace PathFinding
 				
 				case TileType.WeakWall:
 				case TileType.PlayerBase:
-					return preferBreakWalls ? 2 : 5;
+					return preferBreakWalls ? 2 : 10;
 				
 				case TileType.StrongWall:
-					return preferBreakWalls ? 4 : 10;
+					return preferBreakWalls ? 4 : 20;
 					
 				case TileType.Water:
 					return 20;

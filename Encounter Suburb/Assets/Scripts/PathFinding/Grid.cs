@@ -1,4 +1,5 @@
-using Boo.Lang;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PathFinding
@@ -8,12 +9,13 @@ namespace PathFinding
 		public readonly int size;
 		
 		public readonly Node[,] nodes;
-
-		private const int resolutionMultiplier = 3;
+	
+		// public only for GameManager Gizmos
+		public const int resolution = 3;
 		
 		public Grid(Map map)
 		{
-			size = map.size * resolutionMultiplier;
+			size = map.size * resolution;
 			nodes = new Node[size, size];
 
 			for (int y = 0; y < size; y++)
@@ -24,12 +26,29 @@ namespace PathFinding
 					nodes[x, y] = new Node
 					(
 						x, y,
-						map.tiles[x / resolutionMultiplier, y / resolutionMultiplier]
+						map.tiles[x / resolution, y / resolution]
 					);
 				}
 			}
 			
-			// Blur
+//			for (int y = 0; y < size; y++)
+//			{
+//				for (int x = 0; x < size; x++)
+//				{
+//					var a = nodes[x, y].preferBreakWallsPenaltyRaw;
+//					var b = nodes[x, y].preferDriveAroundPenaltyRaw;
+//					
+//					Debug.Log($"{a} : {b}");
+//				}
+//			}
+			
+			BlurNodeWeights();
+		}
+
+		private void BlurNodeWeights()
+		{
+			Debug.Log("Blur nodes");
+			
 			const int kernelExtents = 3;
 			const int kernelSize = 1 + 2 * kernelExtents;
 			const int kernelArea = kernelSize * kernelSize;
@@ -41,8 +60,8 @@ namespace PathFinding
 				for (int x = -kernelExtents; x <= kernelExtents; x++)
 				{
 					int xx = Mathf.Clamp(x, 0, size - 1);
-					horizontalBlurPass[0, y].x += nodes[xx, y].preferBreakWallsPenalty;
-					horizontalBlurPass[0, y].y += nodes[xx, y].preferDriveAroundPenalty;
+					horizontalBlurPass[0, y].x += nodes[xx, y].preferBreakWallsPenaltyRaw;
+					horizontalBlurPass[0, y].y += nodes[xx, y].preferDriveAroundPenaltyRaw;
 				}
 				
 				for (int x = 1; x < size; x++)
@@ -51,8 +70,8 @@ namespace PathFinding
 					Node add = nodes[Mathf.Clamp(x + kernelExtents, 0, size - 1), y];
 					var previous = horizontalBlurPass[x - 1, y];
 					
-					horizontalBlurPass[x, y].x = previous.x - remove.preferBreakWallsPenalty + add.preferBreakWallsPenalty;
-					horizontalBlurPass[x, y].y = previous.y - remove.preferDriveAroundPenalty + add.preferDriveAroundPenalty;
+					horizontalBlurPass[x, y].x = previous.x - remove.preferBreakWallsPenaltyRaw + add.preferBreakWallsPenaltyRaw;
+					horizontalBlurPass[x, y].y = previous.y - remove.preferDriveAroundPenaltyRaw + add.preferDriveAroundPenaltyRaw;
 				}
 			}
 
@@ -82,8 +101,8 @@ namespace PathFinding
 					nodes[x, y].preferDriveAroundPenalty = Mathf.RoundToInt((float)verticalBlurPass[x, y].y / kernelArea);
 				}
 			}
-
-
+			
+	
 		}
 
 		public Node[] GetNodeNeighbours(Node node)
@@ -110,25 +129,21 @@ namespace PathFinding
 			return neighbours.ToArray();
 		}
 		
-		public Vector2Int NodeIndexFromWorldPoint(Vector3 worldPoint)
-		{
-//			int x = (int) (worldPoint.x / scale);
-//			int y = (int) (worldPoint.z / scale);
-			
-			int x = (int) (worldPoint.x);
-			int y = (int) (worldPoint.z);
-			
-			x = Mathf.Clamp(x, 0, size - 1);
-			y = Mathf.Clamp(y, 0, size - 1);
-			
-			return new Vector2Int(x, y);
-		}
+//		public Vector2Int NodeIndexFromWorldPoint(Vector3 worldPoint)
+//		{
+//			int x = (int) (worldPoint.x);
+//			int y = (int) (worldPoint.z);
+//			
+//			x = Mathf.Clamp(x, 0, size - 1);
+//			y = Mathf.Clamp(y, 0, size - 1);
+//			
+//			return new Vector2Int(x, y);
+//		}
 
 		public Node NodeFromWorldPoint(Vector3 worldPoint)
 		{
-//			int x = (int) (worldPoint.x / scale);
-//			int y = (int) (worldPoint.z / scale);
-
+			worldPoint *= 3;
+			
 			int x = (int) (worldPoint.x);
 			int y = (int) (worldPoint.z);
 			
@@ -141,12 +156,27 @@ namespace PathFinding
 		
 		public void OnBreakableBreak(int x, int y)
 		{
-			nodes[x, y].type = NodeType.Open;
+			x *= resolution;
+			y *= resolution;
+
+			for (int j = 0; j < resolution; j++)
+			{
+				for (int i = 0; i < resolution; i++)
+				{
+					nodes[x + i, y + j] = new Node(x + i, y + j, TileType.Ground);
+				}
+			}
+			BlurNodeWeights();
 		}
 
 		public Vector3 NodeWorldPosition(Vector2Int point)
 		{
-			return new Vector3(point.x + 0.5f, 0f, point.y + 0.5f);
+			return NodeWorldPosition(point.x, point.y);
+		}
+
+		public Vector3 NodeWorldPosition(int x, int y)
+		{
+			return new Vector3(x + 0.5f, 0f, y + 0.5f) / resolution;
 		}
 	}
 }

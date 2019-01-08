@@ -35,17 +35,16 @@ public class ProjectileSystem : MonoBehaviour
 			float step = type.speed * Time.deltaTime;
 			float radius = type.collisionRadius;
 			
+			var toRemove = new HashSet<int>();
+	
 			for (int i = 0; i < count; i++)
 			{
 				RaycastHit hitInfo;
 				if (Physics.SphereCast(list[i].position, radius, list[i].direction, out hitInfo, step, hitMask))
 				{
-					var hittable = hitInfo.transform.GetComponent<IHittable>();
-					hittable?.Hit(type.damage);
-					
-					list.RemoveAt(i);
-					i--;
-					count--;
+					hitInfo.transform.GetComponent<IHittable>().Hit(type.damage);
+
+					toRemove.Add(i);
 					continue;
 				}
 				
@@ -53,21 +52,32 @@ public class ProjectileSystem : MonoBehaviour
 				current.distance += step;
 				if (current.distance > type.maxRange)
 				{
-					list.RemoveAt(i);
-					i--;
-					count--;
+					toRemove.Add(i);
 					continue;
 				}
 				
 				list[i] = current;
-				
 				toRender[i] = Matrix4x4.TRS(current.position, current.rotation, Vector3.one * radius);
 			}
 			
 			Graphics.DrawMeshInstanced(pair.Key.mesh, 0, pair.Key.material, toRender, count);
+
+			foreach (var index in toRemove)
+			{
+				if (type.blastFX != null)
+				{
+					Instantiate(type.blastFX, list[index].position, Quaternion.identity);
+				}
+				list.RemoveAt(index);
+			}
 		}
 	}
 
+	public void Stop()
+	{
+		projectiles.Clear();
+	}
+	
 	public static void Shoot(Vector3 position, Quaternion rotation, ProjectileType type)
 	{
 		var initialHits = Physics.OverlapSphere(position, type.collisionRadius, instance.hitMask);

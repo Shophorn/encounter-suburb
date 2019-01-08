@@ -124,12 +124,17 @@ public class Map
 		for (int p = 0, y = 0; y < resolution; y++)
 		{
 			int yy = (int) (((float) y / resolution) * size);
-			
 			for (int x = 0; x < resolution; x++, p++)
 			{
 				int xx = (int) (((float) x / resolution) * size);
 
-				pixels[p] = tileTextureColors[(int) tiles[xx, yy]];
+				var tile = tiles[xx, yy];
+				if (tile == TileType.EnemySpawn || tile == TileType.PlayerSpawn)
+				{
+					tile = TileType.Ground;
+				}
+				
+				pixels[p] = tileTextureColors[(int)tile];
 			}
 		}
 		

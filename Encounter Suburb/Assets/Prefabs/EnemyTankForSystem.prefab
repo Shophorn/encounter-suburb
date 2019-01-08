@@ -355,6 +355,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   engageRange: 5
   preferredShootDistance: 3
+  preferBreakWalls: 0
 --- !u!114 &114594961404043756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -366,5 +367,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8914df5b83624339b8d61c66e2ad57a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 10
+  maxHp: 20
   doDestroyOnBreak: 0

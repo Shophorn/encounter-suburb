@@ -9,13 +9,13 @@ Done:
     Map loading from image file.
     Bigger resolution to pathfinding grid, and smoothing. This works because we destroy any breakable in our way.
     PathFinding weights so that tanks would avoid sticking to walls
+    Move camera to properly view different sized maps
 
 Next up:
-    Move camera to properly view different sized maps
-      
     Make collision detection better, maybe using longer rays.
     Make buffer check so that tank can stop even before it collides with breakable.
     Enemies check real line of sight with raycast
+        Use raycast to cast from enemy to player
     Disable Enemy Friendly Fire
     
     Smooth water colliders -> Marching squares
@@ -37,6 +37,7 @@ Next up:
     Effects
         VFX
         SFX
+        enemy spawn effect
     
     named levels
     secret word to get to level 

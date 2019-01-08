@@ -13,10 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: 9d3158369981eba40b704d9709be7801, type: 2}
-  speed: 40
+  speed: 30
   collisionRadius: 0.5
   damage: 5
   blastRadius: 2
-  blastFX: {fileID: 0}
-  maxRange: 20
+  blastFX: {fileID: 198340963797143126, guid: 20d9f703dccc5054581869526bf352d1, type: 2}
+  maxRange: 10
   explodeOnMaxRange: 0

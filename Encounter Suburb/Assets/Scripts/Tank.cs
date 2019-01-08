@@ -19,6 +19,8 @@ public class Tank : MonoBehaviour
 	
 	public float preferredShootDistance = 3f;
 	public float sqrPreferredShootDistance { get; private set; }
+
+	public bool preferBreakWalls = false;
 	
 	private void Awake()
 	{

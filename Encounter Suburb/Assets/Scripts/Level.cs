@@ -6,11 +6,13 @@ using Object = UnityEngine.Object;
 using Grid = PathFinding.Grid;
 
 [Serializable]
-public class Level
+public class Level : IDisposable
 {
 	public Map map;
 	public int count;
 	public Material material;
+	
+	private static readonly Vector3 gridOffset = Vector3.one * 0.5f;
 	
 	private Vector3[] enemySpawnPoints;
 
@@ -54,11 +56,11 @@ public class Level
 		}
 	}
 
-	public void Clear()
+	public void Dispose()
 	{	
-		UnityEngine.Object.Destroy(mapObject);
-		UnityEngine.Object.Destroy(mapMesh);
-		UnityEngine.Object.Destroy(mapTexture);
+		Object.Destroy(mapObject);
+		Object.Destroy(mapMesh);
+		Object.Destroy(mapTexture);
 
 		OnPlayerDefeat = null;
 		OnEnemiesDefeat = null;
@@ -82,51 +84,41 @@ public class Level
 		collider.inflateMesh = true;
 		collider.sharedMesh = mapMesh;
 
-		var gridOffset = Vector3.one * 0.5f;
 
-		var brickPositions = map.GridPositions(TileType.WeakWall);
-		for (int i = 0; i < brickPositions.Length; i++)
-		{
-			var point = new Vector3(brickPositions[i].x, 0, brickPositions[i].y);
-			var block = Object.Instantiate(Bootstrap.brickBlockPrefab, point + gridOffset, Quaternion.identity, mapObject.transform);
-
-			int x = brickPositions[i].x;
-			int y = brickPositions[i].y;
-			block.GetComponent<Breakable>().OnBreak += () => grid.OnBreakableBreak(x, y);
-		}
+		SpawnBreakables(TileType.WeakWall, Bootstrap.brickBlockPrefab);
+		SpawnBreakables(TileType.StrongWall, Bootstrap.concreteBlockPrefab);
 		
-		var concretePositions = map.GridPositions(TileType.StrongWall);
-		for (int i = 0; i < concretePositions.Length; i++)
-		{
-			var point = new Vector3(concretePositions[i].x, 0, concretePositions[i].y);
-			var block = Object.Instantiate(Bootstrap.concreteBlockPrefab, point + gridOffset, Quaternion.identity, mapObject.transform);
-
-			int x = concretePositions[i].x;
-			int y = concretePositions[i].y;
-			block.GetComponent<Breakable>().OnBreak += () => grid.OnBreakableBreak(x, y);
-		}
+		SpawnProps(TileType.Water, Bootstrap.waterPrefab);
+		SpawnProps(TileType.Woods, Bootstrap.bushPrefab);
 		
-		var bushPositions = map.TilePositions(TileType.Woods);
-		for (int i = 0; i < bushPositions.Length; i++)
-		{
-			Object.Instantiate(Bootstrap.bushPrefab, bushPositions[i] + gridOffset, Quaternion.identity, mapObject.transform);
-		}
-
-		var waterPositions = map.TilePositions(TileType.Water);
-		for (int i = 0; i < waterPositions.Length; i++)
-		{
-			Object.Instantiate(Bootstrap.waterPrefab, waterPositions[i] + gridOffset, Quaternion.identity, mapObject.transform);
-		}
-
 		enemySpawnPoints = map.EnemySpawnPoints();
-		for (int i = 0; i < enemySpawnPoints.Length; i++)
-		{
-			Object.Instantiate(Bootstrap.enemySpawnPrefab, enemySpawnPoints[i], Quaternion.identity, mapObject.transform);
-		}
 
 		var basePosition = map.BasePosition();
 		enemyController.playerBasePosition = basePosition;
 		var playerBase = Object.Instantiate(Bootstrap.basePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBase.GetComponent<Breakable>().OnBreak += () => OnPlayerDefeat?.Invoke();
+	}
+
+	private void SpawnBreakables(TileType type, Breakable prefab)
+	{
+		var positions = map.GridPositions(type);
+		for (int i = 0; i < positions.Length; i++)
+		{
+			var point = new Vector3(positions[i].x, 0, positions[i].y);
+			var block = Object.Instantiate(prefab, point + gridOffset, Quaternion.identity, mapObject.transform);
+
+			int x = positions[i].x;
+			int y = positions[i].y;
+			block.OnBreak += () => grid.OnBreakableBreak(x, y);
+		}
+	}
+
+	private void SpawnProps(TileType type, GameObject prefab)
+	{
+		var positions = map.TilePositions(type);
+		for (int i = 0; i < positions.Length; i++)
+		{
+			Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
+		}
 	}
 }
