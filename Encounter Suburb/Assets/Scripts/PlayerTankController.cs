@@ -9,6 +9,7 @@ public class PlayerTankController : MonoBehaviour
 	public LayerMask groundMask;
 
 	public Tank tank;
+	public ParticleSystem explosion;
 
 	private float muzzleOffset;
 
@@ -17,6 +18,8 @@ public class PlayerTankController : MonoBehaviour
 		var turretToMuzzle = tank.turret.transform.position - tank.gun.muzzle.position;
 		turretToMuzzle.y = 0;
 		muzzleOffset = turretToMuzzle.magnitude;
+
+		GetComponent<Breakable>().OnBreak += () => Instantiate(explosion, transform.position, Quaternion.identity);
 	}
 
 	private void Update()
