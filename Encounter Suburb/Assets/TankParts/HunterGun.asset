@@ -9,8 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b040c9fc82de4509944375dc95f80323, type: 3}
-  m_Name: MockGun
+  m_Name: HunterGun
   m_EditorClassIdentifier: 
   projectile: {fileID: 11400000, guid: 94a5c0d4744c6af4dbbe6255bb5ba419, type: 2}
-  roundsPerSecond: 2
-  reloadTime: 0.5
+  roundsPerSecond: 10
+  reloadTime: 0.1
+  autoFire: 0

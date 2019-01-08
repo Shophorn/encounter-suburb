@@ -574,7 +574,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f0b39a1c9f435a8123576409adb476, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 114528775350924774, guid: 07b12423eb48257429ab4da1697134b0, type: 2}
+  pathUpdateInterval: 0.2
+  behaviours:
+  - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
+  - {fileID: 11400000, guid: 86dd5e8ae517d9140a8177c248a55abe, type: 2}
+  - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
   tankCollisionMask:
     serializedVersion: 2
     m_Bits: 807

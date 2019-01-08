@@ -403,10 +403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befc1f9de3464e209af0a7737cce59b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hull: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
-  turret:
-    transform: {fileID: 4047670463766624}
-    turnSpeed: 180
+  specs: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
+  fixedTurret: 0
   gun:
     type: {fileID: 11400000, guid: 29fc44e33b224bb43960b5c780295b04, type: 2}
     muzzle: {fileID: 4264836133881110}
@@ -414,9 +412,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  engageRange: 15
-  preferredShootDistance: 5
-  preferBreakWalls: 0
+  turretTransform: {fileID: 4047670463766624}
 --- !u!114 &114550111218480418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -449,6 +445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 50
   doDestroyOnBreak: 1
+  breakFXPrefab: {fileID: 0}
 --- !u!212 &212247051162430018
 SpriteRenderer:
   m_ObjectHideFlags: 1

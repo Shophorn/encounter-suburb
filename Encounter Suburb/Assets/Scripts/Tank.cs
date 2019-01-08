@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 
 public class Tank : MonoBehaviour
-{	
-	public Hull hull;
-	public Turret turret = null;
+{
+	public TankSpecs specs;
+	public bool fixedTurret;
 	public Gun gun;
 
 	public new BoxCollider collider;
@@ -14,18 +14,13 @@ public class Tank : MonoBehaviour
 
 	public event Action<Breakable> OnCollideBreakable;
 
-	public float engageRange = 5f;
-	public float sqrEngageRange { get; private set; }
-	
-	public float preferredShootDistance = 3f;
-	public float sqrPreferredShootDistance { get; private set; }
-
-	public bool preferBreakWalls = false;
+	[Header("Turret")]
+	public Transform turretTransform;
+	public Vector3 turretForward => turretTransform.forward;
 	
 	private void Awake()
 	{
 		collider = GetComponent<BoxCollider>();
-
 
 		// TODO: We don't probably need this many rows, columns are more important
 		const int collisionRayCount = 4;
@@ -43,26 +38,6 @@ public class Tank : MonoBehaviour
 				collisionRayPoints[i] = new Vector3(xx, yy, max.z); 
 			}
 		}
-
-		sqrEngageRange = engageRange * engageRange;
-		sqrPreferredShootDistance = preferredShootDistance * preferredShootDistance;
-	}
-
-	/// <summary>
-	/// Move tank. Params 'drive' and 'steer' in range (-1.0f ... 1.0f)
-	/// </summary>
-	public void Drive(float drive, float steer)
-	{
-		float moving = Mathf.Abs(drive);
-
-		drive *= (drive < 0f ? hull.backwardSpeed : hull.forwardSpeed) * Time.deltaTime;
-		steer *= Mathf.Lerp(hull.steerStationarySpeed, hull.steerMovingSpeed, moving) * Time.deltaTime;
-
-		// Drive in two steps to better approximate turning curve
-		float halfDrive = drive * 0.5f;
-		transform.Translate(Collide(halfDrive) * Vector3.forward, Space.Self);
-		transform.Rotate(transform.up, steer, Space.Self);
-		transform.Translate(Collide(halfDrive) * Vector3.forward, Space.Self);
 	}
 	
 	public void Drive(Vector3 input)
@@ -74,17 +49,19 @@ public class Tank : MonoBehaviour
 		if (magnitude < magnitudeThreshold) return;
 
 		float dot = Vector3.Dot(transform.forward, input / magnitude);
-		float drive = dot < driveDotThreshold ? 0f : (magnitude * hull.forwardSpeed * Time.deltaTime);
+		float drive = dot < driveDotThreshold ? 0f : (magnitude * specs.moveSpeed * Time.deltaTime);
 		transform.Translate(Vector3.forward * Collide(drive), Space.Self);
 
-		var turretRotation = turret.transform.rotation;
+		var turretRotation = turretTransform.rotation;
 		
 		Quaternion targetRotation = Quaternion.LookRotation(input, transform.up);
 		transform.rotation = 
-			Quaternion.RotateTowards(transform.rotation, targetRotation, hull.steerStationarySpeed * Time.deltaTime);
+			Quaternion.RotateTowards(transform.rotation, targetRotation, specs.rotationSpeed * Time.deltaTime);
 
-
-		turret.transform.rotation = turretRotation;
+		if (!fixedTurret)
+		{
+			turretTransform.rotation = turretRotation;
+		}
 	}
 
 	private float Collide(float drive)
@@ -117,6 +94,16 @@ public class Tank : MonoBehaviour
 		}
 
 		return drive - skinWidth;
+	}
+	
+	public void AimTurretAt(Vector3 point)
+	{
+		var toPoint = point - turretTransform.position;
+		toPoint.y = 0f;
+
+		var target = Quaternion.LookRotation(toPoint);
+		turretTransform.rotation =
+			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
 	}
 	
 }

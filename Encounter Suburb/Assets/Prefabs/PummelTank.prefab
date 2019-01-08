@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 114594961404043756}
   - component: {fileID: 65844691012075790}
   m_Layer: 0
-  m_Name: EnemyTankForSystem
+  m_Name: PummelTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ Transform:
   m_GameObject: {fileID: 1058306355404234}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.175, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.35, z: 0.5}
+  m_LocalScale: {x: 0.81415, y: 0.35, z: 0.7909}
   m_Children: []
   m_Father: {fileID: 4401703143183100}
   m_RootOrder: 1
@@ -186,8 +186,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1154018941441704}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.184, z: 0.68}
-  m_LocalScale: {x: 0.24, y: 0.44, z: 0.24}
+  m_LocalPosition: {x: 0, y: 0.156, z: 0.621}
+  m_LocalScale: {x: 0.293952, y: 0.35051915, z: 0.293952}
   m_Children:
   - {fileID: 4158672585073930}
   m_Father: {fileID: 4401703143183100}
@@ -342,20 +342,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befc1f9de3464e209af0a7737cce59b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hull: {fileID: 11400000, guid: dc5412042ed01ae4b9bcf44a8af59f7a, type: 2}
-  turret:
-    transform: {fileID: 4401703143183100}
-    turnSpeed: 90
+  specs: {fileID: 11400000, guid: 43c762d42b288674b853d5857ee44286, type: 2}
+  fixedTurret: 1
   gun:
-    type: {fileID: 11400000, guid: 1305724d946d1e04eaf90e30a16c8bb1, type: 2}
+    type: {fileID: 11400000, guid: 484bfb24edd49334db458879c7afbca2, type: 2}
     muzzle: {fileID: 4158672585073930}
   collider: {fileID: 0}
   collisionMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  engageRange: 5
-  preferredShootDistance: 3
-  preferBreakWalls: 0
+  turretTransform: {fileID: 4401703143183100}
 --- !u!114 &114594961404043756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -369,3 +365,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 20
   doDestroyOnBreak: 0
+  breakFXPrefab: {fileID: 0}

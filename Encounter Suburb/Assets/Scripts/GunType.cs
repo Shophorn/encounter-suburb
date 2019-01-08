@@ -5,7 +5,8 @@ using UnityEngine;
 public class GunType : ScriptableObject
 {
 	public ProjectileType projectile;
-	public int roundsPerSecond = 1;
+	
+	public float roundsPerSecond = 1;
 	public float reloadTime;
 
 	public bool autoFire;

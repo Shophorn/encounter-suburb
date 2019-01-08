@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
 using PathFinding;
 using UnityEngine;
+
+public enum TankType { Hunter, Pummel, Heavy }
 
 public class EnemyTankControllerSystem : MonoBehaviour
 {
@@ -10,13 +13,15 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private int maxCount;
 	private int count = 0;
 
-	private const float pathUpdateInterval = 0.2f;
-
-	public Tank prefab;
+	[SerializeField] private float pathUpdateInterval = 0.2f;
+	[SerializeField] private EnemyTankBehaviour[] behaviours;
+	private Tank[] prefabs;
+	
 	public LayerMask tankCollisionMask;
 	public ParticleSystem explosion;
 	
 	private Tank [] tanks;
+	private TankType[] types;
 	private Path [] paths;
 	private float[] pathUpdateTimes;
 	private Breakable[] targetBreakables;
@@ -25,17 +30,20 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	public Vector3 playerBasePosition { get; set; }
 
 	public event Action OnTankDestroyed;
-
+	
 	public void Begin(int maxCount)
 	{
 		this.maxCount = maxCount;
 		count = 0;
 		
 		tanks = new Tank[maxCount];
+		types = new TankType[maxCount];
 		paths = new Path[maxCount];
 		pathUpdateTimes = new float[maxCount];
 		targetBreakables = new Breakable[maxCount];
 
+		prefabs = behaviours.Select(b => b.prefab).ToArray();
+		
 		enabled = true;
 	}
 
@@ -56,10 +64,12 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			var tankPosition = tanks[i].transform.position;
 			float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
 
+			int type = (int)types[i];
+
 			Vector3 targetPosition;
 			float sqrDistanceToTarget;
 			
-			if (sqrDistanceToPlayer < tanks[i].sqrEngageRange)
+			if (sqrDistanceToPlayer < behaviours[type].sqrEngageRange)
 			{
 				targetPosition = playerPosition;
 				sqrDistanceToTarget = sqrDistanceToPlayer;
@@ -73,14 +83,14 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (paths[i] == null)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, tanks[i].preferBreakWalls, (path) => OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, behaviours[type].preferBreakWalls, (path) => OnReceivePath(index, path));
 				continue;
 			}
 
 			if (pathUpdateTimes[i] < Time.time)
 			{
 				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, tanks[i].preferBreakWalls, (path) => OnReceivePath(index, path));
+				PathRequestManager.RequestPath(tankPosition, targetPosition, behaviours[type].preferBreakWalls, (path) => OnReceivePath(index, path));
 			}
 			
 			var wayPoint = paths[i].currentPoint;
@@ -110,17 +120,17 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			bool doShoot = false;
 			if (targetBreakables[i] != null)
 			{
-				tanks [i].turret.AimAt(targetBreakables[i].transform.position);
+				tanks [i].AimTurretAt(targetBreakables[i].transform.position);
 				doShoot = true;
 			}
 			else
 			{
-				tanks[i].turret.AimAt(targetPosition);
+				tanks[i].AimTurretAt(targetPosition);
 				const float shootDotThreshold = 0.95f;
 				Vector3 toTarget = targetPosition - tankPosition;
 
 				bool inRange = sqrDistanceToTarget < tanks[i].gun.type.projectile.sqrMaxRange;
-				bool inSight = Vector3.Dot(toTarget, tanks[i].turret.forward) > shootDotThreshold;
+				bool inSight = Vector3.Dot(toTarget, tanks[i].turretForward) > shootDotThreshold;
 
 				doShoot = inRange && inSight;
 			}
@@ -134,20 +144,25 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		}
 	}
 	
-	public void Spawn(Vector3 position)
+	public void Spawn(Vector3 position, TankType type)
 	{
 		if (!enabled) return;
 		if (count >= maxCount - 1) return;
 
 		int index = count;
 		count++;
-		
-		tanks[index] = Instantiate(prefab, position, Quaternion.identity);
+
+		tanks[index] = Instantiate(prefabs[(int)type], position, Quaternion.identity);
 		tanks[index].GetComponent<Breakable>().OnBreak += () => OnDestroyed(index);
 		tanks[index].OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
 		tanks[index].collisionMask = tankCollisionMask;
 		
-		PathRequestManager.RequestPath(position, playerTransform.position, tanks[index].preferBreakWalls, path => OnReceivePath(index, path));
+		PathRequestManager.RequestPath(
+			start:				position, 
+			end: 				playerTransform.position, 
+			preferBreakWalls: 	behaviours[(int)type].preferBreakWalls, 
+			callback: 			path => OnReceivePath(index, path)
+		);
 	}
 
 	private void OnDestroyed(int index)
@@ -185,6 +200,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		}
 
 		tanks = null;
+		types = null;
 		paths = null;
 		pathUpdateTimes = null;
 		targetBreakables = null;

@@ -9,9 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d69727aeebc42a6bb8af872677c92bf, type: 3}
-  m_Name: MockHull
+  m_Name: HunteSpecs
   m_EditorClassIdentifier: Assembly-CSharp::TankType
-  forwardSpeed: 3
-  backwardSpeed: 2.5
-  steerMovingSpeed: 45
-  steerStationarySpeed: 90
+  moveSpeed: 3
+  rotationSpeed: 90
+  turretTurnSpeed: 90
+  projectile: {fileID: 0}
+  roundsPerSecond: 1
+  reloadTime: 1
+  autoFire: 0

@@ -9,14 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f8e17db8ebf405ab9476e61c8aef0c0, type: 3}
-  m_Name: MockProjectile
+  m_Name: PummelProjectile
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: 9d3158369981eba40b704d9709be7801, type: 2}
-  speed: 20
-  collisionRadius: 0.5
+  speed: 10
+  collisionRadius: 1
   damage: 5
   blastRadius: 2
   blastFX: {fileID: 0}
-  maxRange: 8
-  explodeOnMaxRange: 0
+  maxRange: 5
+  explodeOnMaxRange: 1

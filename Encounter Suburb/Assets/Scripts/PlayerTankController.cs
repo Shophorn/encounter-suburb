@@ -15,7 +15,7 @@ public class PlayerTankController : MonoBehaviour
 
 	private void Start()
 	{
-		var turretToMuzzle = tank.turret.transform.position - tank.gun.muzzle.position;
+		var turretToMuzzle = tank.turretTransform.position - tank.gun.muzzle.position;
 		turretToMuzzle.y = 0;
 		muzzleOffset = turretToMuzzle.magnitude;
 
@@ -34,13 +34,13 @@ public class PlayerTankController : MonoBehaviour
 			var target = hitInfo.point;
 			aimTargetCursor.position = target + cursorOffset;
 
-			tank.turret.AimAt(target);
+			tank.AimTurretAt(target);
 
-			var targetAimVector = target - tank.turret.transform.position;
+			var targetAimVector = target - tank.turretTransform.position;
 			targetAimVector.y = 0;
 			float currentRange = Mathf.Min(targetAimVector.magnitude, tank.gun.type.projectile.maxRange) + muzzleOffset;
 			aimCurrentCursor.position =
-				tank.turret.transform.position + tank.turret.forward * currentRange + cursorOffset;
+				tank.turretTransform.position + tank.turretForward * currentRange + cursorOffset;
 		}
 
 		// Shoot

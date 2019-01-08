@@ -10,13 +10,10 @@ public class Level : IDisposable
 {
 	private struct SpawnWave
 	{
-		public int hunterCount;
-		public int pummelCount;
-		public int heavyCount;
+		public TankType[] spawnings;
 	}
 
 	public Map map;
-//	private int count;
 	private SpawnWave[] waves;
 	public Material material;
 
@@ -46,48 +43,7 @@ public class Level : IDisposable
 		waves = SpawnWavesFromMapTexture(mapTexture);
 	}
 
-	private static SpawnWave[] SpawnWavesFromMapTexture(Texture2D texture)
-	{
-		int width = texture.width;
-		int height = texture.height;
-		
-		int w = width - height;
-		var waves = new SpawnWave[w * height];
-		int waveCount = 0;
 
-		var pixels = texture.GetPixels32();
-
-		int startX = width - w;
-		for (int x = startX; x < width; x++)
-		{
-			for (int y = height - 1; y >= 0; y--)
-			{
-				int index = y * width + x;
-
-				if (pixels[index].a != 255) continue;
-
-				waves[waveCount] = new SpawnWave
-				{
-					hunterCount = pixels[index].r,
-					pummelCount = pixels[index].g,
-					heavyCount = pixels[index].b
-				};
-				
-				waveCount++;
-			}
-		}
-
-		if (waveCount == 0)
-		{
-			return new[] {
-				new SpawnWave { hunterCount = 5, pummelCount = 5, heavyCount = 1 }
-			};
-		}
-
-		var returnArray = new SpawnWave[waveCount];
-		Array.Copy(waves, returnArray, waveCount);
-		return returnArray;
-	}
 
 	public IEnumerator Spawn()
 	{
@@ -98,14 +54,14 @@ public class Level : IDisposable
 
 		for (int w = 0; w < waves.Length; w++)
 		{
-			for (int u = 0; u < waves[w].hunterCount; u++)
+			for (int u = 0; u < waves[w].spawnings.Length; u++)
 			{
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
-				
-				enemyController.Spawn(enemySpawnPoints[pointIndex]);
+
+				enemyController.Spawn(enemySpawnPoints[pointIndex], waves[w].spawnings[u]);
 				enemySpawnedCount++;
 				
-				if (u < waves[w].hunterCount -1)
+				if (u < waves[w].spawnings.Length -1)
 					yield return unitDelay;
 			}
 			
@@ -195,5 +151,65 @@ public class Level : IDisposable
 		}
 	}
 
+	private static SpawnWave[] SpawnWavesFromMapTexture(Texture2D texture)
+	{
+		int width = texture.width;
+		int height = texture.height;
+		
+		int w = width - height;
+		var waves = new SpawnWave[w * height];
+		int waveCount = 0;
 
+		var pixels = texture.GetPixels32();
+
+		int startX = width - w;
+		for (int x = startX; x < width; x++)
+		{
+			for (int y = height - 1; y >= 0; y--)
+			{
+				int index = y * width + x;
+
+				if (pixels[index].a != 255) continue;
+
+				int hunterCount = pixels[index].r;
+				int pummelCount = pixels[index].g;
+				int heavyCount = pixels[index].b;
+
+				var spawnings = new TankType[hunterCount + pummelCount + heavyCount];
+				for (int i = 0; i < hunterCount; i++)
+				{
+					spawnings[i] = TankType.Hunter;
+				}
+
+				for (int i = hunterCount; i < hunterCount + pummelCount; i++)
+				{
+					spawnings[i] = TankType.Pummel;
+				}
+
+				for (int i = hunterCount + pummelCount; i < hunterCount + pummelCount + heavyCount; i++)
+				{
+					spawnings[i] = TankType.Heavy;
+				}
+				
+				waves[waveCount] = new SpawnWave
+				{
+					spawnings = spawnings
+				};
+				
+				waveCount++;
+			}
+		}
+
+		if (waveCount == 0)
+		{
+			return new[]
+			{
+				new SpawnWave {spawnings = new TankType[] {TankType.Hunter}}
+			};
+		}
+
+		var returnArray = new SpawnWave[waveCount];
+		Array.Copy(waves, returnArray, waveCount);
+		return returnArray;
+	}
 }

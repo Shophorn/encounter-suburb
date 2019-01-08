@@ -10,10 +10,10 @@
         <e p="Scripts" t="Include">
           <e p="Bootstrap.cs" t="Include" />
           <e p="Breakable.cs" t="Include" />
+          <e p="EnemyTankBehaviour.cs" t="Include" />
           <e p="EnemyTankControllerSystem.cs" t="Include" />
           <e p="GameManager.cs" t="Include" />
           <e p="GunType.cs" t="Include" />
-          <e p="Hull.cs" t="Include" />
           <e p="IHittable.cs" t="Include" />
           <e p="Level.cs" t="Include" />
           <e p="LevelInfo.cs" t="Include" />
@@ -31,7 +31,7 @@
           <e p="ProjectileSystem.cs" t="Include" />
           <e p="ProjectileType.cs" t="Include" />
           <e p="Tank.cs" t="Include" />
-          <e p="Turret.cs" t="Include" />
+          <e p="TankSpecs.cs" t="Include" />
           <e p="Utilities" t="Include">
             <e p="FrameSyncUtility.cs" t="Include" />
             <e p="Heap.cs" t="Include" />
@@ -44,9 +44,7 @@
       <e p="Library" t="ExcludeRecursive" />
       <e p="obj" t="ExcludeRecursive" />
       <e p="packages" t="ExcludeRecursive" />
-      <e p="Temp" t="ExcludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
-      </e>
+      <e p="Temp\bin" t="ExcludeRecursive" />
     </e>
   </component>
 </project>
