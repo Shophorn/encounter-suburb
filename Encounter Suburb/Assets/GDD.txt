@@ -16,6 +16,8 @@ Done:
         Map from texture, where n is min (width, height), nxn square with encoded tile types. Pixels on x axis after n
         describe waves, so that r is huntercount, g is pummelcount and b is heavycount 
 
+    quit on exit from main menu
+
 Next up:
     Make collision detection better, maybe using longer rays.
     Make buffer check so that tank can stop even before it collides with breakable.

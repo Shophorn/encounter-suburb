@@ -30,25 +30,11 @@ namespace PathFinding
 					);
 				}
 			}
-			
-//			for (int y = 0; y < size; y++)
-//			{
-//				for (int x = 0; x < size; x++)
-//				{
-//					var a = nodes[x, y].preferBreakWallsPenaltyRaw;
-//					var b = nodes[x, y].preferDriveAroundPenaltyRaw;
-//					
-//					Debug.Log($"{a} : {b}");
-//				}
-//			}
-			
 			BlurNodeWeights();
 		}
 
 		private void BlurNodeWeights()
 		{
-			Debug.Log("Blur nodes");
-			
 			const int kernelExtents = 3;
 			const int kernelSize = 1 + 2 * kernelExtents;
 			const int kernelArea = kernelSize * kernelSize;

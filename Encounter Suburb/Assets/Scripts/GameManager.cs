@@ -2,7 +2,7 @@ using PathFinding;
 using UnityEngine;
 using Grid = PathFinding.Grid;
 
-[RequireComponent(typeof(MenuSystem))]
+[RequireComponent(typeof(MenuSystem), typeof(BackGroundMusic))]
 public class GameManager : MonoBehaviour
 {
 	private Texture2D[] maps;
@@ -23,11 +23,14 @@ public class GameManager : MonoBehaviour
 	public float cameraAngle = 50f;
 	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
+	private BackGroundMusic backGroundMusic;
+	
 	public int skipToLevelIndex = -1;
 	
 	private void Awake()
 	{
 		menuSystem = GetComponent<MenuSystem>();
+		backGroundMusic = GetComponent<BackGroundMusic>();
 	}
 
 	private void Start()
@@ -39,17 +42,20 @@ public class GameManager : MonoBehaviour
 			LoadFirstLevel();
 		});
 
-		menuSystem.levelComplete_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
-		menuSystem.gameComplete_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
-		menuSystem.gameOver_Menu.onClick.AddListener(() => menuSystem.Show(MenuView.Main));
+		menuSystem.levelComplete_Menu.onClick.AddListener(ShowMainMenu);
+		menuSystem.gameComplete_Menu.onClick.AddListener(ShowMainMenu);
+		menuSystem.gameOver_Menu.onClick.AddListener(ShowMainMenu);
 		
 		menuSystem.levelComplete_Next.onClick.AddListener(() =>
 		{
+			backGroundMusic.Play(backGroundMusic.None);
 			menuSystem.Hide();
 			menuSystem.ShowLevelStartInfo(maps[nextLevelIndex].name, nextLevelIndex + 1, LoadNextLevel);
 		});
+		
+		menuSystem.mainMenu_Exit.onClick.AddListener(ExitGame);
 
-		menuSystem.Show(MenuView.Main);
+		ShowMainMenu();		
 		
 		LoadMaps();
 	}
@@ -67,20 +73,18 @@ public class GameManager : MonoBehaviour
 		{
 			currentLevelIndex = skipToLevelIndex - 1;
 		}
-		
+		backGroundMusic.Play(backGroundMusic.None);
+
 		menuSystem.ShowLevelStartInfo(maps[0].name, 1, LoadNextLevel);
 	}
 	
 	private void LoadNextLevel()
 	{
-		// Create Map
-		// Spawn player
-		// Start Spawning enemies
 		currentLevelIndex++;
-		currentLevel = new Level(maps[currentLevelIndex])
+		currentLevel = new Level(maps[currentLevelIndex], null, null)
 		{
-//			map = Map.FromTexture(maps[currentLevelIndex]),
-//			count = 5,
+			victoryCallback = OnEnemiesDefeat,
+			defeatCallback = OnPlayerDefeat,
 			enemyController = enemyController,
 			material = defaultMaterial
 		};
@@ -97,8 +101,10 @@ public class GameManager : MonoBehaviour
 		enemyController.Begin(20);
 		StartCoroutine(currentLevel.Spawn());
 
-		currentLevel.OnEnemiesDefeat += OnEnemiesDefeat;
-		currentLevel.OnPlayerDefeat += OnPlayerDefeat;
+//		currentLevel.OnEnemiesDefeat += OnEnemiesDefeat;
+//		currentLevel.OnPlayerDefeat += OnPlayerDefeat;
+		
+		backGroundMusic.Play(backGroundMusic.Game);
 	}
 
 	private void UnloadLevel()
@@ -116,6 +122,8 @@ public class GameManager : MonoBehaviour
 
 	private void OnPlayerDefeat()
 	{
+		backGroundMusic.Play(backGroundMusic.Defeat);
+		
 		menuSystem.ShowEndStatus("DEFEAT", () =>
 		{
 			UnloadLevel();
@@ -125,6 +133,8 @@ public class GameManager : MonoBehaviour
 
 	private void OnEnemiesDefeat()
 	{
+		backGroundMusic.Play(backGroundMusic.Victory);
+		
 		menuSystem.ShowEndStatus("VICTORY!", () =>
 		{
 			UnloadLevel();
@@ -137,6 +147,12 @@ public class GameManager : MonoBehaviour
 				menuSystem.Show(MenuView.LevelComplete);
 			}
 		});
+	}
+
+	private void ShowMainMenu()
+	{
+		backGroundMusic.Play(backGroundMusic.Menu);
+		menuSystem.Show(MenuView.Main);
 	}
 
 	private void OnDrawGizmosSelected()
@@ -162,6 +178,15 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	private void ExitGame()
+	{
+	#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+	#else
+		Application.Quit
+	#endif
+	}
+	
 	private void PositionCamera()
 	{
 		float cos = Mathf.Cos(Mathf.Deg2Rad * cameraAngle);

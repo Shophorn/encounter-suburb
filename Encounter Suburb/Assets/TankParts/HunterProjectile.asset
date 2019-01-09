@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: HunterProjectile
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  material: {fileID: 2100000, guid: 9d3158369981eba40b704d9709be7801, type: 2}
+  material: {fileID: 2100000, guid: d17a2dab4c125234f8af66f1f70eab4d, type: 2}
   speed: 30
   collisionRadius: 0.2
   damage: 1

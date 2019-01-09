@@ -21,9 +21,12 @@ public class Level : IDisposable
 
 	private Vector3[] enemySpawnPoints;
 
-	public event Action OnPlayerDefeat;
-	public event Action OnEnemiesDefeat;
+//	public event Action OnPlayerDefeat;
+//	public event Action OnEnemiesDefeat;
 
+	public Action victoryCallback;
+	public Action defeatCallback;
+	
 	private int enemyKilledCount = 0;
 	private int enemySpawnedCount = 0;
 	private bool allSpawned;
@@ -37,10 +40,13 @@ public class Level : IDisposable
 
 	public EnemyTankControllerSystem enemyController;
 
-	public Level(Texture2D mapTexture)
+	public Level(Texture2D mapTexture, Action victoryCallback, Action defeatCallback)
 	{
 		map = Map.FromTexture(mapTexture);
 		waves = SpawnWavesFromMapTexture(mapTexture);
+//
+//		this.victoryCallback = victoryCallback;
+//		this.defeatCallback = defeatCallback;
 	}
 
 
@@ -70,18 +76,15 @@ public class Level : IDisposable
 		}
 
 		allSpawned = true;
-		Debug.Log($"All Spawned {enemySpawnedCount}");
 	}
 
 	private void OnTankDestroyed()
 	{
 		enemyKilledCount++;
 		
-		Debug.Log($"Enemy Destroyed {enemyKilledCount} / {enemySpawnedCount}");
-		
 		if (allSpawned && enemySpawnedCount == enemyKilledCount)
 		{
-			OnEnemiesDefeat();
+			victoryCallback();
 		}
 	}
 
@@ -90,9 +93,6 @@ public class Level : IDisposable
 		Object.Destroy(mapObject);
 		Object.Destroy(mapMesh);
 		Object.Destroy(mapTexture);
-
-		OnPlayerDefeat = null;
-		OnEnemiesDefeat = null;
 	}
 
 	public void BuildMap()
@@ -125,7 +125,7 @@ public class Level : IDisposable
 		enemyController.playerBasePosition = basePosition;
 		var playerBase =
 			Object.Instantiate(Bootstrap.basePrefab, basePosition, Quaternion.identity, mapObject.transform);
-		playerBase.GetComponent<Breakable>().OnBreak += () => OnPlayerDefeat?.Invoke();
+		playerBase.GetComponent<Breakable>().OnBreak += defeatCallback;
 	}
 
 	private void SpawnBreakables(TileType type, Breakable prefab)

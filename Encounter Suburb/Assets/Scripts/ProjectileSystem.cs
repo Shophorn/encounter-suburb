@@ -8,7 +8,7 @@ public class ProjectileSystem : MonoBehaviour
 	private readonly Dictionary<ProjectileType, List<SimpleTransform>> projectiles
 		= new Dictionary<ProjectileType, List<SimpleTransform>>();
 	
-	// Avoid allocation
+	// Avoid new allocation each frame
 	private const int MAX_PROJECTILES_PER_TYPE = 1024;
 	private readonly Matrix4x4[] toRender = new Matrix4x4[MAX_PROJECTILES_PER_TYPE];
 
@@ -35,7 +35,7 @@ public class ProjectileSystem : MonoBehaviour
 			float step = type.speed * Time.deltaTime;
 			float radius = type.collisionRadius;
 			
-			var toRemove = new HashSet<int>();
+			var toRemove = new List<int>();
 	
 			for (int i = 0; i < count; i++)
 			{
@@ -62,13 +62,14 @@ public class ProjectileSystem : MonoBehaviour
 			
 			Graphics.DrawMeshInstanced(pair.Key.mesh, 0, pair.Key.material, toRender, count);
 
-			foreach (var index in toRemove)
+			toRemove.Sort();
+			for (int i = 0; i < toRemove.Count; i++)
 			{
 				if (type.blastFX != null)
 				{
-					Instantiate(type.blastFX, list[index].position, Quaternion.identity);
+					Instantiate(type.blastFX, list[toRemove[i]].position, Quaternion.identity);
 				}
-				list.RemoveAt(index);
+				list.RemoveAt(toRemove[i]);
 			}
 		}
 	}

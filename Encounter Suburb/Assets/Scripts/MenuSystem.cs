@@ -16,6 +16,7 @@ public class MenuSystem : MonoBehaviour
 	[Header("Main Menu")]
 	public GameObject mainMenuView;
 	public Button mainMenu_Play;
+	public Button mainMenu_Exit;
 	
 	[Header("Level Complete")]
 	public GameObject levelCompleteView;
