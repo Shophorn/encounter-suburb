@@ -1,8 +1,5 @@
 Encounter Suburb (Battle City)
 
-Constant grid size, fits tank = 5 units
-Movement is still free
-
 Done:
     If tanks collides with breakable, set it as target and don't move until it is broken.
     Water tiles do not block enemies, since pathfinding directs them away anyway.
@@ -28,14 +25,15 @@ Done:
     Base hitpoint in hud
     Properify Layer Usage(collisions)
 
-    Randomize tank wave type order, using level name as seed
+    Procedural colour tweaking:
+        Randomize tank wave type order, using level name as seed
+        Randomly slightly vary trees', obstacles' and tanks' colors
     
 Next up:
 
-    
-    Randomly slightly vary trees', obstacles' and tanks' colors
-
     start spawning next wave if last is killed even if time has not passed
+
+    proceduralize spawnpoints similar to enemy types
 
     Heavy - Bigger better overall tnak
 

@@ -13,22 +13,11 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[Obsolete("Do not use transform", true)]
 	private new Transform transform;
 	
-//	private int maxCount;
-//	private int count = 0;
-
 	[SerializeField] private float pathUpdateInterval = 0.2f;
 	[SerializeField] private EnemyTankBehaviour[] behaviours;
 	private Tank[] prefabs;
 	
 	public LayerMask tankCollisionMask;
-	
-//	private Tank [] units;
-//	private TankType[] types;
-//	
-//	private Breakable[] targetBreakables;
-//	
-//	private Path [] paths;
-//	private float[] pathUpdateTimes;
 
 	[Serializable]
 	class UnitCollection
@@ -55,17 +44,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	
 	public void Begin(int maxCount)
 	{
-//		this.maxCount = maxCount;
-//		count = 0;
-		
-//		units = new Tank[maxCount];
-//		types = new TankType[maxCount];
-//		paths = new Path[maxCount];
-//		pathUpdateTimes = new float[maxCount];
-//		targetBreakables = new Breakable[maxCount];
-
 		prefabs = behaviours.Select(b => b.prefab).ToArray();
-
 		
 		// Initialize better type aware arrays
 		int typeCount = behaviours.Length;
@@ -282,19 +261,12 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 		Instantiate(explosion, unitCollections[typeIndex].units[index].transform.position, Quaternion.identity);
 	}
-	
+
 	private void AddTargetBreakable(int typeIndex, int index, Breakable target)
 	{
 		unitCollections[typeIndex].targetBreakables[index] = target;
-		target.OnBreak += () => RemoveTargetBreakable(typeIndex, index);
+		target.OnBreak += () => unitCollections[typeIndex].targetBreakables[index] = null;
 	}
-
-	// TODO: remove this and just use contents in above function
-	private void RemoveTargetBreakable(int typeIndex, int index)
-	{
-		unitCollections[typeIndex].targetBreakables[index] = null;
-	}
-	
 
 	private void OnReceivePath(int typeIndex, int index, Path path)
 	{
@@ -314,26 +286,4 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 		unitCollections = null;
 	}
-
-
-//	private void OnDrawGizmosSelected()
-//	{
-//		if (paths == null || !Application.isPlaying) return;
-//		
-//		Gizmos.color = Color.green;
-//		for (int i = 0; i < paths.Length; i++)
-//		{
-//			if (paths[i] == null) continue;
-//			
-//			Gizmos.DrawSphere(paths[i].points[0] + Vector3.up * 0.5f, 0.15f);
-//			
-//			for (int j = 1; j < paths[i].points.Length; j++)
-//			{
-//				var a = paths[i].points[j - 1] + Vector3.up * 0.5f;
-//				var b = paths[i].points[j] + Vector3.up * 0.5f;
-//				Gizmos.DrawSphere(paths[i].points[i] + Vector3.up * 0.5f, 0.15f);
-//				Gizmos.DrawLine(a,b);
-//			}
-//		}
-//	}
 }
