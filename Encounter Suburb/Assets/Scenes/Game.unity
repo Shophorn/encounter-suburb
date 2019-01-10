@@ -1501,7 +1501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  playerTankPrefab: {fileID: 114550111218480418, guid: 7ee7af2c3ab4a6f4c932e592d9c65882,
+  playerTankPrefab: {fileID: 114550111218480418, guid: 73622f2e425354846aec6eb26dea7d08,
     type: 2}
   enemyController: {fileID: 286161060}
   cameraAngle: 50

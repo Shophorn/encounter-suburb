@@ -8,7 +8,7 @@ public class PlayerTankController : MonoBehaviour
 	private readonly Vector3 cursorOffset = new Vector3(0f, 0.1f, 0f);
 	public LayerMask groundMask;
 
-	public Tank tank;
+	public PlayerTank tank;
 	public ParticleSystem explosion;
 	public Breakable tankBreakable { get; private set; }
 	
