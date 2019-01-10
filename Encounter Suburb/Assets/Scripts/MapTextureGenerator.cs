@@ -12,6 +12,7 @@ public static class MapTextureGenerator
 		var forestTilePositions = new List<Vector2Int>();
 		var waterTilePositions = new List<Vector2Int>();
 
+		
 		for (int y = 0; y < map.size; y++)
 		{
 			for (int x = 0; x < map.size; x++)
@@ -105,8 +106,9 @@ public static class MapTextureGenerator
 			int x = positions[i].x;
 			int y = positions[i].y;
 			
-			Vector2 uvMin = new Vector2(x, y) / size;
-			Vector2 uvMax = new Vector2(x + 1, y + 1) / size;
+			// Make area slightly bigger so tiles merge into each other
+			Vector2 uvMin = new Vector2(x - 0.1f, y - 0.1f) / size;
+			Vector2 uvMax = new Vector2(x + 1.1f, y + 1.1f) / size;
 				
 			Vector2Int pxMin = Vector2Int.FloorToInt(uvMin * resolution);
 			Vector2Int pxDelta = Vector2Int.FloorToInt((uvMax - uvMin) * resolution);
@@ -118,12 +120,16 @@ public static class MapTextureGenerator
 					int pxU = pxMin.x + xx;
 					int pxV = pxMin.y + yy;
 
+					// Skip if out of bounds
+					if (pxU < 0 || pxU >= resolution || pxV < 0 || pxV >= resolution) continue;;
+					
 					int p = pxV * resolution + pxU;
 
 					float u = (float) xx / pxDelta.x;
 					float v = (float) yy / pxDelta.y;
 						
-					mask[p] = LevelBootstrap.tileMask.GetPixelBilinear(u, v).a;
+					mask[p] += LevelBootstrap.tileMask.GetPixelBilinear(u, v).a;
+					mask[p] = Mathf.Clamp01(mask[p]);
 				}
 			}
 		}
