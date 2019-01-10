@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23015601303055964}
   - component: {fileID: 65296992360377260}
   - component: {fileID: 114483052494788094}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Block_Concrete
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4188298285133216}
   - component: {fileID: 33288053984486382}
   - component: {fileID: 23637862972763874}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4635166271600522}
   - component: {fileID: 33637502343139130}
   - component: {fileID: 23575220404146946}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4158672585073930}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 114528775350924774}
   - component: {fileID: 114594961404043756}
   - component: {fileID: 65844691012075790}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: HunterTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4401703143183100}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 4419544504836500}
   - component: {fileID: 33033278607133110}
   - component: {fileID: 23540600573992936}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Hull
   m_TagString: Untagged
   m_Icon: {fileID: 0}

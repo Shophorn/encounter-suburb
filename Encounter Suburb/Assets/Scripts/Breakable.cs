@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Breakable : MonoBehaviour, IHittable
+public class Breakable : MonoBehaviour//, IHittable
 {
 	private const float HP_LOW_THRESHOLD = 0.001f;
 	

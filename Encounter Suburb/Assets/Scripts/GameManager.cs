@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
 
 		backGroundMusic.Play(backGroundMusic.Game);
 		
-		playerHpBar.SetPlayer(playerController.GetComponent<Breakable>());
+		playerHpBar.SetPlayer(playerController.tankBreakable);
 		playerHpBar.SetBase(currentLevel.playerBaseBreakable);
 	}
 

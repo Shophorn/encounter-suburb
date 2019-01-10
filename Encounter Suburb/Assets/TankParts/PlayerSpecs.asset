@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   rotationSpeed: 360
-  turretTurnSpeed: 120
+  turretTurnSpeed: 360
   projectile: {fileID: 0}
   roundsPerSecond: 1
   reloadTime: 1

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4411171719374926}
   - component: {fileID: 33140115394178218}
   - component: {fileID: 23247265645672908}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4047670463766624}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4827074890950290}
   - component: {fileID: 212887983558567602}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Aim cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4264836133881110}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 4651862746989344}
   - component: {fileID: 33469981762049510}
   - component: {fileID: 23637722527470108}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 114502750998068516}
   - component: {fileID: 114967119641475954}
   - component: {fileID: 65622160716481122}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: PlayerTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4199253338171136}
   - component: {fileID: 212247051162430018}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Aim cursor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 4381071866739318}
   - component: {fileID: 33671762516794938}
   - component: {fileID: 23405997496701214}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Hull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,7 +433,6 @@ MonoBehaviour:
   tank: {fileID: 114502750998068516}
   explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
     type: 2}
-  hpTokenTexture: {fileID: 10904, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114967119641475954
 MonoBehaviour:
   m_ObjectHideFlags: 1

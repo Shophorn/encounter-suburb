@@ -676,7 +676,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitMask:
     serializedVersion: 2
-    m_Bits: 807
+    m_Bits: 7168
 --- !u!4 &286161059
 Transform:
   m_ObjectHideFlags: 0
@@ -708,7 +708,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
   tankCollisionMask:
     serializedVersion: 2
-    m_Bits: 807
+    m_Bits: 7168
   explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
     type: 2}
   spawnEffect: {fileID: 198288978794463772, guid: 5e12b358fb5debb4899c9a5af2ecad7e,

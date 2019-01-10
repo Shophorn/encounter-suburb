@@ -23,10 +23,13 @@ Done:
             Pummel - Always goes for base :  slow short-ranged powerful gun
        
     enemy spawn effect
+ 
+    Player hitpoints in hud
+    Base hitpoint in hud
 
 Next up:
-    Player hitpoints
-    Base hitpoint
+
+    fix bullets hitting things behind walls
 
     Heavy - Bigger better overall tnak
 

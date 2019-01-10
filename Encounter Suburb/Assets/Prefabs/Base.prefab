@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4765387204932936}
   - component: {fileID: 65966794191253932}
   - component: {fileID: 114359536767445366}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4839535206287644}
   - component: {fileID: 33935898495534674}
   - component: {fileID: 23970062172913964}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: goose_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,3 +139,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   doDestroyOnBreak: 1
+  breakFXPrefab: {fileID: 0}

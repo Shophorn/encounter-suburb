@@ -42,7 +42,7 @@ public class ProjectileSystem : MonoBehaviour
 				RaycastHit hitInfo;
 				if (Physics.SphereCast(list[i].position, radius, list[i].direction, out hitInfo, step, hitMask))
 				{
-					hitInfo.transform.GetComponent<IHittable>().Hit(type.damage);
+					hitInfo.transform.GetComponent<Breakable>().Hit(type.damage);
 
 					toRemove.Add(i);
 					continue;

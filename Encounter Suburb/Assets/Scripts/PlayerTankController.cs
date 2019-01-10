@@ -10,19 +10,21 @@ public class PlayerTankController : MonoBehaviour
 
 	public Tank tank;
 	public ParticleSystem explosion;
-	private Breakable tankBreakable;
+	public Breakable tankBreakable { get; private set; }
 	
 	private float muzzleOffset;
 
-	private void Start()
+	private void Awake()
 	{
 		tankBreakable = tank.GetComponent<Breakable>();
-		
+		tankBreakable.OnBreak += () => Instantiate(explosion, transform.position, Quaternion.identity);
+	}
+	
+	private void Start()
+	{
 		var turretToMuzzle = tank.turretTransform.position - tank.gun.muzzle.position;
 		turretToMuzzle.y = 0;
 		muzzleOffset = turretToMuzzle.magnitude;
-
-		GetComponent<Breakable>().OnBreak += () => Instantiate(explosion, transform.position, Quaternion.identity);
 	}
 
 	private void Update()
