@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
 	private int nextLevelIndex => currentLevelIndex + 1;
 	private Level currentLevel = null;
 	
-	public GameObject playerTankPrefab;
-	private Transform playerTransform;
+	public PlayerTankController playerTankPrefab;
+	private PlayerTankController playerController;
 
 	private MenuSystem menuSystem;
 
@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
 	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
 	private BackGroundMusic backGroundMusic;
+
+	[SerializeField] private PlayerHpBar playerHpBar;
 	
 	public int skipToLevelIndex = -1;
 	
@@ -81,7 +83,7 @@ public class GameManager : MonoBehaviour
 	private void LoadNextLevel()
 	{
 		currentLevelIndex++;
-		currentLevel = new Level(maps[currentLevelIndex], null, null)
+		currentLevel = new Level(maps[currentLevelIndex])
 		{
 			victoryCallback = OnEnemiesDefeat,
 			defeatCallback = OnPlayerDefeat,
@@ -94,25 +96,25 @@ public class GameManager : MonoBehaviour
 		PathFinder.CreateInstance(currentLevel.grid);
 		
 		var playerPosition = currentLevel.map.PlayerSpawnPoint();
-		playerTransform = Instantiate(playerTankPrefab, (Vector3) playerPosition, Quaternion.identity).transform;
-		playerTransform.GetComponent<Breakable>().OnBreak += OnPlayerDefeat;
+		playerController = Instantiate(playerTankPrefab, playerPosition, Quaternion.identity);
+		playerController.GetComponent<Breakable>().OnBreak += OnPlayerDefeat;
 			
-		enemyController.playerTransform = playerTransform;
+		enemyController.playerTransform = playerController.transform;
 		enemyController.Begin(20);
 		StartCoroutine(currentLevel.Spawn());
 
-//		currentLevel.OnEnemiesDefeat += OnEnemiesDefeat;
-//		currentLevel.OnPlayerDefeat += OnPlayerDefeat;
-		
 		backGroundMusic.Play(backGroundMusic.Game);
+		
+		playerHpBar.SetPlayer(playerController.GetComponent<Breakable>());
+		playerHpBar.SetBase(currentLevel.playerBaseBreakable);
 	}
 
 	private void UnloadLevel()
 	{
 		enemyController.Stop();
 
-		Destroy(playerTransform.gameObject);
-		playerTransform = null;
+		Destroy(playerController.gameObject);
+		playerController = null;
 		
 		currentLevel.Dispose();
 		currentLevel = null;
@@ -178,7 +180,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	private void ExitGame()
+	private static void ExitGame()
 	{
 	#if UNITY_EDITOR
 		UnityEditor.EditorApplication.isPlaying = false;

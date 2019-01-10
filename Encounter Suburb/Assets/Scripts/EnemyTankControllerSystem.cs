@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using PathFinding;
 using UnityEngine;
 
@@ -10,39 +13,75 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[Obsolete("Do not use transform", true)]
 	private new Transform transform;
 	
-	private int maxCount;
-	private int count = 0;
+//	private int maxCount;
+//	private int count = 0;
 
 	[SerializeField] private float pathUpdateInterval = 0.2f;
 	[SerializeField] private EnemyTankBehaviour[] behaviours;
 	private Tank[] prefabs;
 	
 	public LayerMask tankCollisionMask;
-	public ParticleSystem explosion;
 	
-	private Tank [] tanks;
-	private TankType[] types;
-	private Path [] paths;
-	private float[] pathUpdateTimes;
-	private Breakable[] targetBreakables;
- 	
+//	private Tank [] units;
+//	private TankType[] types;
+//	
+//	private Breakable[] targetBreakables;
+//	
+//	private Path [] paths;
+//	private float[] pathUpdateTimes;
+
+	[Serializable]
+	class UnitCollection
+	{
+		public int activeCount;
+		public int nextFreeIndex;
+		
+		public Tank[] units;
+		public Path[] paths;
+		public float[] pathUpdateTimes;
+		public Breakable[] targetBreakables;
+	}
+
+	private UnitCollection[] unitCollections;
+	
 	public Transform playerTransform { get; set; }
 	public Vector3 playerBasePosition { get; set; }
 
 	public event Action OnTankDestroyed;
+
+	[Header("Effects")]
+	public ParticleSystem explosion;
+	public ParticleSystem spawnEffect;
 	
 	public void Begin(int maxCount)
 	{
-		this.maxCount = maxCount;
-		count = 0;
+//		this.maxCount = maxCount;
+//		count = 0;
 		
-		tanks = new Tank[maxCount];
-		types = new TankType[maxCount];
-		paths = new Path[maxCount];
-		pathUpdateTimes = new float[maxCount];
-		targetBreakables = new Breakable[maxCount];
+//		units = new Tank[maxCount];
+//		types = new TankType[maxCount];
+//		paths = new Path[maxCount];
+//		pathUpdateTimes = new float[maxCount];
+//		targetBreakables = new Breakable[maxCount];
 
 		prefabs = behaviours.Select(b => b.prefab).ToArray();
+
+		
+		// Initialize better type aware arrays
+		int typeCount = behaviours.Length;
+		unitCollections = new UnitCollection[typeCount];
+		for (int i = 0; i < typeCount; i++)
+		{
+			unitCollections[i] = new UnitCollection
+			{
+				activeCount = 0,
+				nextFreeIndex = 0,
+				units = FillWithType((TankType)i, maxCount),
+				paths = new Path[maxCount],
+				pathUpdateTimes = new float[maxCount],
+				targetBreakables = new Breakable[maxCount]
+			};
+		}
 		
 		enabled = true;
 	}
@@ -56,174 +95,245 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void Update()
 	{
 		var playerPosition = playerTransform.position;
-
-		for (int i = 0; i < count; i++)
+		for (int t = 0; t < behaviours.Length; t++)
 		{
-			if (!tanks[i].gameObject.activeInHierarchy) continue;
-
-			var tankPosition = tanks[i].transform.position;
-			float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
-
-			int type = (int)types[i];
-
-			Vector3 targetPosition;
-			float sqrDistanceToTarget;
+			int type = t;
+			int count = unitCollections[t].units.Length; //activeCount;
+			var units = unitCollections[t].units;
+			var paths = unitCollections[t].paths;
+			var pathUpdateTimes = unitCollections[t].pathUpdateTimes;
+			var targetBreakables = unitCollections[t].targetBreakables;
 			
-			if (sqrDistanceToPlayer < behaviours[type].sqrEngageRange)
+			for (int i = 0; i < count; i++)
 			{
-				targetPosition = playerPosition;
-				sqrDistanceToTarget = sqrDistanceToPlayer;
-			}
-			else
-			{
-				targetPosition = playerBasePosition;
-				sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
-			}
-			
-			if (paths[i] == null)
-			{
-				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, behaviours[type].preferBreakWalls, (path) => OnReceivePath(index, path));
-				continue;
-			}
+				// Shoudl instead track active units
+				if (!units[i].gameObject.activeInHierarchy) continue;
 
-			if (pathUpdateTimes[i] < Time.time)
-			{
-				int index = i;
-				PathRequestManager.RequestPath(tankPosition, targetPosition, behaviours[type].preferBreakWalls, (path) => OnReceivePath(index, path));
-			}
-			
-			var wayPoint = paths[i].currentPoint;
-			var toWayPoint = wayPoint - tankPosition;
+				var tankPosition = units[i].transform.position;
+				float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
 
-			const float sqrEpsilon = 0.001f;
-			if (toWayPoint.sqrMagnitude < sqrEpsilon)
-			{
-				if (!paths[i].MoveNext())
+				Vector3 targetPosition;
+				float sqrDistanceToTarget;
+
+				if (sqrDistanceToPlayer < behaviours[type].sqrEngageRange)
 				{
-					paths[i] = null;
-					continue;
+					targetPosition = playerPosition;
+					sqrDistanceToTarget = sqrDistanceToPlayer;
+				}
+				else
+				{
+					targetPosition = playerBasePosition;
+					sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
 				}
 
-				wayPoint = paths[i].currentPoint;
-				toWayPoint = wayPoint - tankPosition;
-			}
+				if (paths[i] == null || pathUpdateTimes[i] < Time.time)
+				{
+					int index = i;
+					PathRequestManager.RequestPath(tankPosition, targetPosition, behaviours[type].preferBreakWalls,
+						(path) => OnReceivePath(type, index, path));
+				}
 
-			float maxMoveMagnitude = targetBreakables[i] != null ? 0f : 1f;
-			
-			var driveVector = Vector3.ClampMagnitude(toWayPoint, maxMoveMagnitude);
-			Debug.DrawRay(tanks[i].transform.position + Vector3.up * 0.5f, driveVector * 5f, Color.cyan);
-			
-			tanks[i].Drive(driveVector);
+				var wayPoint = paths[i].currentPoint;
+				var toWayPoint = wayPoint - tankPosition;
 
-			// Aim and Shoot
-			bool doShoot = false;
-			if (targetBreakables[i] != null)
-			{
-				tanks [i].AimTurretAt(targetBreakables[i].transform.position);
-				doShoot = true;
-			}
-			else
-			{
-				tanks[i].AimTurretAt(targetPosition);
-				const float shootDotThreshold = 0.95f;
-				Vector3 toTarget = targetPosition - tankPosition;
+				const float sqrEpsilon = 0.001f;
+				if (toWayPoint.sqrMagnitude < sqrEpsilon)
+				{
+					if (!paths[i].MoveNext())
+					{
+						paths[i] = null;
+						continue;
+					}
 
-				bool inRange = sqrDistanceToTarget < tanks[i].gun.type.projectile.sqrMaxRange;
-				bool inSight = Vector3.Dot(toTarget, tanks[i].turretForward) > shootDotThreshold;
+					wayPoint = paths[i].currentPoint;
+					toWayPoint = wayPoint - tankPosition;
+				}
 
-				doShoot = inRange && inSight;
-			}
+				float maxMoveMagnitude = targetBreakables[i] != null ? 0f : 1f;
 
-			if (doShoot)
-			{
-				tanks[i].collider.enabled = false;
-				tanks[i].gun.Fire();
-				tanks[i].collider.enabled = true;
+				var driveVector = Vector3.ClampMagnitude(toWayPoint, maxMoveMagnitude);
+				Debug.DrawRay(units[i].transform.position + Vector3.up * 0.5f, driveVector * 5f, Color.cyan);
+
+				units[i].Drive(driveVector);
+
+				// Aim and Shoot
+				bool doShoot = false;
+				if (targetBreakables[i] != null)
+				{
+					units[i].AimTurretAt(targetBreakables[i].transform.position);
+					doShoot = true;
+				}
+				else
+				{
+					units[i].AimTurretAt(targetPosition);
+					const float shootDotThreshold = 0.95f;
+					Vector3 toTarget = targetPosition - tankPosition;
+
+					bool inRange = sqrDistanceToTarget < units[i].gun.type.projectile.sqrMaxRange;
+					bool inSight = Vector3.Dot(toTarget, units[i].turretForward) > shootDotThreshold;
+
+					doShoot = inRange && inSight;
+				}
+
+				if (doShoot)
+				{
+					units[i].collider.enabled = false;
+					units[i].gun.Fire();
+					units[i].collider.enabled = true;
+				}
 			}
 		}
 	}
-	
+
+	private Tank[] FillWithType(TankType type, int count)
+	{
+		var array = new Tank [count];
+		for (int i = 0; i < count; i++)
+		{
+			// Use separate variable to pass to lambda, so it keeps it's value.
+			array[i] = Instantiate(prefabs[(int) type]);
+			array[i].name += $" {i}";
+			array[i].gameObject.SetActive(false);
+		}
+		return array;
+	}
+
 	public void Spawn(Vector3 position, TankType type)
 	{
 		if (!enabled) return;
-		if (count >= maxCount - 1) return;
 
-		int index = count;
-		count++;
+		int typeIndex = (int) type;
 
-		tanks[index] = Instantiate(prefabs[(int)type], position, Quaternion.identity);
-		tanks[index].GetComponent<Breakable>().OnBreak += () => OnDestroyed(index);
-		tanks[index].OnCollideBreakable += breakable => AddTargetBreakable(index, breakable);
-		tanks[index].collisionMask = tankCollisionMask;
+		int index = unitCollections[typeIndex].nextFreeIndex;
+		unitCollections[typeIndex].nextFreeIndex++;
+
+		var unit = unitCollections[typeIndex].units[index];
+		unit.GetComponent<Breakable>().OnBreak += () => UnSpawn(typeIndex, index);
+		unit.OnCollideBreakable += breakable => AddTargetBreakable(typeIndex, index, breakable);
+		unit.collisionMask = tankCollisionMask;
+
+		StartCoroutine(UnearthUnit(unit, position, typeIndex, index));
 		
 		PathRequestManager.RequestPath(
-			start:				position, 
-			end: 				playerTransform.position, 
-			preferBreakWalls: 	behaviours[(int)type].preferBreakWalls, 
-			callback: 			path => OnReceivePath(index, path)
+			start:				position,
+			end:				behaviours[typeIndex].preferTargetPlayer < 2 ? playerTransform.position : playerBasePosition,
+			preferBreakWalls:	behaviours[typeIndex].preferBreakWalls,
+			callback:			path => OnReceivePath(typeIndex, index, path)
 		);
 	}
 
-	private void OnDestroyed(int index)
+	private IEnumerator UnearthUnit(Tank unit, Vector3 position, int typeIndex, int index)
 	{
-		tanks[index].gameObject.SetActive(false);
-		paths[index] = null;
+		// Wait some time, then rise from ground in some other time
+		const float riseTime = 1f;
+		float waitTime = spawnEffect.main.duration - riseTime;
+
+		Instantiate(spawnEffect, position, spawnEffect.transform.rotation);
+
+		yield return new WaitForSeconds(waitTime);
 		
-		OnTankDestroyed.Invoke();
+		// hide underground
+		position.y = -unit.height;
+		unit.transform.position = position;
+		unit.gameObject.SetActive(true);
 
-		Instantiate(explosion, tanks[index].transform.position, Quaternion.identity);
+		
+		float percent = 0f;
+		while(percent < 1f)
+		{
+			percent += Time.deltaTime / riseTime;
+			position.y = (percent - 1f) * unit.height; // lerp
+			unit.transform.position = position;
+			yield return null;
+		}
+		
+		// Activate, but ponder around a moment
+		const float ponderTime = 0.25f;
+		yield return new WaitForSeconds(ponderTime);
+	}
+
+	private void SwapWithInactive(int typeIndex, int inactive, int active)
+	{
+		var uc = unitCollections[typeIndex];
+		
+		// Swap with last active
+		var tempUnit = uc.units[active];
+		uc.units[active] = uc.units[inactive];
+		uc.units[inactive] = tempUnit;
+
+		uc.paths[inactive] = uc.paths[active];
+		uc.pathUpdateTimes[inactive] = uc.pathUpdateTimes[active];
+		uc.targetBreakables[inactive] = uc.targetBreakables[active];
+		
+		uc.paths[active] = null;
+		uc.pathUpdateTimes[active] = 0f;
+		uc.targetBreakables[active] = null;
 	}
 	
-	private void AddTargetBreakable(int index, Breakable target)
+	
+	private void UnSpawn(int typeIndex, int index)
 	{
-		targetBreakables[index] = target;
-		target.OnBreak += () => RemoveTargetBreakable(index);
-	}
+		var uc = unitCollections[typeIndex];
+		uc.units[index].gameObject.SetActive(false);
+		uc.paths[index] = null;
+		uc.targetBreakables[index] = null;
+		
+		OnTankDestroyed();
 
-	private void RemoveTargetBreakable(int index)
-	{
-		targetBreakables[index] = null;
+		Instantiate(explosion, unitCollections[typeIndex].units[index].transform.position, Quaternion.identity);
 	}
 	
-	private void OnReceivePath(int index, Path path)
+	private void AddTargetBreakable(int typeIndex, int index, Breakable target)
 	{
-		paths[index] = path;
-		pathUpdateTimes[index] = Time.time + pathUpdateInterval;
+		unitCollections[typeIndex].targetBreakables[index] = target;
+		target.OnBreak += () => RemoveTargetBreakable(typeIndex, index);
+	}
+
+	// TODO: remove this and just use contents in above function
+	private void RemoveTargetBreakable(int typeIndex, int index)
+	{
+		unitCollections[typeIndex].targetBreakables[index] = null;
+	}
+	
+
+	private void OnReceivePath(int typeIndex, int index, Path path)
+	{
+		unitCollections[typeIndex].paths[index] = path;
+		unitCollections[typeIndex].pathUpdateTimes[index] = Time.time + pathUpdateInterval;
 	}
 
 	private void Clear()
 	{
-		for (int i = 0; i < count; i++)
+		for (int i = 0; i < unitCollections.Length; i++)
 		{
-			Destroy(tanks[i].gameObject);
-		}
-
-		tanks = null;
-		types = null;
-		paths = null;
-		pathUpdateTimes = null;
-		targetBreakables = null;
-	}
-
-	private void OnDrawGizmosSelected()
-	{
-		if (paths == null || !Application.isPlaying) return;
-		
-		Gizmos.color = Color.green;
-		for (int i = 0; i < paths.Length; i++)
-		{
-			if (paths[i] == null) continue;
-			
-			Gizmos.DrawSphere(paths[i].points[0] + Vector3.up * 0.5f, 0.15f);
-			
-			for (int j = 1; j < paths[i].points.Length; j++)
+			for (int j = 0; j < unitCollections[i].units.Length; j++)
 			{
-				var a = paths[i].points[j - 1] + Vector3.up * 0.5f;
-				var b = paths[i].points[j] + Vector3.up * 0.5f;
-				Gizmos.DrawSphere(paths[i].points[i] + Vector3.up * 0.5f, 0.15f);
-				Gizmos.DrawLine(a,b);
+				Destroy(unitCollections[i].units[j].gameObject);
 			}
 		}
+
+		unitCollections = null;
 	}
+
+
+//	private void OnDrawGizmosSelected()
+//	{
+//		if (paths == null || !Application.isPlaying) return;
+//		
+//		Gizmos.color = Color.green;
+//		for (int i = 0; i < paths.Length; i++)
+//		{
+//			if (paths[i] == null) continue;
+//			
+//			Gizmos.DrawSphere(paths[i].points[0] + Vector3.up * 0.5f, 0.15f);
+//			
+//			for (int j = 1; j < paths[i].points.Length; j++)
+//			{
+//				var a = paths[i].points[j - 1] + Vector3.up * 0.5f;
+//				var b = paths[i].points[j] + Vector3.up * 0.5f;
+//				Gizmos.DrawSphere(paths[i].points[i] + Vector3.up * 0.5f, 0.15f);
+//				Gizmos.DrawLine(a,b);
+//			}
+//		}
+//	}
 }

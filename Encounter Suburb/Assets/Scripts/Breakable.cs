@@ -10,10 +10,12 @@ public class Breakable : MonoBehaviour, IHittable
 	public bool broken { get; private set; }
 	
 	public event Action OnBreak;
+	public event Action OnHit;
+	
 	public bool doDestroyOnBreak;
 	public ParticleSystem breakFXPrefab;
 	
-	private void Start()
+	private void Awake()
 	{
 		hp = maxHp;
 		broken = false;
@@ -23,6 +25,8 @@ public class Breakable : MonoBehaviour, IHittable
 	{
 		hp -= damage;
 
+		OnHit?.Invoke();
+		
 		if (hp < HP_LOW_THRESHOLD)
 		{
 			OnBreak?.Invoke();

@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class BackGroundMusic : MonoBehaviour
 {
+	public bool active;
+	
 	public readonly AudioClip None = null;
 	public AudioClip Menu;
 	public AudioClip Game;
@@ -18,12 +20,8 @@ public class BackGroundMusic : MonoBehaviour
 
 	public void Play(AudioClip clip)
 	{
-//		if (clip == None)
-//		{
-//			source.Stop();
-//			return;
-//		}
-//		
+		if (!active) return;
+		
 		source.clip = clip;
 		source.Play();
 	}

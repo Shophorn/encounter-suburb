@@ -14,6 +14,9 @@ public class Tank : MonoBehaviour
 
 	public event Action<Breakable> OnCollideBreakable;
 
+	// For spawning enemytank from below ground
+	public float height;
+	
 	[Header("Turret")]
 	public Transform turretTransform;
 	public Vector3 turretForward => turretTransform.forward;

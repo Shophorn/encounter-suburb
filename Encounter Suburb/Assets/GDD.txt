@@ -18,7 +18,18 @@ Done:
 
     quit on exit from main menu
 
+    Enemy tank types:
+            Hunter - Always goes for player : fast light gun
+            Pummel - Always goes for base :  slow short-ranged powerful gun
+       
+    enemy spawn effect
+
 Next up:
+    Player hitpoints
+    Base hitpoint
+
+    Heavy - Bigger better overall tnak
+
     Make collision detection better, maybe using longer rays.
     Make buffer check so that tank can stop even before it collides with breakable.
     Enemies check real line of sight with raycast
@@ -28,11 +39,7 @@ Next up:
     Smooth water colliders -> Marching squares
    
     Clean Gun/Tank/Projectile/Turret hierarchy
-    Enemy tank types:
-        Hunter - Always goes for player : fast light gun
-        Pummel - Always goes for base :  slow short-ranged powerful gun
-        Grunt - Moves to base but also engages player : medium gun
-        Heavy - Bigger version of grunt : Fast powerful gun 
+    
       
     Clarify Enemy Tank Controller
     
@@ -44,8 +51,6 @@ Next up:
     Effects
         VFX
         SFX
-        enemy spawn effect
     
-    Breakable hp to affect pathfinding weights
     
     secret word to get to level 

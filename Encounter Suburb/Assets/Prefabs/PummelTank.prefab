@@ -351,6 +351,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  height: 1
   turretTransform: {fileID: 4401703143183100}
 --- !u!114 &114594961404043756
 MonoBehaviour:

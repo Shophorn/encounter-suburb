@@ -10,11 +10,14 @@ public class PlayerTankController : MonoBehaviour
 
 	public Tank tank;
 	public ParticleSystem explosion;
-
+	private Breakable tankBreakable;
+	
 	private float muzzleOffset;
 
 	private void Start()
 	{
+		tankBreakable = tank.GetComponent<Breakable>();
+		
 		var turretToMuzzle = tank.turretTransform.position - tank.gun.muzzle.position;
 		turretToMuzzle.y = 0;
 		muzzleOffset = turretToMuzzle.magnitude;

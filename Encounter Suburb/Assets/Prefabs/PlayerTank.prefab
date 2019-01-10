@@ -412,6 +412,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  height: 0
   turretTransform: {fileID: 4047670463766624}
 --- !u!114 &114550111218480418
 MonoBehaviour:
@@ -432,6 +433,7 @@ MonoBehaviour:
   tank: {fileID: 114502750998068516}
   explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
     type: 2}
+  hpTokenTexture: {fileID: 10904, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &114967119641475954
 MonoBehaviour:
   m_ObjectHideFlags: 1

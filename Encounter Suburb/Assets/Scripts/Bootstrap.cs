@@ -14,12 +14,12 @@ public class Bootstrap : MonoBehaviour
 	[SerializeField] private Breakable _concreteBlockPrefab;
 	[SerializeField] private GameObject _bushPrefab;
 	[SerializeField] private GameObject _waterPrefab;
-	[SerializeField] private GameObject _basePrefab;
+	[SerializeField] private Breakable _basePrefab;
 
 	public static GameObject enemySpawnPrefab => instance._enemySpawnPrefab;
 	public static Breakable brickBlockPrefab => instance._brickBlockPrefab;
 	public static Breakable concreteBlockPrefab => instance._concreteBlockPrefab;
 	public static GameObject bushPrefab => instance._bushPrefab;
 	public static GameObject waterPrefab => instance._waterPrefab;
-	public static GameObject basePrefab => instance._basePrefab;
+	public static Breakable playerBasePrefab => instance._basePrefab;
 }
