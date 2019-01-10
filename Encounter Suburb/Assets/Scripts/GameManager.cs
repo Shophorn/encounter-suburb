@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (currentLevel == null || !Application.isPlaying) return;
+		if (currentLevel == null || currentLevel.grid == null || !Application.isPlaying) return;
 
 		Grid grid = currentLevel.grid;
 		for (int y = 0; y < grid.size; y++)

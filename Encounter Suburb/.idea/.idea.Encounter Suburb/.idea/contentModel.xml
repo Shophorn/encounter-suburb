@@ -9,14 +9,13 @@
         <e p="GDD.txt" t="Include" />
         <e p="Scripts" t="Include">
           <e p="BackGroundMusic.cs" t="Include" />
-          <e p="Bootstrap.cs" t="Include" />
           <e p="Breakable.cs" t="Include" />
           <e p="EnemyTankBehaviour.cs" t="Include" />
           <e p="EnemyTankControllerSystem.cs" t="Include" />
           <e p="GameManager.cs" t="Include" />
           <e p="GunType.cs" t="Include" />
-          <e p="IHittable.cs" t="Include" />
           <e p="Level.cs" t="Include" />
+          <e p="LevelBootstrap.cs" t="Include" />
           <e p="LevelInfo.cs" t="Include" />
           <e p="Map.cs" t="Include" />
           <e p="Maths.cs" t="Include" />

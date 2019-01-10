@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 using Grid = PathFinding.Grid;
+using Random = System.Random;
 
 [Serializable]
 public class Level : IDisposable
@@ -14,7 +15,7 @@ public class Level : IDisposable
 	}
 
 	public Map map;
-	private SpawnWave[] waves;
+	private SpawnWave[] spawnWaves;
 	public Material material;
 
 	private static readonly Vector3 gridOffset = Vector3.one * 0.5f;
@@ -33,16 +34,19 @@ public class Level : IDisposable
 	// These need to be destroyed on unload
 	private GameObject mapObject = null;
 	private Mesh mapMesh = null;
-	private Texture mapTexture = null;
+	private Texture2D mapTexture = null;
 
 	public EnemyTankControllerSystem enemyController;
 
 	public Breakable playerBaseBreakable { get; private set; }
+
+	private Random random;
+	private float randomFloat => (float) random.NextDouble();
 	
 	public Level(Texture2D mapTexture)
 	{
+		this.mapTexture = mapTexture;
 		map = Map.FromTexture(mapTexture);
-		waves = SpawnWavesFromMapTexture(mapTexture);
 	}
 
 	public IEnumerator Spawn()
@@ -52,20 +56,20 @@ public class Level : IDisposable
 		var unitDelay = new WaitForSeconds(3);
 		var waveDelay = new WaitForSeconds(8);
 
-		for (int w = 0; w < waves.Length; w++)
+		for (int w = 0; w < spawnWaves.Length; w++)
 		{
-			for (int u = 0; u < waves[w].spawnings.Length; u++)
+			for (int u = 0; u < spawnWaves[w].spawnings.Length; u++)
 			{
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
 
-				enemyController.Spawn(enemySpawnPoints[pointIndex], waves[w].spawnings[u]);
+				enemyController.Spawn(enemySpawnPoints[pointIndex], spawnWaves[w].spawnings[u]);
 				enemySpawnedCount++;
 				
-				if (u < waves[w].spawnings.Length -1)
+				if (u < spawnWaves[w].spawnings.Length -1)
 					yield return unitDelay;
 			}
 			
-			if (w < waves.Length - 1)
+			if (w < spawnWaves.Length - 1)
 				yield return waveDelay;
 		}
 
@@ -91,6 +95,14 @@ public class Level : IDisposable
 
 	public void BuildMap()
 	{
+		spawnWaves = SpawnWavesFromMapTexture(mapTexture);
+		random = new Random(mapTexture.name.GetHashCode());
+		
+		for (int i = 0; i < spawnWaves.Length; i++)
+		{
+			RandomizeArray(spawnWaves[i].spawnings, random);
+		}
+		
 		mapObject = new GameObject("Map", typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider));
 		mapObject.layer = LayerMask.NameToLayer("Ground");
 
@@ -107,18 +119,18 @@ public class Level : IDisposable
 		collider.inflateMesh = true;
 		collider.sharedMesh = mapMesh;
 
-		SpawnBreakables(TileType.WeakWall, Bootstrap.brickBlockPrefab);
-		SpawnBreakables(TileType.StrongWall, Bootstrap.concreteBlockPrefab);
+		SpawnBreakables(TileType.WeakWall, LevelBootstrap.brickBlockPrefab);
+		SpawnBreakables(TileType.StrongWall, LevelBootstrap.concreteBlockPrefab);
 
-		SpawnProps(TileType.Water, Bootstrap.waterPrefab);
-		SpawnProps(TileType.Woods, Bootstrap.bushPrefab);
+		SpawnProps(TileType.Water, LevelBootstrap.waterPrefab);
+		SpawnProps(TileType.Woods, LevelBootstrap.bushPrefab);
 
 		enemySpawnPoints = map.EnemySpawnPoints();
 
 		var basePosition = map.BasePosition();
 		enemyController.playerBasePosition = basePosition;
 		playerBaseBreakable =
-			Object.Instantiate(Bootstrap.playerBasePrefab, basePosition, Quaternion.identity, mapObject.transform);
+			Object.Instantiate(LevelBootstrap.playerBasePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBaseBreakable.OnBreak += defeatCallback;
 	}
 
@@ -129,7 +141,8 @@ public class Level : IDisposable
 		{
 			var point = new Vector3(positions[i].x, 0, positions[i].y);
 			var block = Object.Instantiate(prefab, point + gridOffset, Quaternion.identity, mapObject.transform);
-
+			block.GetComponent<ColourVariator>()?.Apply(randomFloat);
+			
 			int x = positions[i].x;
 			int y = positions[i].y;
 			block.OnBreak += () => grid.OnBreakableBreak(x, y);
@@ -141,7 +154,8 @@ public class Level : IDisposable
 		var positions = map.TilePositions(type);
 		for (int i = 0; i < positions.Length; i++)
 		{
-			Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
+			var obj = Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
+			obj.GetComponent<ColourVariator>()?.Apply(randomFloat);
 		}
 	}
 
@@ -205,5 +219,19 @@ public class Level : IDisposable
 		var returnArray = new SpawnWave[waveCount];
 		Array.Copy(waves, returnArray, waveCount);
 		return returnArray;
+	}
+
+
+	private static void RandomizeArray<T>(T[] array, Random random)
+	{
+		int count = array.Length;
+		for (int i = 0; i < count - 1; i++)
+		{
+			int newIndex = (random.Next() % (count - i)) + i;
+
+			T temp = array[i];
+			array[i] = array[newIndex];
+			array[newIndex] = temp;
+		}
 	}
 }

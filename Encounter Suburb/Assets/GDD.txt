@@ -26,8 +26,14 @@ Done:
  
     Player hitpoints in hud
     Base hitpoint in hud
+    Properify Layer Usage(collisions)
 
+    Randomize tank wave type order, using level name as seed
+    
 Next up:
+
+    
+    Randomly slightly vary trees', obstacles' and tanks' colors
 
     start spawning next wave if last is killed even if time has not passed
 
@@ -44,10 +50,8 @@ Next up:
    
     Clean Gun/Tank/Projectile/Turret hierarchy
     
-      
     Clarify Enemy Tank Controller
     
-    Properify Layer Usage(collisions)
     
     BoxColliders' height should be enough(lot) so that heights don't matter
     

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Bootstrap : MonoBehaviour
+public class LevelBootstrap : MonoBehaviour
 {
-	private static Bootstrap instance;
+	private static LevelBootstrap instance;
 
 	private void Awake()
 	{
