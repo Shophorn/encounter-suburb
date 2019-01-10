@@ -35,7 +35,7 @@ public class ProjectileSystem : MonoBehaviour
 			float step = type.speed * Time.deltaTime;
 			float radius = type.collisionRadius;
 			
-			var toRemove = new List<int>();
+			var toExplode = new List<int>();
 	
 			for (int i = 0; i < count; i++)
 			{
@@ -44,7 +44,7 @@ public class ProjectileSystem : MonoBehaviour
 				{
 					hitInfo.transform.GetComponent<Breakable>().Hit(type.damage);
 
-					toRemove.Add(i);
+					toExplode.Add(i);
 					continue;
 				}
 				
@@ -52,7 +52,7 @@ public class ProjectileSystem : MonoBehaviour
 				current.distance += step;
 				if (current.distance > type.maxRange)
 				{
-					toRemove.Add(i);
+					toExplode.Add(i);
 					continue;
 				}
 				
@@ -62,14 +62,11 @@ public class ProjectileSystem : MonoBehaviour
 			
 			Graphics.DrawMeshInstanced(pair.Key.mesh, 0, pair.Key.material, toRender, count);
 
-			toRemove.Sort();
-			for (int i = 0; i < toRemove.Count; i++)
+			toExplode.Sort();
+			for (int i = 0; i < toExplode.Count; i++)
 			{
-				if (type.blastFX != null)
-				{
-					Instantiate(type.blastFX, list[toRemove[i]].position, Quaternion.identity);
-				}
-				list.RemoveAt(toRemove[i]);
+				Instantiate(type.blastFX, list[toExplode[i]].position, Quaternion.identity);
+				list.RemoveAt(toExplode[i]);
 			}
 		}
 	}
@@ -85,6 +82,7 @@ public class ProjectileSystem : MonoBehaviour
 		if (initialHits.Length > 0)
 		{
 			initialHits[0].GetComponent<Breakable>()?.Hit(type.damage);
+			Instantiate(type.blastFX, position, Quaternion.identity);
 			return;
 		}
 		

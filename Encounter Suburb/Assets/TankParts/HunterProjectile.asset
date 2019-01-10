@@ -17,6 +17,6 @@ MonoBehaviour:
   collisionRadius: 0.2
   damage: 1
   blastRadius: 2
-  blastFX: {fileID: 0}
+  blastFX: {fileID: 198806098259678606, guid: ce1ba1ae27426e046a643d81b4262116, type: 2}
   maxRange: 8
   explodeOnMaxRange: 0
