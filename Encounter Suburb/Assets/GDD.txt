@@ -29,7 +29,7 @@ Done:
 
 Next up:
 
-    fix bullets hitting things behind walls
+    start spawning next wave if last is killed even if time has not passed
 
     Heavy - Bigger better overall tnak
 
@@ -37,6 +37,7 @@ Next up:
     Make buffer check so that tank can stop even before it collides with breakable.
     Enemies check real line of sight with raycast
         Use raycast to cast from enemy to player
+        use this when deciding to shoot and also when checking if player is in range
     Disable Enemy Friendly Fire
     
     Smooth water colliders -> Marching squares
