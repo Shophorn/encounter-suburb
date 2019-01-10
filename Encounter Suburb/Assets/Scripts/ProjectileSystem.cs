@@ -49,8 +49,10 @@ public class ProjectileSystem : MonoBehaviour
 			
 			for (int i = 0; i < counts[t]; i++)
 			{
+				var current = list[i];
+				
 				RaycastHit hitInfo;
-				if (Physics.SphereCast(list[i].position, radius, list[i].direction, out hitInfo, step, hitMask))
+				if (Physics.SphereCast(current.position, radius, current.direction, out hitInfo, step, hitMask))
 				{
 					hitInfo.transform.GetComponent<Breakable>().Hit(damage);
 					
@@ -58,7 +60,6 @@ public class ProjectileSystem : MonoBehaviour
 					continue;
 				}
 				
-				var current = list[i];
 				current.distance += step;
 				if (current.distance > maxRange)
 				{
@@ -66,12 +67,11 @@ public class ProjectileSystem : MonoBehaviour
 					continue;
 				}
 				
+				// Remember to reset
 				list[i] = current;
 				toRender[i] = Matrix4x4.TRS(current.position, current.rotation, Vector3.one * radius);
 			}
 			
-			Graphics.DrawMeshInstanced(mesh, 0, material, toRender, counts[t]);
-
 			SortReversed(toExplode, toExplodeCount);
 			for (int i = 0; i < toExplodeCount; i++) {
 				// TODO: use pool
@@ -81,6 +81,8 @@ public class ProjectileSystem : MonoBehaviour
 				list[toExplode[i]] = list[counts[t] - 1];
 				counts[t]--;
 			}
+			
+			Graphics.DrawMeshInstanced(mesh, 0, material, toRender, counts[t]);
 		}
 		
 	}
