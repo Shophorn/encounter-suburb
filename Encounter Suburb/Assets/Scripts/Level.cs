@@ -112,7 +112,7 @@ public class Level : IDisposable
 		mapObject.GetComponent<MeshFilter>().mesh = mapMesh;
 		mapObject.GetComponent<MeshRenderer>().material = material;
 
-		mapTexture = map.CreateTexture(512);
+		mapTexture = MapTextureGenerator.Generate(map, 2048);
 		material.mainTexture = mapTexture;
 
 		var collider = mapObject.GetComponent<MeshCollider>();

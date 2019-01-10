@@ -736,6 +736,12 @@ MonoBehaviour:
     type: 2}
   _basePrefab: {fileID: 114359536767445366, guid: 81b4e9b277ed3a24f816918bfbd98047,
     type: 2}
+  _groundTexture: {fileID: 2800000, guid: 2003a069fc40fd34a85aedcc0a8163bb, type: 3}
+  _waterTexture: {fileID: 2800000, guid: 70d3df7b2becea1498c587aa74990698, type: 3}
+  _woodsTexture: {fileID: 2800000, guid: a3fc8744d2fdcdf48a6edfe271d65b25, type: 3}
+  _constructionTexture: {fileID: 2800000, guid: 7da33e8fc9aa4724ba13bedc9278f0a8,
+    type: 3}
+  _tileMask: {fileID: 2800000, guid: cf7744bba94317748bb427aa34fedacd, type: 3}
 --- !u!114 &286161062
 MonoBehaviour:
   m_ObjectHideFlags: 0

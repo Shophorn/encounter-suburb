@@ -22,4 +22,16 @@ public class LevelBootstrap : MonoBehaviour
 	public static GameObject bushPrefab => instance._bushPrefab;
 	public static GameObject waterPrefab => instance._waterPrefab;
 	public static Breakable playerBasePrefab => instance._basePrefab;
+
+	[SerializeField] private Texture2D _groundTexture;
+	[SerializeField] private Texture2D _waterTexture;
+	[SerializeField] private Texture2D _woodsTexture;
+	[SerializeField] private Texture2D _constructionTexture;
+	[SerializeField] private Texture2D _tileMask;
+
+	public static Texture2D groundTexture => instance._groundTexture;
+	public static Texture2D waterTexture => instance._waterTexture;
+	public static Texture2D woodsTexture => instance._woodsTexture;
+	public static Texture2D constructionTexture => instance._constructionTexture;
+	public static Texture2D tileMask => instance._tileMask;
 }

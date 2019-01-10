@@ -19,20 +19,6 @@ public enum TileType
 [Serializable]
 public class Map
 {
-	private static readonly Color[] tileTextureColors =
-	{
-		new Color(0.23f, 0.13f, 0.02f), 
-		new Color(0.15f, 0.66f, 0.09f), 
-		new Color(0.86f, 0.93f, 1f), 
-		new Color(0.18f, 0.22f, 1f), 
-		new Color(0.61f, 0.1f, 0.07f), 
-		new Color(0.48f, 0.48f, 0.48f), 
-		
-		Color.black,
-		Color.white, 
-		Color.grey,
-	};
-
 	private static Dictionary<Color32, TileType> imageToTileMap = new Dictionary<Color32, TileType> 
 	{
 		{ new Color32(255, 255, 0, 255), 	TileType.Ground 	 },
@@ -115,33 +101,6 @@ public class Map
 		mesh.RecalculateNormals();
 
 		return mesh;
-	}
-
-	public Texture2D CreateTexture(int resolution)
-	{
-		var pixels = new Color32[resolution * resolution];
-		for (int p = 0, y = 0; y < resolution; y++)
-		{
-			int yy = (int) (((float) y / resolution) * size);
-			for (int x = 0; x < resolution; x++, p++)
-			{
-				int xx = (int) (((float) x / resolution) * size);
-
-				var tile = tiles[xx, yy];
-				if (tile == TileType.EnemySpawn || tile == TileType.PlayerSpawn)
-				{
-					tile = TileType.Ground;
-				}
-				
-				pixels[p] = tileTextureColors[(int)tile];
-			}
-		}
-		
-		var texture = new Texture2D(resolution, resolution);
-		texture.SetPixels32(pixels);
-		texture.filterMode = FilterMode.Point;
-		texture.Apply();
-		return texture;
 	}
 
 	public Vector2Int[] GridPositions(TileType type)

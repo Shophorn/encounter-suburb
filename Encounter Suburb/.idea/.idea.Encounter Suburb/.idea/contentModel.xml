@@ -10,6 +10,7 @@
         <e p="Scripts" t="Include">
           <e p="BackGroundMusic.cs" t="Include" />
           <e p="Breakable.cs" t="Include" />
+          <e p="ColourVariator.cs" t="Include" />
           <e p="EnemyTankBehaviour.cs" t="Include" />
           <e p="EnemyTankControllerSystem.cs" t="Include" />
           <e p="GameManager.cs" t="Include" />
@@ -18,6 +19,7 @@
           <e p="LevelBootstrap.cs" t="Include" />
           <e p="LevelInfo.cs" t="Include" />
           <e p="Map.cs" t="Include" />
+          <e p="MapTextureGenerator.cs" t="Include" />
           <e p="Maths.cs" t="Include" />
           <e p="MenuSystem.cs" t="Include" />
           <e p="PathFinding" t="Include">
