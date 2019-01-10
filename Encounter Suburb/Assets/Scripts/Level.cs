@@ -40,13 +40,15 @@ public class Level : IDisposable
 
 	public Breakable playerBaseBreakable { get; private set; }
 
-	private Random random;
+	// Pseudo random generator
+	private readonly Random random;
 	private float randomFloat => (float) random.NextDouble();
 	
 	public Level(Texture2D mapTexture)
 	{
 		this.mapTexture = mapTexture;
 		map = Map.FromTexture(mapTexture);
+		random = new Random(mapTexture.name.GetHashCode());
 	}
 
 	public IEnumerator Spawn()
@@ -69,7 +71,7 @@ public class Level : IDisposable
 					yield return unitDelay;
 			}
 			
-			if (w < spawnWaves.Length - 1)
+			if (w >= spawnWaves.Length - 1)
 				yield return waveDelay;
 		}
 
@@ -96,7 +98,6 @@ public class Level : IDisposable
 	public void BuildMap()
 	{
 		spawnWaves = SpawnWavesFromMapTexture(mapTexture);
-		random = new Random(mapTexture.name.GetHashCode());
 		
 		for (int i = 0; i < spawnWaves.Length; i++)
 		{
@@ -126,12 +127,45 @@ public class Level : IDisposable
 		SpawnProps(TileType.Woods, LevelBootstrap.bushPrefab);
 
 		enemySpawnPoints = map.EnemySpawnPoints();
-
+		RandomizeArray(enemySpawnPoints, random);
+		
 		var basePosition = map.BasePosition();
 		enemyController.playerBasePosition = basePosition;
 		playerBaseBreakable =
 			Object.Instantiate(LevelBootstrap.playerBasePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBaseBreakable.OnBreak += defeatCallback;
+
+		BuildCollidersOnEdges();
+	}
+
+	private void BuildCollidersOnEdges()
+	{
+		var colliders = new GameObject("Colliders");
+		colliders.transform.parent = mapObject.transform;
+		colliders.layer = LayerMask.NameToLayer("Obstacles");
+		
+		float size = map.size;
+		float half = map.size * 0.5f;
+		
+		// South
+		var southCollider = colliders.AddComponent<BoxCollider>();
+		southCollider.size = new Vector3(size + 2f, 1f, 1f);
+		southCollider.center = new Vector3(half, 0.5f, -0.5f);
+		
+		// North
+		var northCollider = colliders.AddComponent<BoxCollider>();
+		northCollider.size = new Vector3(size + 2f, 1f, 1f);
+		northCollider.center = new Vector3(half, 0.5f, size + 0.5f);
+		
+		// East
+		var eastCollider = colliders.AddComponent<BoxCollider>();
+		eastCollider.size = new Vector3(1f, 1f, size);
+		eastCollider.center = new Vector3(-0.5f, 0.5f, half);
+		
+		// West
+		var westCollider = colliders.AddComponent<BoxCollider>();
+		westCollider.size = new Vector3(1f, 1f, size);
+		westCollider.center = new Vector3(-0.5f, 0.5f, half);
 	}
 
 	private void SpawnBreakables(TileType type, Breakable prefab)

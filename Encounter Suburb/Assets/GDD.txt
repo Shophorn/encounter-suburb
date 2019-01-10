@@ -28,12 +28,21 @@ Done:
     Procedural colour tweaking:
         Randomize tank wave type order, using level name as seed
         Randomly slightly vary trees', obstacles' and tanks' colors
+        
+    
+    Build map ground texture from multiple textures
+    
+    Actual enemy spawnings and spawn points are generated from available pools
+
+    VFX
     
 Next up:
+    Colliders on edges
+
+    Effects
+        SFX
 
     start spawning next wave if last is killed even if time has not passed
-
-    proceduralize spawnpoints similar to enemy types
 
     Heavy - Bigger better overall tnak
 
@@ -54,9 +63,6 @@ Next up:
     BoxColliders' height should be enough(lot) so that heights don't matter
     
     
-    Effects
-        VFX
-        SFX
     
     
     secret word to get to level 
