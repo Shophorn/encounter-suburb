@@ -37,7 +37,7 @@ public class Level : IDisposable
 	private Texture2D mapTexture = null;
 
 //	public EnemyTankControllerSystem enemyController;
-	public BetterTankControllerSystem enemyController;
+	public EnemyTankControllerSystem enemyController;
 	
 	public Breakable playerBaseBreakable { get; private set; }
 

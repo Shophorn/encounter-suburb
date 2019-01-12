@@ -69,6 +69,7 @@ public class Tank : MonoBehaviour
 
 	private float Collide(float drive)
 	{
+		// Add skinwidth to drive ray length, to collide before actucal contact
 		const float skinWidth = 1f;
 		drive += skinWidth;
 		
@@ -94,11 +95,10 @@ public class Tank : MonoBehaviour
 					OnCollideBreakable?.Invoke(breakable);
 				}
 			}
-			
-//			Debug.DrawRay(transform.TransformPoint(collisionRayPoints[i]), transform.forward, Color.cyan);
 		}
-
-		return drive - skinWidth;
+		
+		// Remove skinwidth, but as drive now may be smaller than that, limit to zero to not drive backwards
+		return Mathf.Max(0f, drive - skinWidth);
 	}
 	
 	public void AimTurretAt(Vector3 point)

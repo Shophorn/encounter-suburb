@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 	private MenuSystem menuSystem;
 
 //	public EnemyTankControllerSystem enemyController;
-	public BetterTankControllerSystem enemyController;
+	public EnemyTankControllerSystem enemyController;
 	
 	// Shouldn't really mess with these, values are found working by experiment
 	[Header("Camera Position Values")]
