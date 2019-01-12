@@ -58,16 +58,24 @@ public static class MapTextureGenerator
 		Array.Clear(mask, 0, pixelCount);
 
 		// Water tiles
-		GenerateLayer(layer, resolution, LevelBootstrap.waterTexture, textureScale);
+//		GenerateLayer(layer, resolution, LevelBootstrap.waterTexture, textureScale);
 		MaskFromPositions(mask, resolution, waterTilePositions, map.size);
-		ApplyLayerWithMask(image, layer, mask, pixelCount);
-		
+//		ApplyLayerWithMask(image, layer, mask, pixelCount);
+		ApplyMaskOnAlphaChannel(image, mask, pixelCount);
 		
 		var texture = new Texture2D(resolution, resolution);
 		texture.SetPixels32(image);
 		texture.Apply();
 
 		return texture;
+	}
+
+	private static void ApplyMaskOnAlphaChannel(Color32[] image, float[] layer, int pixelCount)
+	{
+		for (int i = 0; i < pixelCount; i++)
+		{
+			image[i].a = (byte)(layer[i] * 255);
+		}
 	}
 
 	private static void ApplyLayerWithMask(Color32[] first, Color32[] second, float[] mask, int count)

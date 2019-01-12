@@ -18,6 +18,7 @@
           <e p="Level.cs" t="Include" />
           <e p="LevelBootstrap.cs" t="Include" />
           <e p="Map.cs" t="Include" />
+          <e p="MapLoader.cs" t="Include" />
           <e p="MapTextureGenerator.cs" t="Include" />
           <e p="Maths.cs" t="Include" />
           <e p="MenuSystem.cs" t="Include" />
@@ -42,6 +43,9 @@
             <e p="InvokeUtility.cs" t="Include" />
           </e>
           <e p="UVDebug.shader" t="Include" />
+        </e>
+        <e p="Shaders" t="Include">
+          <e p="MapShader.shader" t="Include" />
         </e>
       </e>
       <e p="Encounter Suburb.sln" t="IncludeFlat" />

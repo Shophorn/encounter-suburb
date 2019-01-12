@@ -34,4 +34,8 @@ public class LevelBootstrap : MonoBehaviour
 	public static Texture2D woodsTexture => instance._woodsTexture;
 	public static Texture2D constructionTexture => instance._constructionTexture;
 	public static Texture2D tileMask => instance._tileMask;
+
+	[SerializeField] private Material _mapMaterial;
+	
+	public static Material mapMaterial => instance._mapMaterial;
 }

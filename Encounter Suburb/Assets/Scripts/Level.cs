@@ -16,7 +16,6 @@ public class Level : IDisposable
 
 	public Map map;
 	private SpawnWave[] spawnWaves;
-	public Material material;
 
 	private static readonly Vector3 gridOffset = Vector3.one * 0.5f;
 
@@ -115,6 +114,8 @@ public class Level : IDisposable
 
 		mapMesh = map.BuildMesh();
 		mapObject.GetComponent<MeshFilter>().mesh = mapMesh;
+		
+		var material = new Material(LevelBootstrap.mapMaterial);
 		mapObject.GetComponent<MeshRenderer>().material = material;
 
 		mapTexture = MapTextureGenerator.Generate(map, 2048);

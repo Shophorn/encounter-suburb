@@ -9,7 +9,6 @@ using Path = System.IO.Path;
 public class GameManager : MonoBehaviour
 {
 	private Texture2D[] maps;
-	public Material defaultMaterial;
 	private int currentLevelIndex = -1;
 	private int nextLevelIndex => currentLevelIndex + 1;
 	private Level currentLevel = null;
@@ -85,7 +84,6 @@ public class GameManager : MonoBehaviour
 			victoryCallback = OnEnemiesDefeat,
 			defeatCallback = OnPlayerDefeat,
 			enemyController = enemyController,
-			material = defaultMaterial
 		};
 
 		currentLevel.BuildMap();
