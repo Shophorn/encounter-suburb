@@ -1,11 +1,8 @@
 ﻿Shader "Custom/MapShader" {
 	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
-		
 		_WaterTex ("Water Texture", 2D) = "white" {}
+		_WaterTint("Water Tint", color) = (1,1,1,1)
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -20,39 +17,28 @@
 
 		sampler2D _MainTex;
 		sampler2D _WaterTex;
+        fixed4 _WaterTint;  
 
 		struct Input {
 			float2 uv_MainTex;
 			float2 uv_WaterTex;
 		};
 
-		half _Glossiness;
-		half _Metallic;
-		fixed4 _Color;
-//
-//        void vertex(inout appdata_full v, out Input o)
-//        {
-//            UNITY_INITIALIZE_OUTPUT(Input, o);
-//            
-//        }
-
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 		
 		    IN.uv_WaterTex += _Time.x + _SinTime.z * 0.2;
-		
-		    fixed4 waterColor = tex2D (_WaterTex, IN.uv_WaterTex) * _Color;
-		
+		    fixed4 waterColor = tex2D (_WaterTex, IN.uv_WaterTex) * _WaterTint;
 		
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
 			
 			c.rgb = lerp(c.rgb, waterColor.rgb, c.a);
 			
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
+			o.Metallic = 0f;
+			o.Smoothness = 0f;
 			o.Alpha = 1;
 		}
 		ENDCG
