@@ -111,6 +111,8 @@ public class GameManager : MonoBehaviour
 
 	private void UnloadLevel()
 	{
+		playerHpBar.Stop();
+		
 		enemyController.Stop();
 
 		Destroy(playerController.gameObject);
