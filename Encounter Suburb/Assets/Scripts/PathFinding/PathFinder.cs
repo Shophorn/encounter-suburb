@@ -27,12 +27,16 @@ namespace PathFinding
 		
 		public Path FindPath(Vector3 startPosition, Vector3 endPosition, bool preferBreakThings)
 		{
+			// Use A* algorithm to find path
 			Node start = grid.NodeFromWorldPoint(startPosition);
 			Node end = grid.NodeFromWorldPoint(endPosition);
 
 			var openSet = new Heap<Node>(grid.size * grid.size);
 			var closedSet = new HashSet<Node>();
 			openSet.Add(start);
+			
+			// Pre allocate path
+			var neighbours = new Node[8];
 
 			while (openSet.Count > 0)
 			{
@@ -43,12 +47,11 @@ namespace PathFinding
 				{
 					return BuildPathFromNodes(start, end);
 				}
-
-				var neighbours = grid.GetNodeNeighbours(current);
-				for (int i = 0; i < neighbours.Length; i++)
+				
+				// Use pre-allocated array for speediness
+				int neighbourCount = grid.GetNodeNeighboursNonAlloc(current, neighbours);
+				for (int i = 0; i < neighbourCount; i++)
 				{
-//					bool walkable = neighbours[i].type == NodeType.Open || neighbours[i].type == NodeType.Breakable;
-//					if (!walkable || closedSet.Contains(neighbours[i]))
 					if (neighbours[i].type == NodeType.Impassable || closedSet.Contains(neighbours[i]))
 					{
 						continue;

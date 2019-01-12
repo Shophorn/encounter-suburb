@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour
 		{
 			for (int x = 0; x < grid.size; x++)
 			{
-				float value = grid.nodes[x, y].preferDriveAroundPenalty / 10f;
+				float value = grid.nodes[x, y].preferDriveAroundPenalty / (float)Node.maxMovePenalty;
 				if (value < 0)
 				{
 					value = 1f;
@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour
 					Gizmos.color = new Color(red, value, 0f, 1f);
 				}
 				
-				Gizmos.DrawCube(grid.GridToWorld(x, y), Vector3.one * 0.2f);
+				Gizmos.DrawCube(grid.GridToWorld(x, y), Vector3.one * (0.9f / Grid.resolution));
 			}
 		}
 	}
