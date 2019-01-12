@@ -56,8 +56,6 @@ namespace PathFinding
 		
 		private void BlurNodeWeights()
 		{
-			var sw = System.Diagnostics.Stopwatch.StartNew();
-			
 			const int kernelSize = 1 + 2 * blurKernelExtents;
 			const int kernelArea = kernelSize * kernelSize;
 
@@ -144,100 +142,8 @@ namespace PathFinding
 					nodes[x, y].preferDriveAroundPenalty = Mathf.RoundToInt(driveAroundVerticalPass[x + y * size] / kernelArea);
 				}
 			}
-		
-			Debug.Log($"Blurring path took {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} ms");
 		}
-/*
-		private void BlurNodeWeights()
-		{
-			BetterBlurNodeWeights();
-			return;
-			
-			var sw = System.Diagnostics.Stopwatch.StartNew();
-			
-			const int kernelSize = 1 + 2 * blurKernelExtents;
-			const int kernelArea = kernelSize * kernelSize;
 
-
-			// Horizontal pass
-			var breakWallsHorizontalPass = new int [size, size];
-			var driveAroundHorizontalPass = new int[size, size];
-			for (int y = 0; y < size; y++)
-			{
-				// First column, do full kernel
-				for (int n = -blurKernelExtents; n <= blurKernelExtents; n++)
-				{
-					int xx = Mathf.Clamp(n, 0, size - 1);
-					breakWallsHorizontalPass[0, y] += nodes[xx, y].preferBreakWallsPenaltyRaw;
-					driveAroundHorizontalPass[0, y] += nodes[xx, y].preferDriveAroundPenaltyRaw;
-				}
-				
-				// Other columns, just remove last, and add next
-				for (int x = 1; x < size; x++)
-				{
-					int removeIndex = Mathf.Max(x - blurKernelExtents - 1, 0);
-					int addIndex = Mathf.Min(x + blurKernelExtents, size - 1);
-
-					Node remove = nodes[removeIndex, y];
-					Node add = nodes[addIndex, y];
-					
-					breakWallsHorizontalPass[x, y] =
-						breakWallsHorizontalPass[x - 1, y]
-						- remove.preferBreakWallsPenaltyRaw
-						+ add.preferBreakWallsPenaltyRaw;
-							
-					driveAroundHorizontalPass[x, y] =
-						driveAroundHorizontalPass[x - 1, y]
-						- remove.preferDriveAroundPenaltyRaw
-						+ add.preferDriveAroundPenaltyRaw;
-				}
-			}
-
-			// Vertical pass
-			var breakWallsVerticalPass = new float [size, size];
-			var driveAroundVerticalPass = new float [size, size];
-			for (int x = 0; x < size; x++)
-			{
-				// First row, full kernel
-				for (int n = -blurKernelExtents; n <= blurKernelExtents; n++)
-				{
-					int yy = Mathf.Clamp(n, 0, size - 1);
-					breakWallsVerticalPass[x, 0] += breakWallsHorizontalPass[x, yy];
-					driveAroundVerticalPass[x, 0] += driveAroundHorizontalPass[x, yy];
-				}
-				
-				// Other rows, subtract last, add next
-				for (int y = 1; y < size; y++)
-				{
-					int removeIndex = Mathf.Max(y - blurKernelExtents - 1, 0);
-					int addIndex = Mathf.Min(y + blurKernelExtents, size - 1);
-					
-					breakWallsVerticalPass[x, y] =
-						breakWallsVerticalPass[x, y - 1]
-						- breakWallsHorizontalPass[x, removeIndex]
-						+ breakWallsHorizontalPass[x, addIndex];
-
-					driveAroundVerticalPass[x, y] =
-						driveAroundVerticalPass[x, y - 1]
-						- driveAroundHorizontalPass[x, removeIndex]
-						+ driveAroundHorizontalPass[x, addIndex];
-				}
-			}
-
-			// Write results
-			for (int y = 0; y < size; y++)
-			{
-				for (int x = 0; x < size; x++)
-				{
-					if (nodes[x, y].type == NodeType.Impassable) continue;
-					nodes[x, y].preferBreakWallsPenalty = Mathf.RoundToInt(breakWallsVerticalPass[x, y] / kernelArea);
-					nodes[x, y].preferDriveAroundPenalty = Mathf.RoundToInt(driveAroundVerticalPass[x, y] / kernelArea);
-				}
-			}
-		
-			Debug.Log($"Blurring path took {sw.ElapsedTicks} ticks, {sw.ElapsedMilliseconds} ms");
-		}
-*/
 		public int GetNodeNeighboursNonAlloc(Node node, Node[] neighbours)
 		{
 			int x = node.gridPosition.x;

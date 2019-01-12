@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4233459458341024}
   - component: {fileID: 114094446581084136}
+  - component: {fileID: 114685884746692112}
   m_Layer: 0
   m_Name: TreeCover
   m_TagString: Untagged
@@ -155,3 +156,15 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   renderers:
   - {fileID: 23226503907370164}
+--- !u!114 &114685884746692112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1231425226048650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5c8deb1a024a8485926b4996c5a67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: {x: 0.1, y: 0.1, z: 0.1}

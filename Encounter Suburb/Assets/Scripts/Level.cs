@@ -36,8 +36,9 @@ public class Level : IDisposable
 	private Mesh mapMesh = null;
 	private Texture2D mapTexture = null;
 
-	public EnemyTankControllerSystem enemyController;
-
+//	public EnemyTankControllerSystem enemyController;
+	public BetterTankControllerSystem enemyController;
+	
 	public Breakable playerBaseBreakable { get; private set; }
 
 	// Pseudo random generator
@@ -64,7 +65,8 @@ public class Level : IDisposable
 			{
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
 
-				enemyController.Spawn(enemySpawnPoints[pointIndex], spawnWaves[w].spawnings[u]);
+//				enemyController.Spawn(enemySpawnPoints[pointIndex], spawnWaves[w].spawnings[u]);
+				enemyController.Spawn(spawnWaves[w].spawnings[u], enemySpawnPoints[pointIndex]);
 				enemySpawnedCount++;
 				
 				Debug.Log("Spawned Unit");

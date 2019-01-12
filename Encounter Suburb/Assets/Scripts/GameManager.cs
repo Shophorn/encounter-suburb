@@ -16,7 +16,8 @@ public class GameManager : MonoBehaviour
 
 	private MenuSystem menuSystem;
 
-	public EnemyTankControllerSystem enemyController;
+//	public EnemyTankControllerSystem enemyController;
+	public BetterTankControllerSystem enemyController;
 	
 	// Shouldn't really mess with these, values are found working by experiment
 	[Header("Camera Position Values")]
@@ -100,7 +101,10 @@ public class GameManager : MonoBehaviour
 		playerController.GetComponent<Breakable>().OnBreak += OnPlayerDefeat;
 			
 		enemyController.playerTransform = playerController.transform;
-		enemyController.Begin(20);
+
+		int hunterCount = 20;
+		int pummelCount = 20;
+		enemyController.Begin(hunterCount, pummelCount);
 		StartCoroutine(currentLevel.Spawn());
 
 		backGroundMusic.Play(backGroundMusic.Game);

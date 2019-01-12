@@ -4,15 +4,7 @@ using UnityEngine;
 [CreateAssetMenu]
 public class ProjectileType : ScriptableObject
 {
-//	[NonSerialized] public static int count = 0;
 	[NonSerialized] public int id;
-
-//	private void OnEnable()
-//	{
-//		id = count;
-//		count++;
-//	}
-
 
 	public Mesh mesh;
 	public Material material;

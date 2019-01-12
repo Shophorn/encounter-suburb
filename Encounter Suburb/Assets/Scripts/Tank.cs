@@ -105,10 +105,19 @@ public class Tank : MonoBehaviour
 	{
 		var toPoint = point - turretTransform.position;
 		toPoint.y = 0f;
-
 		var target = Quaternion.LookRotation(toPoint);
+		
+		if (fixedTurret)
+		{
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, target, specs.rotationSpeed * Time.deltaTime);
+		}
+		else
+		{
+
 		turretTransform.rotation =
 			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
+			
+		}
 	}
 	
 }

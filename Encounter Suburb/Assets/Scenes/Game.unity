@@ -653,9 +653,9 @@ GameObject:
   m_Component:
   - component: {fileID: 286161059}
   - component: {fileID: 286161058}
-  - component: {fileID: 286161060}
   - component: {fileID: 286161061}
   - component: {fileID: 286161062}
+  - component: {fileID: 286161063}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -690,29 +690,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &286161060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 286161057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5f0b39a1c9f435a8123576409adb476, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathUpdateInterval: 0.2
-  behaviours:
-  - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
-  - {fileID: 11400000, guid: 86dd5e8ae517d9140a8177c248a55abe, type: 2}
-  - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
-  tankCollisionMask:
-    serializedVersion: 2
-    m_Bits: 15360
-  explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
-    type: 2}
-  spawnEffect: {fileID: 198288978794463772, guid: 5e12b358fb5debb4899c9a5af2ecad7e,
-    type: 2}
 --- !u!114 &286161061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,6 +730,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfe90c37275d4383bb6765f036d1e82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &286161063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 286161057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f8e43c3ac94a6fa778d2c184da9ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hunterBehaviour: {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
+  pummelBehaviour: {fileID: 11400000, guid: 86dd5e8ae517d9140a8177c248a55abe, type: 2}
+  tankCollisionMask:
+    serializedVersion: 2
+    m_Bits: 15360
+  pathUpdateInterval: 0.25
+  riseFromUnderworldTime: 1
+  decisionMakeDelay: 0.25
+  spawnEffect: {fileID: 198288978794463772, guid: 5e12b358fb5debb4899c9a5af2ecad7e,
+    type: 2}
 --- !u!1 &413204969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,7 +1501,7 @@ MonoBehaviour:
   defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   playerTankPrefab: {fileID: 114550111218480418, guid: 73622f2e425354846aec6eb26dea7d08,
     type: 2}
-  enemyController: {fileID: 286161060}
+  enemyController: {fileID: 286161063}
   cameraAngle: 50
   cameraPosRatio: {x: 1, y: -0.16875, z: -3.125}
   playerHpBar: {fileID: 1682867123}

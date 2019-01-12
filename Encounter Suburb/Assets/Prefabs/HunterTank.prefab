@@ -408,4 +408,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 20
   doDestroyOnBreak: 0
-  breakFXPrefab: {fileID: 0}
+  breakFXPrefab: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
+    type: 2}

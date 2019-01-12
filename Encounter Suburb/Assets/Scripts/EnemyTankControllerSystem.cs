@@ -28,8 +28,9 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		public float[] pathUpdateTimes;
 		public Breakable[] targetBreakables;
 	}
-
 	private UnitCollection[] unitCollections;
+
+
 	
 	public Transform playerTransform { get; set; }
 	public Vector3 playerBasePosition { get; set; }
@@ -281,7 +282,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				Destroy(unitCollections[i].units[j].gameObject);
 			}
 		}
-
 		unitCollections = null;
 	}
 }
