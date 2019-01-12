@@ -36,12 +36,20 @@ Done:
 
     VFX
     
-Next up:
     Colliders on edges
+    
+    
+Next up:
+
+    pummels rotate to target breakable, pummel behaviour broken altogether
+    targetbreakable can be another tank, fix
+
 
     Effects
         SFX
 
+    build map in thread during level countdown, even in compute shader
+    
     start spawning next wave if last is killed even if time has not passed
 
     Heavy - Bigger better overall tnak
@@ -63,6 +71,9 @@ Next up:
     BoxColliders' height should be enough(lot) so that heights don't matter
     
     
-    
+    Refactor tank, tank specs and tankcontrollers:
+        tank spec:  info of tank type
+        tank:       state of tank instance
+        constoller: behaviour of tanks
     
     secret word to get to level 

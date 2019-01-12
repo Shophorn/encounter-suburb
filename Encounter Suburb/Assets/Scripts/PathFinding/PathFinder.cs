@@ -16,6 +16,8 @@ namespace PathFinding
 		{
 			instance = new PathFinder();
 			instance.grid = grid;
+			
+			GameManager.SetDebugPath(new bool[grid.size, grid.size]);
 		}
 
 		public static void DeleteInstance()
@@ -80,10 +82,14 @@ namespace PathFinding
 			var path = new List<Node>();
 			var current = end;
 
+			GameManager.debugPath = new bool[grid.size, grid.size];
+			
 			while (current != start)
 			{
 				path.Add(current);
 				current = current.parent;
+
+				GameManager.debugPath[current.gridPosition.x, current.gridPosition.y] = true;
 			}
 			
 			// Simplify
@@ -96,7 +102,7 @@ namespace PathFinding
 				var newDirection = new Vector2(path[i - 1].gridPosition.x - path[i].gridPosition.x, path[i - 1].gridPosition.y - path[i].gridPosition.y);
 				if (newDirection != oldDirection)
 				{
-					wayPoints.Add(grid.NodeWorldPosition(path[i - 1].gridPosition));
+					wayPoints.Add(grid.GridToWorld(path[i - 1].gridPosition));
 					directions.Add(oldDirection);
 				}
 				oldDirection = newDirection;

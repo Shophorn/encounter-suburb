@@ -100,9 +100,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4443818341621390}
   - component: {fileID: 114550111218480418}
-  - component: {fileID: 114502750998068516}
   - component: {fileID: 114967119641475954}
   - component: {fileID: 65622160716481122}
+  - component: {fileID: 54941006320358008}
+  - component: {fileID: 114906445042805256}
   m_Layer: 12
   m_Name: PlayerTank
   m_TagString: Untagged
@@ -217,7 +218,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1941843288241032}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5.185934, y: 2.5272548, z: 5.082454}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4381071866739318}
@@ -380,6 +381,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1989389398618240}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &54941006320358008
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1941843288241032}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 116
+  m_CollisionDetection: 1
 --- !u!65 &65622160716481122
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -392,28 +408,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.9, y: 0.85, z: 1.5}
   m_Center: {x: 0, y: 0.425, z: 0}
---- !u!114 &114502750998068516
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1941843288241032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: befc1f9de3464e209af0a7737cce59b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  specs: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
-  fixedTurret: 0
-  gun:
-    type: {fileID: 11400000, guid: 29fc44e33b224bb43960b5c780295b04, type: 2}
-    muzzle: {fileID: 4264836133881110}
-  collider: {fileID: 0}
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  height: 0
-  turretTransform: {fileID: 4047670463766624}
 --- !u!114 &114550111218480418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -430,9 +424,26 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 512
-  tank: {fileID: 114502750998068516}
+  tank: {fileID: 114906445042805256}
   explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
     type: 2}
+--- !u!114 &114906445042805256
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1941843288241032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b89ba5c8e842398fd7fb08dfbbbf22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specs: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
+  fixedTurret: 0
+  gun:
+    type: {fileID: 11400000, guid: 29fc44e33b224bb43960b5c780295b04, type: 2}
+    muzzle: {fileID: 4264836133881110}
+  turretTransform: {fileID: 4047670463766624}
 --- !u!114 &114967119641475954
 MonoBehaviour:
   m_ObjectHideFlags: 1

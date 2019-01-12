@@ -708,7 +708,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7b48ed8653b24534b90f4fe0f9ee2814, type: 2}
   tankCollisionMask:
     serializedVersion: 2
-    m_Bits: 7168
+    m_Bits: 15360
   explosion: {fileID: 198981893720353452, guid: 4c6d6457a74e3fc428bfb8b81ec72ce0,
     type: 2}
   spawnEffect: {fileID: 198288978794463772, guid: 5e12b358fb5debb4899c9a5af2ecad7e,
@@ -1507,7 +1507,7 @@ MonoBehaviour:
   cameraAngle: 50
   cameraPosRatio: {x: 1, y: -0.16875, z: -3.125}
   playerHpBar: {fileID: 1682867123}
-  skipToLevelIndex: -1
+  skipToLevelIndex: 2
 --- !u!4 &1063592053
 Transform:
   m_ObjectHideFlags: 0

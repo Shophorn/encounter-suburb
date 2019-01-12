@@ -67,11 +67,15 @@ public class Level : IDisposable
 				enemyController.Spawn(enemySpawnPoints[pointIndex], spawnWaves[w].spawnings[u]);
 				enemySpawnedCount++;
 				
-				if (u < spawnWaves[w].spawnings.Length -1)
+				Debug.Log("Spawned Unit");
+				
+//				if (u < spawnWaves[w].spawnings.Length -1)
 					yield return unitDelay;
 			}
 			
-			if (w >= spawnWaves.Length - 1)
+			Debug.Log("Spawned Wave");
+			
+//			if (w >= spawnWaves.Length - 1)
 				yield return waveDelay;
 		}
 
@@ -142,7 +146,7 @@ public class Level : IDisposable
 	{
 		var colliders = new GameObject("Colliders");
 		colliders.transform.parent = mapObject.transform;
-		colliders.layer = LayerMask.NameToLayer("Obstacles");
+		colliders.layer = LayerMask.NameToLayer("EdgeColliders");
 		
 		float size = map.size;
 		float half = map.size * 0.5f;
@@ -165,7 +169,7 @@ public class Level : IDisposable
 		// West
 		var westCollider = colliders.AddComponent<BoxCollider>();
 		westCollider.size = new Vector3(1f, 1f, size);
-		westCollider.center = new Vector3(-0.5f, 0.5f, half);
+		westCollider.center = new Vector3(size + 0.5f, 0.5f, half);
 	}
 
 	private void SpawnBreakables(TileType type, Breakable prefab)
@@ -179,7 +183,7 @@ public class Level : IDisposable
 			
 			int x = positions[i].x;
 			int y = positions[i].y;
-			block.OnBreak += () => grid.OnBreakableBreak(x, y);
+			block.OnBreak += () => grid.OnMapObstacleBreak(x, y);
 		}
 	}
 

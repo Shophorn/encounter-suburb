@@ -156,4 +156,3 @@ public struct SimpleTransform
 
 	public Vector3 position => start + direction * distance;
 }
-

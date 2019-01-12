@@ -157,9 +157,17 @@ public class GameManager : MonoBehaviour
 		menuSystem.Show(MenuView.Main);
 	}
 
+	public static bool[,] debugPath = null;
+
+	public static void SetDebugPath(bool[,] path)
+	{
+		Debug.Log("debug path set");
+		debugPath = path;
+	}
+	
 	private void OnDrawGizmosSelected()
 	{
-		if (currentLevel == null || currentLevel.grid == null || !Application.isPlaying) return;
+		if (currentLevel?.grid == null || !Application.isPlaying) return;
 
 		Grid grid = currentLevel.grid;
 		for (int y = 0; y < grid.size; y++)
@@ -173,9 +181,15 @@ public class GameManager : MonoBehaviour
 				}
 				
 				value = 1f - value;
+				float red = grid.nodes[x, y].type == NodeType.Impassable ? 1f : value;
+				Gizmos.color = new Color(red, value, value, 0.8f);
+
+				if (debugPath[x, y])
+				{
+					Gizmos.color = new Color(red, value, 0f, 1f);
+				}
 				
-				Gizmos.color = new Color(value, value, value, 1);
-				Gizmos.DrawCube(grid.NodeWorldPosition(x, y), Vector3.one * 0.2f);
+				Gizmos.DrawCube(grid.GridToWorld(x, y), Vector3.one * 0.2f);
 			}
 		}
 	}

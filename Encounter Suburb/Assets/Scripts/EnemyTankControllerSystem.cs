@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using PathFinding;
 using UnityEngine;
 
@@ -20,7 +18,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	public LayerMask tankCollisionMask;
 
 	[Serializable]
-	class UnitCollection
+	private class UnitCollection
 	{
 		public int activeCount;
 		public int nextFreeIndex;

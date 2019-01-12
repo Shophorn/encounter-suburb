@@ -11,13 +11,15 @@ namespace PathFinding
 	
 	public class Node : IHeapItem<Node>
 	{
-		public NodeType type;
+		public readonly NodeType type;
 		
 		public int gCost;
 		public int hCost;
 		public int fCost => gCost + hCost;
 
 		public Node parent;
+
+		public const int maxMovePenalty = 100;
 		
 		public readonly int preferBreakWallsPenaltyRaw;
 		public readonly int preferDriveAroundPenaltyRaw;
@@ -27,17 +29,17 @@ namespace PathFinding
 		
 		public Vector2Int gridPosition;
 		
-		public Node(int x, int y, TileType tileType)
+		public Node(int x, int y, NodeType type, int breakWallsPenalty, int driveAroundPenalty)
 		{
 			gridPosition = new Vector2Int(x, y);
-			type = FromMapTile(tileType);
+			this.type = type;
 
-			// Store raw values, so we can reblur when we update grid
-			preferBreakWallsPenaltyRaw = preferBreakWallsPenalty = GetPenalty(tileType, true);
-			preferDriveAroundPenaltyRaw = preferDriveAroundPenalty = GetPenalty(tileType, false);
+			// What?
+			preferBreakWallsPenaltyRaw = preferBreakWallsPenalty = breakWallsPenalty;
+			preferDriveAroundPenaltyRaw = preferDriveAroundPenalty = driveAroundPenalty;
 		}
 
-		private static NodeType FromMapTile(TileType tileType)
+		public static NodeType TypeFromMapTile(TileType tileType)
 		{
 			switch (tileType)
 			{
@@ -60,7 +62,7 @@ namespace PathFinding
 			return NodeType.Error;
 		}
 
-		private static int GetPenalty(TileType tileType, bool preferBreakWalls)
+		public static int GetPenalty(TileType tileType, bool preferBreakWalls)
 		{
 			switch (tileType)
 			{
@@ -73,13 +75,13 @@ namespace PathFinding
 				
 				case TileType.WeakWall:
 				case TileType.PlayerBase:
-					return preferBreakWalls ? 2 : 10;
+					return preferBreakWalls ? maxMovePenalty / 10 : maxMovePenalty / 2;
 				
 				case TileType.StrongWall:
-					return preferBreakWalls ? 4 : 20;
+					return preferBreakWalls ? maxMovePenalty / 5 : maxMovePenalty;
 					
 				case TileType.Water:
-					return 20;
+					return maxMovePenalty;
 				
 			}
 

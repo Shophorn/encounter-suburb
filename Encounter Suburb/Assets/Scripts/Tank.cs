@@ -69,7 +69,7 @@ public class Tank : MonoBehaviour
 
 	private float Collide(float drive)
 	{
-		const float skinWidth = 0.01f;
+		const float skinWidth = 1f;
 		drive += skinWidth;
 		
 		RaycastHit hitInfo;
@@ -84,6 +84,8 @@ public class Tank : MonoBehaviour
 
 			if (hit && hitInfo.distance < drive)
 			{
+				Debug.Log($"HIT {hitInfo.transform.name}");
+				
 				drive = hitInfo.distance;
 
 				var breakable = hitInfo.collider.GetComponent<Breakable>();
