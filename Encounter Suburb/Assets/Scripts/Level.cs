@@ -36,7 +36,6 @@ public class Level : IDisposable
 	private Mesh mapMesh = null;
 	private Texture2D mapTexture = null;
 
-//	public EnemyTankControllerSystem enemyController;
 	public EnemyTankControllerSystem enemyController;
 	
 	public Breakable playerBaseBreakable { get; private set; }
@@ -57,7 +56,7 @@ public class Level : IDisposable
 		enemyController.OnTankDestroyed += OnTankDestroyed;
 
 		var unitDelay = new WaitForSeconds(3);
-		var waveDelay = new WaitForSeconds(8);
+		var waveDelay = new WaitForSeconds(5);
 
 		for (int w = 0; w < spawnWaves.Length; w++)
 		{
@@ -65,19 +64,18 @@ public class Level : IDisposable
 			{
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
 
-//				enemyController.Spawn(enemySpawnPoints[pointIndex], spawnWaves[w].spawnings[u]);
 				enemyController.Spawn(spawnWaves[w].spawnings[u], enemySpawnPoints[pointIndex]);
 				enemySpawnedCount++;
 				
 				Debug.Log("Spawned Unit");
 				
-//				if (u < spawnWaves[w].spawnings.Length -1)
+				if (u < spawnWaves[w].spawnings.Length -1)
 					yield return unitDelay;
 			}
 			
 			Debug.Log("Spawned Wave");
 			
-//			if (w >= spawnWaves.Length - 1)
+			if (w >= spawnWaves.Length - 1)
 				yield return waveDelay;
 		}
 

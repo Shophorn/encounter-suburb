@@ -9,7 +9,6 @@
         <e p="GDD.txt" t="Include" />
         <e p="Scripts" t="Include">
           <e p="BackGroundMusic.cs" t="Include" />
-          <e p="BetterTankControllerSystem.cs" t="Include" />
           <e p="Breakable.cs" t="Include" />
           <e p="ColourVariator.cs" t="Include" />
           <e p="EnemyTankBehaviour.cs" t="Include" />
@@ -32,6 +31,7 @@
           <e p="PlayerHpBar.cs" t="Include" />
           <e p="PlayerTank.cs" t="Include" />
           <e p="PlayerTankController.cs" t="Include" />
+          <e p="PositionVariator.cs" t="Include" />
           <e p="ProjectileSystem.cs" t="Include" />
           <e p="ProjectileType.cs" t="Include" />
           <e p="Tank.cs" t="Include" />

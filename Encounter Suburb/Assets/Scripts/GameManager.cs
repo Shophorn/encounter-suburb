@@ -1,6 +1,9 @@
+using System.IO;
 using PathFinding;
 using UnityEngine;
 using Grid = PathFinding.Grid;
+using Path = System.IO.Path;
+
 
 [RequireComponent(typeof(MenuSystem), typeof(BackGroundMusic))]
 public class GameManager : MonoBehaviour
@@ -16,13 +19,11 @@ public class GameManager : MonoBehaviour
 
 	private MenuSystem menuSystem;
 
-//	public EnemyTankControllerSystem enemyController;
 	public EnemyTankControllerSystem enemyController;
 	
-	// Shouldn't really mess with these, values are found working by experiment
 	[Header("Camera Position Values")]
-	public float cameraAngle = 50f;
-	public Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
+	private const float cameraAngle = 50f;
+	private readonly Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
 	private BackGroundMusic backGroundMusic;
 
@@ -58,14 +59,9 @@ public class GameManager : MonoBehaviour
 		
 		menuSystem.mainMenu_Exit.onClick.AddListener(ExitGame);
 
-		ShowMainMenu();		
-		
-		LoadMaps();
-	}
+		ShowMainMenu();
 
-	private void LoadMaps()
-	{
-		maps = Resources.LoadAll<Texture2D>("Maps");
+		maps = MapLoader.Load();
 	}
 
 	private void LoadFirstLevel()
@@ -102,8 +98,10 @@ public class GameManager : MonoBehaviour
 			
 		enemyController.playerTransform = playerController.transform;
 
+		// TODO: read these from map
 		int hunterCount = 20;
 		int pummelCount = 20;
+		
 		enemyController.Begin(hunterCount, pummelCount);
 		StartCoroutine(currentLevel.Spawn());
 
@@ -227,4 +225,8 @@ public class GameManager : MonoBehaviour
 
 		cameraTransform.rotation = Quaternion.Euler(cameraAngle, 0, 0);
 	}
+	
+	
+
+
 }
