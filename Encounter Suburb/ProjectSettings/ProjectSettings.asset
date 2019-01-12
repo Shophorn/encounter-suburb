@@ -649,7 +649,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: ba81d79a-d0b6-4463-9696-e35d03348c08
   projectName: Encounter Suburb
   organizationId: shophorn
