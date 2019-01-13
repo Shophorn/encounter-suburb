@@ -1,9 +1,6 @@
-using System.IO;
 using PathFinding;
 using UnityEngine;
 using Grid = PathFinding.Grid;
-using Path = System.IO.Path;
-
 
 [RequireComponent(typeof(MenuSystem), typeof(BackGroundMusic))]
 public class GameManager : MonoBehaviour

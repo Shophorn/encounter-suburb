@@ -129,7 +129,8 @@ public class Level : IDisposable
 		SpawnBreakables(TileType.StrongWall, LevelBootstrap.concreteBlockPrefab);
 
 		SpawnProps(TileType.Water, LevelBootstrap.waterPrefab);
-		SpawnProps(TileType.Woods, LevelBootstrap.bushPrefab);
+//		SpawnProps(TileType.Woods, LevelBootstrap.RandomTree(random));
+		SpawnRandomProps(TileType.Woods, LevelBootstrap.RandomTree);
 
 		enemySpawnPoints = map.EnemySpawnPoints();
 		RandomizeArray(enemySpawnPoints, random);
@@ -141,6 +142,11 @@ public class Level : IDisposable
 		playerBaseBreakable.OnBreak += defeatCallback;
 
 		BuildCollidersOnEdges();
+
+		var backgroundColor = LevelBootstrap.RandomSkyColor(random);
+		Camera.main.backgroundColor = backgroundColor;
+		RenderSettings.ambientLight = backgroundColor;
+
 	}
 
 	private void BuildCollidersOnEdges()
@@ -193,8 +199,18 @@ public class Level : IDisposable
 		var positions = map.TilePositions(type);
 		for (int i = 0; i < positions.Length; i++)
 		{
-			var obj = Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
-			obj.GetComponent<ColourVariator>()?.Apply(randomFloat);
+			Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
+//			obj.GetComponent<ColourVariator>()?.Apply(randomFloat);
+		}
+	}
+
+	private void SpawnRandomProps(TileType type, Func<Random, GameObject> getter)
+	{
+		var positions = map.TilePositions(type);
+		for (int i = 0; i < positions.Length; i++)
+		{
+			var prefab = getter(random);
+			Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
 		}
 	}
 
