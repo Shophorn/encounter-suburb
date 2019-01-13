@@ -13,7 +13,6 @@ public class PlayerTank : MonoBehaviour
 	
 	[Header("Turret")]
 	public Transform turretTransform;
-	public Vector3 turretForward => turretTransform.forward;
 	
 	private void Awake()
 	{
@@ -51,8 +50,8 @@ public class PlayerTank : MonoBehaviour
 		toPoint.y = 0f;
 
 		var target = Quaternion.LookRotation(toPoint);
-		turretTransform.rotation =
-			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
+		turretTransform.rotation = target;
+//			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
 	}
 	
 }

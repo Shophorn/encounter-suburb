@@ -94,15 +94,16 @@ public class GameManager : MonoBehaviour
 		enemyController.playerTransform = playerController.transform;
 
 		// TODO: read these from map
-		int hunterCount = 20;
-		int pummelCount = 20;
+		int hunterCount = currentLevel.enemyCounts[(int) TankType.Hunter];
+		int pummelCount = currentLevel.enemyCounts[(int) TankType.Pummel];
+		Debug.Log(hunterCount);
 		
 		enemyController.Begin(hunterCount, pummelCount);
 		StartCoroutine(currentLevel.Spawn());
 
 		backGroundMusic.Play(backGroundMusic.Game);
 		
-		playerHpBar.SetPlayer(playerController.tankBreakable);
+		playerHpBar.SetPlayer(playerController.GetComponent<Breakable>());
 		playerHpBar.SetBase(currentLevel.playerBaseBreakable);
 	}
 

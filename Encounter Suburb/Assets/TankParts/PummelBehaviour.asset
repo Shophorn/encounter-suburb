@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec6c3b4bbf284eda850a45a1d8173d99, type: 3}
   m_Name: PummelBehaviour
   m_EditorClassIdentifier: 
-  prefab: {fileID: 114528775350924774, guid: 9091c0ec78115414fb112c04e031e09c, type: 2}
-  engageRange: 10
+  prefab: {fileID: 114349574565208170, guid: 4ed1a0f62d10add4fabf5694dcb4d1ef, type: 2}
+  engageRange: 5
   preferredShootDistance: 3
   preferBreakWalls: 1
   preferTargetPlayer: 2

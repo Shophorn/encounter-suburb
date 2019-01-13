@@ -38,11 +38,12 @@ Done:
     
     Colliders on edges
     
-    
-Next up:
-
     pummels rotate to target breakable, pummel behaviour broken altogether
     targetbreakable can be another tank, fix
+    
+Next up:
+    
+    Controls screen in menu
 
     Effects
         SFX

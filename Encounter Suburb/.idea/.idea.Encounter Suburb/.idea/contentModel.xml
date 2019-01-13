@@ -35,6 +35,7 @@
           <e p="PositionVariator.cs" t="Include" />
           <e p="ProjectileSystem.cs" t="Include" />
           <e p="ProjectileType.cs" t="Include" />
+          <e p="RotationVariator.cs" t="Include" />
           <e p="Tank.cs" t="Include" />
           <e p="TankSpecs.cs" t="Include" />
           <e p="Utilities" t="Include">

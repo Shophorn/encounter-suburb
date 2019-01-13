@@ -1,0 +1,173 @@
+fileFormatVersion: 2
+guid: e8735093f6061264a8fa7da46f47edeb
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Cylinder
+    100002: Cylinder.001
+    100004: hunter_hull
+    100006: hunter_turret
+    100008: //RootNode
+    100010: hunter_treads
+    100012: hunter_muzzle
+    100014: hunter_root
+    100016: pummel_hull
+    100018: pummel_muzzle
+    100020: pummel_root
+    100022: pummel_treads
+    100024: heavy_hull
+    100026: heavy_muzzle_left
+    100028: heavy_muzzle_right
+    100030: heavy_root
+    100032: heavy_treads
+    100034: heavy_turret
+    100036: player_hull
+    100038: player_muzzle
+    100040: player_root
+    100042: player_treads
+    100044: player_turret
+    400000: Cylinder
+    400002: Cylinder.001
+    400004: hunter_hull
+    400006: hunter_turret
+    400008: //RootNode
+    400010: hunter_treads
+    400012: hunter_muzzle
+    400014: hunter_root
+    400016: pummel_hull
+    400018: pummel_muzzle
+    400020: pummel_root
+    400022: pummel_treads
+    400024: heavy_hull
+    400026: heavy_muzzle_left
+    400028: heavy_muzzle_right
+    400030: heavy_root
+    400032: heavy_treads
+    400034: heavy_turret
+    400036: player_hull
+    400038: player_muzzle
+    400040: player_root
+    400042: player_treads
+    400044: player_turret
+    2100000: No Name
+    2300000: Cylinder
+    2300002: Cylinder.001
+    2300004: hunter_hull
+    2300006: hunter_turret
+    2300008: hunter_treads
+    2300010: pummel_hull
+    2300012: pummel_treads
+    2300014: heavy_hull
+    2300016: heavy_treads
+    2300018: heavy_turret
+    2300020: player_hull
+    2300022: player_treads
+    2300024: player_turret
+    3300000: Cylinder
+    3300002: Cylinder.001
+    3300004: hunter_hull
+    3300006: hunter_turret
+    3300008: hunter_treads
+    3300010: pummel_hull
+    3300012: pummel_treads
+    3300014: heavy_hull
+    3300016: heavy_treads
+    3300018: heavy_turret
+    3300020: player_hull
+    3300022: player_treads
+    3300024: player_turret
+    4300000: hunter_turret
+    4300002: hunter_hull
+    4300004: Cylinder.001
+    4300006: Cylinder
+    4300008: hunter_treads
+    4300010: pummel_hull
+    4300012: pummel_treads
+    4300014: heavy_hull
+    4300016: heavy_treads
+    4300018: heavy_turret
+    4300020: player_hull
+    4300022: player_treads
+    4300024: player_turret
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

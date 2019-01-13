@@ -3,25 +3,32 @@ using UnityEngine;
 public class ColourVariator : MonoBehaviour
 {
 	public Gradient colours;
-
+	
+	public float changeValueRange;
+	public bool changeValue;
+	
 	public Renderer[] renderers;
 
 	public void Awake()
 	{
-		var color = colours.Evaluate(Random.value);
-		for (int i = 0; i < renderers.Length; i++)
+		if (changeValue)
 		{
-			renderers[i].material.color = color;
+			var value = 1f + Random.Range(0f, changeValueRange) - (changeValueRange / 2f);
+			for (int i = 0; i < renderers.Length; i++)
+			{
+				var color = renderers[i].material.color * value;
+				renderers[i].material.color = color;
+			}
 		}
-	}
-	
-	public void Apply(float t)
-	{
-		return;
-		var color = colours.Evaluate(t);
-		for (int i = 0; i < renderers.Length; i++)
+		else
 		{
-			renderers[i].material.color = color;
+			var color = colours.Evaluate(Random.value);
+			for (int i = 0; i < renderers.Length; i++)
+			{
+				renderers[i].material.color = color;
+			}
 		}
+		
+		Destroy(this);
 	}
 }

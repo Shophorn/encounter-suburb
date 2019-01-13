@@ -14,6 +14,8 @@ public class Level : IDisposable
 		public TankType[] spawnings;
 	}
 
+	public int[] enemyCounts;
+	
 	public Map map;
 	private SpawnWave[] spawnWaves;
 
@@ -66,15 +68,11 @@ public class Level : IDisposable
 				enemyController.Spawn(spawnWaves[w].spawnings[u], enemySpawnPoints[pointIndex]);
 				enemySpawnedCount++;
 				
-				Debug.Log("Spawned Unit");
-				
 				if (u < spawnWaves[w].spawnings.Length -1)
 					yield return unitDelay;
 			}
 			
-			Debug.Log("Spawned Wave");
-			
-			if (w >= spawnWaves.Length - 1)
+			if (w < spawnWaves.Length - 1)
 				yield return waveDelay;
 		}
 
@@ -129,7 +127,6 @@ public class Level : IDisposable
 		SpawnBreakables(TileType.StrongWall, LevelBootstrap.concreteBlockPrefab);
 
 		SpawnProps(TileType.Water, LevelBootstrap.waterPrefab);
-//		SpawnProps(TileType.Woods, LevelBootstrap.RandomTree(random));
 		SpawnRandomProps(TileType.Woods, LevelBootstrap.RandomTree);
 
 		enemySpawnPoints = map.EnemySpawnPoints();
@@ -147,7 +144,9 @@ public class Level : IDisposable
 		Camera.main.backgroundColor = backgroundColor;
 		RenderSettings.ambientLight = backgroundColor;
 
-	}
+		enemyCounts = GetEnemyCounts(spawnWaves);
+
+	} // build map
 
 	private void BuildCollidersOnEdges()
 	{
@@ -186,7 +185,6 @@ public class Level : IDisposable
 		{
 			var point = new Vector3(positions[i].x, 0, positions[i].y);
 			var block = Object.Instantiate(prefab, point + gridOffset, Quaternion.identity, mapObject.transform);
-			block.GetComponent<ColourVariator>()?.Apply(randomFloat);
 			
 			int x = positions[i].x;
 			int y = positions[i].y;
@@ -200,7 +198,6 @@ public class Level : IDisposable
 		for (int i = 0; i < positions.Length; i++)
 		{
 			Object.Instantiate(prefab, positions[i] + gridOffset, Quaternion.identity, mapObject.transform);
-//			obj.GetComponent<ColourVariator>()?.Apply(randomFloat);
 		}
 	}
 
@@ -270,12 +267,34 @@ public class Level : IDisposable
 				new SpawnWave {spawnings = new TankType[] {TankType.Hunter}}
 			};
 		}
-
+		
 		var returnArray = new SpawnWave[waveCount];
 		Array.Copy(waves, returnArray, waveCount);
 		return returnArray;
 	}
 
+
+	private static int[] GetEnemyCounts(SpawnWave [] waves)
+	{
+		int hunterCount = 0;
+		int pummelCount = 0;
+		int heavyCount = 0;
+
+		for (int i = 0; i < waves.Length; i++)
+		{
+			for (int j = 0; j < waves[i].spawnings.Length; j++)
+			{
+				switch (waves[i].spawnings[j])
+				{
+					case TankType.Hunter: hunterCount++; break;
+					case TankType.Pummel: pummelCount++; break;
+					case TankType.Heavy: heavyCount++; break;
+				}
+			}
+		}
+
+		return new int[3] {hunterCount, pummelCount, heavyCount};
+	}
 
 	private static void RandomizeArray<T>(T[] array, Random random)
 	{
