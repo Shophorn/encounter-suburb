@@ -7,7 +7,7 @@ using Grid = PathFinding.Grid;
 using Random = System.Random;
 
 [Serializable]
-public class Level : IDisposable
+public class Level
 {
 	private struct SpawnWave
 	{
@@ -26,7 +26,6 @@ public class Level : IDisposable
 	
 	private int enemyKilledCount = 0;
 	private int enemySpawnedCount = 0;
-	private bool allSpawned;
 
 	public Grid grid;
 
@@ -35,8 +34,6 @@ public class Level : IDisposable
 	private Mesh mapMesh = null;
 	private Texture2D mapTexture = null;
 	
-	// Use this to track if we should break from spawn coroutine
-	private bool disposed = false;
 
 	public EnemyTankControllerSystem enemyController;
 	
@@ -55,48 +52,32 @@ public class Level : IDisposable
 	
 	public IEnumerator Spawn()
 	{
-		enemyController.OnTankDestroyed += OnTankDestroyed;
-
+		enemyController.OnTankDestroyed += () => enemyKilledCount++;
 		var unitDelay = new WaitForSeconds(3);
-		var waveDelay = new WaitForSeconds(5);
 
 		for (int w = 0; w < spawnWaves.Length; w++)
 		{
 			for (int u = 0; u < spawnWaves[w].spawnings.Length; u++)
 			{
-				// If player dies we need to stop this from trying to spawn more enemies after level unload
-				if (disposed) yield break;
-				
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
 
 				enemyController.Spawn(spawnWaves[w].spawnings[u], enemySpawnPoints[pointIndex]);
 				enemySpawnedCount++;
 				
-				if (u < spawnWaves[w].spawnings.Length -1)
-					yield return unitDelay;
+				yield return unitDelay;
 			}
 			
-			if (w < spawnWaves.Length - 1)
-				yield return waveDelay;
+			// Wait for wave to be killed
+			while (enemyKilledCount < enemySpawnedCount)
+				yield return null;
 		}
-
-		allSpawned = true;
+		
+		// This means player has killed everyone
+		victoryCallback();
 	}
 
-	private void OnTankDestroyed()
+	public void Unload()
 	{
-		enemyKilledCount++;
-		
-		if (allSpawned && enemySpawnedCount == enemyKilledCount)
-		{
-			victoryCallback();
-		}
-	}
-
-	public void Dispose()
-	{
-		disposed = true;
-		
 		Object.Destroy(mapObject);
 		Object.Destroy(mapMesh);
 		Object.Destroy(mapTexture);
@@ -238,6 +219,8 @@ public class Level : IDisposable
 				int hunterCount = pixels[index].r;
 				int pummelCount = pixels[index].g;
 				int heavyCount = pixels[index].b;
+
+				int ii = 0;
 
 				var spawnings = new TankType[hunterCount + pummelCount + heavyCount];
 				for (int i = 0; i < hunterCount; i++)

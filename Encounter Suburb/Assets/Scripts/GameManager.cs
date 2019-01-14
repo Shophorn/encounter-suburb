@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 	private int currentLevelIndex = -1;
 	private int nextLevelIndex => currentLevelIndex + 1;
 	private Level currentLevel = null;
+	private Coroutine levelSpawner;
 	
 	public PlayerTankController playerTankPrefab;
 	private PlayerTankController playerController;
@@ -100,8 +101,8 @@ public class GameManager : MonoBehaviour
 		int heavyCount = enemyCounts[(int) TankType.Heavy];
 		
 		enemyController.Begin(hunterCount, pummelCount, heavyCount);
-		StartCoroutine(currentLevel.Spawn());
-
+		levelSpawner = StartCoroutine(currentLevel.Spawn());
+		
 		backGroundMusic.Play(backGroundMusic.Game);
 		
 		playerHpBar.SetPlayer(playerController.GetComponent<Breakable>());
@@ -117,7 +118,8 @@ public class GameManager : MonoBehaviour
 		Destroy(playerController.gameObject);
 		playerController = null;
 		
-		currentLevel.Dispose();
+		StopCoroutine(levelSpawner);
+		currentLevel.Unload();
 		currentLevel = null;
 
 		PathFinder.DeleteInstance();

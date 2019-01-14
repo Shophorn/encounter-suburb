@@ -47,7 +47,7 @@ Done:
     
 
 Next up:
-    New waves to spawn when last is done 
+    New waves to spawn when last is killed
         
     Base not appearing
     Tanks rotate to base on spawn
