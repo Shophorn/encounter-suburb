@@ -42,18 +42,11 @@ Done:
     pummels rotate to target breakable, pummel behaviour broken altogether
     targetbreakable can be another tank, fix
     
-Next up:
-    
     Enemies shoot bursts
-        hunters many
-        pummels 1
-        heavies 1 per gun = 2
-        
-    {
-        burst length
-        burst fire rate
-        burst cooldown
-    }
+    
+    
+
+Next up:
     New waves to spawn when last is done 
         
     Base not appearing

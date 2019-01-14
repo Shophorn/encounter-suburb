@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: PummelBehaviour
   m_EditorClassIdentifier: 
   prefab: {fileID: 114349574565208170, guid: 4ed1a0f62d10add4fabf5694dcb4d1ef, type: 2}
+  specs: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
   engageRange: 5
   preferredShootDistance: 3
   preferBreakWalls: 1

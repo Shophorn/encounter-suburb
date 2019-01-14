@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerTankController : MonoBehaviour
@@ -9,6 +10,8 @@ public class PlayerTankController : MonoBehaviour
 
 	public PlayerTank tank;
 
+	private IEnumerator shootEnumerator;
+	
 	private void Update()
 	{
 		var input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
@@ -27,11 +30,11 @@ public class PlayerTankController : MonoBehaviour
 		}
 
 		// Shoot
-		if (Input.GetButton("Fire1"))
+		tank.collider.enabled = false;
+		if (shootEnumerator == null || !shootEnumerator.MoveNext())
 		{
-			tank.collider.enabled = false;
-			tank.gun.FireOnce();
-			tank.collider.enabled = true;
+			shootEnumerator = Input.GetButton("Fire1") ? tank.gun.FireBurst() : null;
 		}
+		tank.collider.enabled = true;
 	}
 }

@@ -16,5 +16,5 @@ MonoBehaviour:
   turretTurnSpeed: 360
   projectile: {fileID: 11400000, guid: c6c40bbd3c323f44cabd7efac555b73f, type: 2}
   burstCount: 1
-  fireRate: 3
-  burstCooldownTime: 2
+  fireRate: 4
+  burstCooldownTime: 0
