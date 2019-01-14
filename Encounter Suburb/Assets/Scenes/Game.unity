@@ -113,6 +113,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &4401374 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4106066794960596, guid: aa855c94f77553c4990457d8e0a575a5,
+    type: 2}
+  m_PrefabInternal: {fileID: 424859296}
 --- !u!1 &36508318
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,6 +915,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114071722502560620, guid: aa855c94f77553c4990457d8e0a575a5,
+        type: 2}
+      propertyPath: turretTransform
+      value: 
+      objectReference: {fileID: 4401374}
+    - target: {fileID: 114071722502560620, guid: aa855c94f77553c4990457d8e0a575a5,
+        type: 2}
+      propertyPath: muzzle
+      value: 
+      objectReference: {fileID: 727580046}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa855c94f77553c4990457d8e0a575a5, type: 2}
   m_IsPrefabAsset: 0
@@ -1193,6 +1208,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4889851698287842, guid: 4ed1a0f62d10add4fabf5694dcb4d1ef,
     type: 2}
   m_PrefabInternal: {fileID: 1885178305}
+--- !u!4 &727580046 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4201562170631712, guid: aa855c94f77553c4990457d8e0a575a5,
+    type: 2}
+  m_PrefabInternal: {fileID: 424859296}
 --- !u!1 &751490284
 GameObject:
   m_ObjectHideFlags: 0

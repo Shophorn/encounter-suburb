@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 114485668775646778}
   - component: {fileID: 65242467264884844}
   - component: {fileID: 54914800648736684}
-  - component: {fileID: 114101954900571178}
   - component: {fileID: 114071722502560620}
   m_Layer: 11
   m_Name: PlayerTank
@@ -393,20 +392,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 512
-  tank: {fileID: 114101954900571178}
---- !u!114 &114101954900571178
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1301212164704414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03b89ba5c8e842398fd7fb08dfbbbf22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   specs: {fileID: 11400000, guid: 0274a74ec9accf9419ff713152ef1e8c, type: 2}
-  fixedTurret: 0
   turretTransform: {fileID: 4106066794960596}
   muzzle: {fileID: 4201562170631712}
 --- !u!114 &114485668775646778
