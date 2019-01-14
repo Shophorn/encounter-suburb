@@ -94,9 +94,9 @@ public class GameManager : MonoBehaviour
 		enemyController.playerTransform = playerController.transform;
 
 		// TODO: read these from map
-		int hunterCount = currentLevel.enemyCounts[(int) TankType.Hunter];
-		int pummelCount = currentLevel.enemyCounts[(int) TankType.Pummel];
-		Debug.Log(hunterCount);
+		int[] enemyCounts = currentLevel.GetEnemyCounts();
+		int hunterCount = enemyCounts[(int) TankType.Hunter];
+		int pummelCount = enemyCounts[(int) TankType.Pummel];
 		
 		enemyController.Begin(hunterCount, pummelCount);
 		StartCoroutine(currentLevel.Spawn());
@@ -157,14 +157,6 @@ public class GameManager : MonoBehaviour
 		menuSystem.Show(MenuView.Main);
 	}
 
-	public static bool[,] debugPath = null;
-
-	public static void SetDebugPath(bool[,] path)
-	{
-		Debug.Log("debug path set");
-		debugPath = path;
-	}
-	
 	private void OnDrawGizmosSelected()
 	{
 		if (currentLevel?.grid == null || !Application.isPlaying) return;
@@ -184,11 +176,6 @@ public class GameManager : MonoBehaviour
 				float red = grid.nodes[x, y].type == NodeType.Impassable ? 1f : value;
 				Gizmos.color = new Color(red, value, value, 0.8f);
 
-				if (debugPath[x, y])
-				{
-					Gizmos.color = new Color(red, value, 0f, 1f);
-				}
-				
 				Gizmos.DrawCube(grid.GridToWorld(x, y), Vector3.one * (0.9f / Grid.resolution));
 			}
 		}

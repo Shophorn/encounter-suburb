@@ -23,6 +23,8 @@ public class Breakable : MonoBehaviour//, IHittable
 
 	public void Hit(float damage)
 	{
+		if (broken) return;
+		
 		hp -= damage;
 
 		OnHit?.Invoke();

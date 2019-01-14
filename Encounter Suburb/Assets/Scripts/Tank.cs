@@ -20,6 +20,7 @@ public class Tank : MonoBehaviour
 	[Header("Turret")]
 	public Transform turretTransform;
 	public Vector3 turretForward => turretTransform.forward;
+	public Quaternion turretRotation;
 	
 	private void Awake()
 	{
@@ -55,8 +56,8 @@ public class Tank : MonoBehaviour
 		float drive = dot < driveDotThreshold ? 0f : (magnitude * specs.moveSpeed * Time.deltaTime);
 		transform.Translate(Vector3.forward * Collide(drive), Space.Self);
 
-		var turretRotation = turretTransform.rotation;
-		
+//		var turretRotation = turretTransform.rotation;
+				
 		Quaternion targetRotation = Quaternion.LookRotation(input, transform.up);
 		transform.rotation = 
 			Quaternion.RotateTowards(transform.rotation, targetRotation, specs.rotationSpeed * Time.deltaTime);
@@ -85,8 +86,6 @@ public class Tank : MonoBehaviour
 
 			if (hit && hitInfo.distance < drive)
 			{
-				Debug.Log($"HIT {hitInfo.transform.name}");
-				
 				drive = hitInfo.distance;
 
 				var breakable = hitInfo.collider.GetComponent<Breakable>();
@@ -103,20 +102,23 @@ public class Tank : MonoBehaviour
 	
 	public void AimTurretAt(Vector3 point)
 	{
-		var toPoint = point - turretTransform.position;
-		toPoint.y = 0f;
-		var target = Quaternion.LookRotation(toPoint);
-		
 		if (fixedTurret)
 		{
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, target, specs.rotationSpeed * Time.deltaTime);
+			var toPoint = point - transform.position;
+			toPoint.y = 0;
+			var targetRotation = Quaternion.LookRotation(toPoint);
+			
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, specs.rotationSpeed * Time.deltaTime);
 		}
 		else
 		{
-
-		turretTransform.rotation =
-			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
+			var toPoint = point - turretTransform.position;
+			toPoint.y = 0f;
+			var target = Quaternion.LookRotation(toPoint);
 			
+			turretTransform.rotation =
+				Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
+			turretRotation = turretTransform.rotation;
 		}
 	}
 	

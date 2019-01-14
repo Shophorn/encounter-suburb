@@ -14,8 +14,6 @@ public class Level : IDisposable
 		public TankType[] spawnings;
 	}
 
-	public int[] enemyCounts;
-	
 	public Map map;
 	private SpawnWave[] spawnWaves;
 
@@ -32,10 +30,13 @@ public class Level : IDisposable
 
 	public Grid grid;
 
-	// These need to be destroyed on unload
+	// These need to be destroyed on unload, hence IDisposable
 	private GameObject mapObject = null;
 	private Mesh mapMesh = null;
 	private Texture2D mapTexture = null;
+	
+	// Use this to track if we should break from spawn coroutine
+	private bool disposed = false;
 
 	public EnemyTankControllerSystem enemyController;
 	
@@ -43,7 +44,6 @@ public class Level : IDisposable
 
 	// Pseudo random generator
 	private readonly Random random;
-	private float randomFloat => (float) random.NextDouble();
 	
 	public Level(Texture2D mapTexture)
 	{
@@ -52,6 +52,7 @@ public class Level : IDisposable
 		random = new Random(mapTexture.name.GetHashCode());
 	}
 
+	
 	public IEnumerator Spawn()
 	{
 		enemyController.OnTankDestroyed += OnTankDestroyed;
@@ -63,6 +64,11 @@ public class Level : IDisposable
 		{
 			for (int u = 0; u < spawnWaves[w].spawnings.Length; u++)
 			{
+				Debug.Log(disposed);
+				
+				// If player dies we need to stop this from trying to spawn more enemies after level unload
+				if (disposed) yield break;
+				
 				int pointIndex = (w + u) % enemySpawnPoints.Length;
 
 				enemyController.Spawn(spawnWaves[w].spawnings[u], enemySpawnPoints[pointIndex]);
@@ -91,6 +97,8 @@ public class Level : IDisposable
 
 	public void Dispose()
 	{
+		disposed = true;
+		
 		Object.Destroy(mapObject);
 		Object.Destroy(mapMesh);
 		Object.Destroy(mapTexture);
@@ -143,8 +151,6 @@ public class Level : IDisposable
 		var backgroundColor = LevelBootstrap.RandomSkyColor(random);
 		Camera.main.backgroundColor = backgroundColor;
 		RenderSettings.ambientLight = backgroundColor;
-
-		enemyCounts = GetEnemyCounts(spawnWaves);
 
 	} // build map
 
@@ -274,17 +280,17 @@ public class Level : IDisposable
 	}
 
 
-	private static int[] GetEnemyCounts(SpawnWave [] waves)
+	public int[] GetEnemyCounts()
 	{
 		int hunterCount = 0;
 		int pummelCount = 0;
 		int heavyCount = 0;
 
-		for (int i = 0; i < waves.Length; i++)
+		for (int i = 0; i < spawnWaves.Length; i++)
 		{
-			for (int j = 0; j < waves[i].spawnings.Length; j++)
+			for (int j = 0; j < spawnWaves[i].spawnings.Length; j++)
 			{
-				switch (waves[i].spawnings[j])
+				switch (spawnWaves[i].spawnings[j])
 				{
 					case TankType.Hunter: hunterCount++; break;
 					case TankType.Pummel: pummelCount++; break;

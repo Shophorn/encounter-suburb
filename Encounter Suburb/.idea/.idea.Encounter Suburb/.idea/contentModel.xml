@@ -47,6 +47,7 @@
         </e>
         <e p="Shaders" t="Include">
           <e p="MapShader.shader" t="Include" />
+          <e p="TankShader.shader" t="Include" />
         </e>
       </e>
       <e p="Encounter Suburb.sln" t="IncludeFlat" />

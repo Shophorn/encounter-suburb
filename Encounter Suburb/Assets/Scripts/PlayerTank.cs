@@ -18,6 +18,8 @@ public class PlayerTank : MonoBehaviour
 	{
 		collider = GetComponent<BoxCollider>();
 		rigidbody = GetComponent<Rigidbody>();
+
+		GetComponent<Breakable>().OnBreak += () => gameObject.SetActive(false);
 	}
 	
 	public void Drive(Vector3 input)
@@ -51,7 +53,6 @@ public class PlayerTank : MonoBehaviour
 
 		var target = Quaternion.LookRotation(toPoint);
 		turretTransform.rotation = target;
-//			Quaternion.RotateTowards(turretTransform.rotation, target, specs.turretTurnSpeed * Time.deltaTime);
 	}
 	
 }

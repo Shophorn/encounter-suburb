@@ -1633,7 +1633,7 @@ MonoBehaviour:
     type: 2}
   enemyController: {fileID: 286161063}
   playerHpBar: {fileID: 1682867123}
-  skipToLevelIndex: -7
+  skipToLevelIndex: 2
 --- !u!4 &1063592053
 Transform:
   m_ObjectHideFlags: 0

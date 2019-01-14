@@ -43,6 +43,15 @@ Done:
     
 Next up:
     
+    Base not appering
+    
+    New waves to spawn when last is done 
+    
+    Hunters go for player, but will go for base if player unreachable
+    pummels go for base, but will engage player if close enough
+    stop at distance
+    use explicit targets, similar to target breakables
+    
     Controls screen in menu
 
     Effects
@@ -50,7 +59,6 @@ Next up:
 
     build map in thread during level countdown, even in compute shader
     
-    start spawning next wave if last is killed even if time has not passed
 
     Heavy - Bigger better overall tnak
 

@@ -151,8 +151,10 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			const float shootDotThreshold = 0.95f;
 			Vector3 toTarget = targetPosition - tankPosition;
 
+			var gunForward = instance.tank.fixedTurret ? instance.tank.transform.forward : instance.tank.turretForward; 
+			
 			bool inRange = sqrDistanceToTarget < instance.tank.gun.type.projectile.sqrMaxRange;
-			bool inSight = Vector3.Dot(toTarget, instance.tank.turretForward) > shootDotThreshold;
+			bool inSight = Vector3.Dot(toTarget, gunForward) > shootDotThreshold;
 
 			if (inRange && inSight)
 			{
@@ -305,6 +307,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	public void Stop()
 	{
 		enabled = false;
+		
+		StopAllCoroutines();
 		
 		UnloadUnit(hunters);
 		hunters = null;
