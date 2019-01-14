@@ -44,12 +44,10 @@ Done:
     
     Enemies shoot bursts
     
+    New waves to spawn when last is killed
     
 
 Next up:
-    New waves to spawn when last is killed
-        
-    Base not appearing
     Tanks rotate to base on spawn
     
     Hunters go for player, but will go for base if player unreachable

@@ -220,8 +220,6 @@ public class Level
 				int pummelCount = pixels[index].g;
 				int heavyCount = pixels[index].b;
 
-				int ii = 0;
-
 				var spawnings = new TankType[hunterCount + pummelCount + heavyCount];
 				for (int i = 0; i < hunterCount; i++)
 				{

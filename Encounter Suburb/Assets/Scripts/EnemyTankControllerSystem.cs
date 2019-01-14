@@ -167,7 +167,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		units[type].instances[index].targetBreakable = target;
 	}
 
-	// TODO: Only 1 usage, remove
 	private void RequestPath(TankUnit unit, int index, Vector3 target)
 	{
 		unit.instances[index].hasRequestedPath = true;
@@ -208,19 +207,29 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		Instantiate(spawnEffect, position, spawnEffect.transform.rotation);
 		float waitTime = spawnEffect.main.duration - riseFromUnderworldTime;
 		yield return new WaitForSeconds(waitTime);
+
+		var toBase = playerBasePosition - position;
+		toBase.y = 0;
+		var startRotation = Quaternion.LookRotation(-toBase);
+		var endRotation = Quaternion.LookRotation(toBase);
 		
-		// Rise
 		position.y = -tank.height;
 		tank.transform.position = position;
+		tank.transform.rotation = startRotation;
 		tank.gameObject.SetActive(true);
 		tank.collider.enabled = false;
 
+		// Rise
 		float percent = 0f;
 		while (percent < 1f)
 		{
 			percent += Time.deltaTime / riseFromUnderworldTime;
+
 			position.y = (percent - 1f) * tank.height; // minimized lerp
 			tank.transform.position = position;
+			
+			tank.transform.rotation = Quaternion.Slerp(startRotation, endRotation, percent);
+			
 			yield return null;
 		}
 		
