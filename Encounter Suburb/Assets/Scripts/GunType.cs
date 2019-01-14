@@ -5,7 +5,7 @@ using UnityEngine;
 public class GunType : ScriptableObject
 {
 	public ProjectileType projectile;
-	
+
 	public float roundsPerSecond = 1;
 	public float reloadTime;
 
@@ -21,8 +21,9 @@ public class GunType : ScriptableObject
 public class Gun
 {
 	public GunType type;
-	public Transform muzzle;
-
+	
+	public Transform[] muzzles;
+	
 	private float lastFireTime;
 
 	/// <summary>
@@ -34,8 +35,11 @@ public class Gun
 	public void Fire()
 	{
 		if (reloadState < 1f) return;
-		
-		ProjectileSystem.Shoot(muzzle.position, muzzle.rotation, type.projectile);
+
+		for (int i = 0; i < muzzles.Length; i++)
+		{
+			ProjectileSystem.Shoot(muzzles[i].position, muzzles[i].rotation, type.projectile);
+		}
 		lastFireTime = Time.time;
 	}
 }

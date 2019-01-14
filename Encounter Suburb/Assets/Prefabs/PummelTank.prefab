@@ -111,7 +111,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1792425274082000}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4.75, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -241,16 +241,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befc1f9de3464e209af0a7737cce59b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   specs: {fileID: 11400000, guid: 43c762d42b288674b853d5857ee44286, type: 2}
   fixedTurret: 1
   gun:
     type: {fileID: 11400000, guid: 484bfb24edd49334db458879c7afbca2, type: 2}
-    muzzle: {fileID: 4910756716442690}
-  collider: {fileID: 65080406343621704}
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 0
+    muzzles:
+    - {fileID: 4910756716442690}
   height: 1.5
+  collider: {fileID: 65080406343621704}
   turretTransform: {fileID: 0}
   turretRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &114882604368824440

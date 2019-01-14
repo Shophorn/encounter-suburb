@@ -18,6 +18,7 @@ Done:
     Enemy tank types:
             Hunter - Always goes for player : fast light gun
             Pummel - Always goes for base :  slow short-ranged powerful gun
+            Heavy - Bigger better overall tnak
        
     enemy spawn effect
  
@@ -43,9 +44,20 @@ Done:
     
 Next up:
     
-    Base not appering
-    
+    Enemies shoot bursts
+        hunters many
+        pummels 1
+        heavies 1 per gun = 2
+        
+    {
+        burst length
+        burst fire rate
+        burst cooldown
+    }
     New waves to spawn when last is done 
+        
+    Base not appearing
+    Tanks rotate to base on spawn
     
     Hunters go for player, but will go for base if player unreachable
     pummels go for base, but will engage player if close enough
@@ -60,7 +72,6 @@ Next up:
     build map in thread during level countdown, even in compute shader
     
 
-    Heavy - Bigger better overall tnak
 
     Make collision detection better, maybe using longer rays.
     Make buffer check so that tank can stop even before it collides with breakable.
@@ -85,3 +96,78 @@ Next up:
         constoller: behaviour of tanks
     
     secret word to get to level 
+
+
+Tanks:
+    Data:
+        Hull:
+            move speed
+            rotate speed
+            max hitpoints
+            
+        Turret:
+            rotate speed
+            muzzle count
+        
+        Gun:
+            Projectile
+
+            rate of fire
+            burst length
+            burst cooldown time
+            
+         Behaviour:
+            prefer { closest, player, base }
+            preferred shoot range
+         
+    State:
+        Hull:
+            position, rotation -> UnityEngine.Transform
+            current hitpoints
+            
+        Turret:
+            rotation
+            muzzle position, direction
+           
+        Gun:
+            burst state
+            
+        Behaviour:
+            target
+            state { idle, moving to target, destroying target }       
+    
+    Behaviour:
+        GetTarget()
+            
+    
+        Move()
+            if NOT in preferred range
+                follow path
+            if interrupted
+                set target to interrupting block
+            
+        Aim()
+            if NOT fixed turret
+                aim at current target
+            else if NOT moving
+                rotate to current target
+        
+        Shoot()
+            if current target in gun.maxRange AND direction close enough to target direcion
+                shoot gun
+        
+        OnTargetDestroyed()
+            target as per preference
+        
+        MoveToTargetRange()
+            move close enough to current target item
+            
+        DestroyTarget()
+            fire at target until it is unavailable (destroyed or out of range)
+        
+
+     
+    TankInstance:
+        Transform : transform
+        Transform : turretTransform (Can be null -> fixed turret)
+        float hitpoints -> breakable

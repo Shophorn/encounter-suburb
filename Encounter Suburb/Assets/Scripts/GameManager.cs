@@ -97,8 +97,9 @@ public class GameManager : MonoBehaviour
 		int[] enemyCounts = currentLevel.GetEnemyCounts();
 		int hunterCount = enemyCounts[(int) TankType.Hunter];
 		int pummelCount = enemyCounts[(int) TankType.Pummel];
+		int heavyCount = enemyCounts[(int) TankType.Heavy];
 		
-		enemyController.Begin(hunterCount, pummelCount);
+		enemyController.Begin(hunterCount, pummelCount, heavyCount);
 		StartCoroutine(currentLevel.Spawn());
 
 		backGroundMusic.Play(backGroundMusic.Game);

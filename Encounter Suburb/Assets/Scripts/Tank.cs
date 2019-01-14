@@ -3,20 +3,19 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour
 {
+	// data
+	private Vector3[] collisionRayPoints;
+	public LayerMask collisionMask;
 	public TankSpecs specs;
 	public bool fixedTurret;
 	public Gun gun;
+	public float height; // For spawning enemytank from below ground
 
+	// state
 	public new BoxCollider collider;
-
-	private Vector3[] collisionRayPoints;
-	public LayerMask collisionMask;
-
 	public event Action<Breakable> OnCollideBreakable;
-
-	// For spawning enemytank from below ground
-	public float height;
 	
+		
 	[Header("Turret")]
 	public Transform turretTransform;
 	public Vector3 turretForward => turretTransform.forward;
@@ -56,8 +55,6 @@ public class Tank : MonoBehaviour
 		float drive = dot < driveDotThreshold ? 0f : (magnitude * specs.moveSpeed * Time.deltaTime);
 		transform.Translate(Vector3.forward * Collide(drive), Space.Self);
 
-//		var turretRotation = turretTransform.rotation;
-				
 		Quaternion targetRotation = Quaternion.LookRotation(input, transform.up);
 		transform.rotation = 
 			Quaternion.RotateTowards(transform.rotation, targetRotation, specs.rotationSpeed * Time.deltaTime);
@@ -70,7 +67,7 @@ public class Tank : MonoBehaviour
 
 	private float Collide(float drive)
 	{
-		// Add skinwidth to drive ray length, to collide before actucal contact
+		// Add skinwidth to drive ray length, to collide before actual contact
 		const float skinWidth = 1f;
 		drive += skinWidth;
 		
@@ -122,4 +119,42 @@ public class Tank : MonoBehaviour
 		}
 	}
 	
+}
+
+public struct TankInstance
+{
+	public readonly Tank tank;
+	public PathFinding.Path path;
+	public float pathUpdateTime;
+	public bool hasRequestedPath;
+	public Breakable targetBreakable;
+		
+
+	public TankInstance(Tank tank)
+	{
+		this.tank = tank;
+		path = null;
+		pathUpdateTime = 0f;
+		hasRequestedPath = false;
+		targetBreakable = null;
+	}
+
+	public void Disable()
+	{
+		tank.gameObject.SetActive(false);
+		path = null;
+		pathUpdateTime = 0f;
+		hasRequestedPath = false;
+		targetBreakable = null;
+	}
+}
+
+[System.Serializable]
+public class TankUnit
+{
+	public EnemyTankBehaviour behaviour;
+	public TankInstance[] units;
+	public int[] activeIndicesMap;
+	public int activeCount;
+	public int nextIndex;
 }

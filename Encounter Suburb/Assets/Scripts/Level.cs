@@ -64,8 +64,6 @@ public class Level : IDisposable
 		{
 			for (int u = 0; u < spawnWaves[w].spawnings.Length; u++)
 			{
-				Debug.Log(disposed);
-				
 				// If player dies we need to stop this from trying to spawn more enemies after level unload
 				if (disposed) yield break;
 				

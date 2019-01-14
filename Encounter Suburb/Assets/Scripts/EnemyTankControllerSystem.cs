@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using PathFinding;
 using UnityEngine;
+using Array = UnityScript.Lang.Array;
 
 public enum TankType { Hunter, Pummel, Heavy }
 
@@ -12,6 +14,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	[SerializeField] private EnemyTankBehaviour hunterBehaviour;
 	[SerializeField] private EnemyTankBehaviour pummelBehaviour;
+	[SerializeField] private EnemyTankBehaviour heavyBehaviour;
 
 	[SerializeField] private LayerMask tankCollisionMask;
 	[SerializeField] private float pathUpdateInterval = 0.25f;
@@ -19,46 +22,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[SerializeField] private float decisionMakeDelay = 0.25f;
 	[SerializeField] private ParticleSystem spawnEffect;
 
-	private struct TankInstance
-	{
-		public readonly Tank tank;
-		public Path path;
-		public float pathUpdateTime;
-		public bool hasRequestedPath;
-		public Breakable targetBreakable;
-		
-
-		public TankInstance(Tank tank)
-		{
-			this.tank = tank;
-			path = null;
-			pathUpdateTime = 0f;
-			hasRequestedPath = false;
-			targetBreakable = null;
-		}
-
-		public void Disable()
-		{
-			tank.gameObject.SetActive(false);
-			path = null;
-			pathUpdateTime = 0f;
-			hasRequestedPath = false;
-			targetBreakable = null;
-		}
-	}
-	
-	[System.Serializable]
-	private class TankUnit
-	{
-		public EnemyTankBehaviour behaviour;
-		public TankInstance[] units;
-		public int[] activeIndicesMap;
-		public int activeCount;
-		public int nextIndex;
-	}
-
-	private TankUnit hunters;
-	private TankUnit pummels;
+	private TankUnitArray units;
 	
 	// Target candidates
 	[NonSerialized] public Transform playerTransform;
@@ -67,10 +31,15 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	public event Action OnTankDestroyed;
 	
 
-	public void Begin(int hunterCount, int pummelCount)
+	public void Begin(int hunterCount, int pummelCount, int heavyCount)
 	{
-		hunters = CreateTankUnit(hunterBehaviour, hunterCount);
-		pummels = CreateTankUnit(pummelBehaviour, pummelCount);
+		units = new TankUnitArray
+		{
+			[TankType.Hunter] = CreateTankUnit(hunterBehaviour, hunterCount),
+			[TankType.Pummel] = CreateTankUnit(pummelBehaviour, pummelCount),
+			[TankType.Heavy] = CreateTankUnit(heavyBehaviour, heavyCount)
+		};
+
 
 		enabled = true;
 	}
@@ -79,11 +48,12 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	{
 		UpdateUnitOfType(TankType.Hunter);
 		UpdateUnitOfType(TankType.Pummel);
+		UpdateUnitOfType(TankType.Heavy);
 	}
 
 	private void UpdateUnitOfType(TankType type)
 	{
-		var unit = UnitFromType(type);
+		var unit = units[type];
 		var playerPosition = playerTransform.position;
 
 		for (int i = 0; i < unit.activeCount; i++)
@@ -188,19 +158,18 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	{
 		// Do not add another tank or player as target
 		if (target.GetComponent<Tank>() != null || target.transform == playerTransform) return;
-		
-		UnitFromType(type).units[index].targetBreakable = target;
+		units[type].units[index].targetBreakable = target;
 	}
 
 	// TODO: Only 1 usage, remove
 	private void RequestPath(TankType type, int index, Vector3 target)
 	{
-		TankUnit unit = UnitFromType(type);
+		TankUnit unit = units[type];
 		unit.units[index].hasRequestedPath = true;
 		
 		PathRequestManager.RequestPath(
 			start:				unit.units[index].tank.transform.position,
-			end:				target, //unit.behaviour.preferTargetPlayer < 2 ? playerBasePosition : playerTransform.position,
+			end:				target, 
 			preferBreakWalls:	unit.behaviour.preferBreakWalls,
 			callback:			path => OnReceivePath(type, index, path)
 		);
@@ -208,15 +177,15 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	
 	private void OnReceivePath(TankType type, int index, Path path)
 	{
-		UnitFromType(type).units[index].path = path;
-		UnitFromType(type).units[index].pathUpdateTime = Time.time + pathUpdateInterval;
+		units[type].units[index].path = path;
+		units[type].units[index].pathUpdateTime = Time.time + pathUpdateInterval;
 
-		UnitFromType(type).units[index].hasRequestedPath = false;
+		units[type].units[index].hasRequestedPath = false;
 	}
 	
 	public void Spawn(TankType type, Vector3 position)
 	{
-		TankUnit unit = UnitFromType(type);
+		TankUnit unit = units[type];
 		int index = unit.nextIndex;
 		unit.nextIndex++;
 
@@ -255,14 +224,14 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 		tank.collider.enabled = true;
 		
-		var unit = UnitFromType(type);
+		var unit = units[type];
 		unit.activeIndicesMap[unit.activeCount++] = index;
 		Sort(unit.activeIndicesMap, unit.activeCount);
 	}
 
 	private void UnSpawn(TankType type, int index)
 	{
-		var tank = UnitFromType(type).units[index];
+		var tank = units[type].units[index];
 		tank.tank.gameObject.SetActive(false);
 		tank.path = null;
 		tank.targetBreakable = null;
@@ -271,7 +240,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 		// Swap with last active, and sort those left
 		int activeIndex = GetActiveIndex(type, index);
-		var unit = UnitFromType(type);
+		var unit = units[type];
 		unit.activeCount--;
 		unit.activeIndicesMap[activeIndex] = unit.activeIndicesMap[unit.activeCount];
 		Sort(unit.activeIndicesMap, unit.activeCount);
@@ -279,7 +248,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	private int GetActiveIndex(TankType type, int unitIndex)
 	{
-		var unit = UnitFromType(type);
+		var unit = units[type];
 		for (int i = 0; i < unit.activeCount; i++)
 		{
 			if (unit.activeIndicesMap[i] == unitIndex)
@@ -291,38 +260,22 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		return -1;
 	}
 	
-	
-	private TankUnit UnitFromType(TankType type)
-	{
-		switch (type)
-		{
-			case TankType.Hunter: return hunters;
-			case TankType.Pummel: return pummels;
-		}
-
-		return null;
-	}
-
-
 	public void Stop()
 	{
 		enabled = false;
 		
 		StopAllCoroutines();
-		
-		UnloadUnit(hunters);
-		hunters = null;
-		
-		UnloadUnit(pummels);
-		pummels = null;
-	}
 
-	private void UnloadUnit(TankUnit unit)
-	{
-		for (int i = 0; i < unit.units.Length; i++)
+		for (int i = 0; i < units.count; i++)
 		{
-			Destroy(unit.units[i].tank.gameObject);
+			// Unload
+			for (int ii = 0; ii < units[i].units.Length; ii++)
+			{
+				Destroy(units[i].units[ii].tank.gameObject);
+			}
 		}
+
+		units = null;
 	}
 	
 	private static void Sort(int[] array, int count)
@@ -339,5 +292,27 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	
+}
+
+public class TankUnitArray
+{
+	public static readonly int Count = Enum.GetNames(typeof(TankType)).Length;
+	public int count => Count;
+	
+	private readonly TankUnit[] units = new TankUnit[Count];
+
+	public TankUnit this[TankType type]
+	{
+		get { return units[(int) type]; }
+		set { units[(int) type] = value; }
+	}
+
+	public TankUnit this[int index]
+	{
+		get { return units[index]; }
+		set { units[index] = value; }
 	}
 }
