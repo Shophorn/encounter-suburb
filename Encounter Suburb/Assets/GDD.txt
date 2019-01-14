@@ -45,119 +45,30 @@ Done:
     Enemies shoot bursts
     
     New waves to spawn when last is killed
+    Tanks rotate to base on spawn
     
 
 Next up:
-    Tanks rotate to base on spawn
     
     Hunters go for player, but will go for base if player unreachable
     pummels go for base, but will engage player if close enough
     stop at distance
     use explicit targets, similar to target breakables
+    Enemies don't destroy walls anymore
     
+    Pause game
     Controls screen in menu
-
+    
+    
     Effects
         SFX
 
     build map in thread during level countdown, even in compute shader
     
+    Disable Enemy Friendly Fire
 
-
-    Make collision detection better, maybe using longer rays.
-    Make buffer check so that tank can stop even before it collides with breakable.
     Enemies check real line of sight with raycast
         Use raycast to cast from enemy to player
         use this when deciding to shoot and also when checking if player is in range
-    Disable Enemy Friendly Fire
-    
-    Smooth water colliders -> Marching squares
-   
-    Clean Gun/Tank/Projectile/Turret hierarchy
-    
-    Clarify Enemy Tank Controller
-    
-    BoxColliders' height should be enough(lot) so that heights don't matter
-    
-    
-    Refactor tank, tank specs and tankcontrollers:
-        tank spec:  info of tank type
-        tank:       state of tank instance
-        constoller: behaviour of tanks
     
     secret word to get to level 
-
-
-Tanks:
-    Data:
-        Hull:
-            move speed
-            rotate speed
-            max hitpoints
-            
-        Turret:
-            rotate speed
-            muzzle count
-        
-        Gun:
-            Projectile
-
-            rate of fire
-            burst length
-            burst cooldown time
-            
-         Behaviour:
-            prefer { closest, player, base }
-            preferred shoot range
-         
-    State:
-        Hull:
-            position, rotation -> UnityEngine.Transform
-            current hitpoints
-            
-        Turret:
-            rotation
-            muzzle position, direction
-           
-        Gun:
-            burst state
-            
-        Behaviour:
-            target
-            state { idle, moving to target, destroying target }       
-    
-    Behaviour:
-        GetTarget()
-            
-    
-        Move()
-            if NOT in preferred range
-                follow path
-            if interrupted
-                set target to interrupting block
-            
-        Aim()
-            if NOT fixed turret
-                aim at current target
-            else if NOT moving
-                rotate to current target
-        
-        Shoot()
-            if current target in gun.maxRange AND direction close enough to target direcion
-                shoot gun
-        
-        OnTargetDestroyed()
-            target as per preference
-        
-        MoveToTargetRange()
-            move close enough to current target item
-            
-        DestroyTarget()
-            fire at target until it is unavailable (destroyed or out of range)
-        
-
-     
-    TankInstance:
-        Transform : transform
-        Transform : turretTransform (Can be null -> fixed turret)
-        float hitpoints -> breakable

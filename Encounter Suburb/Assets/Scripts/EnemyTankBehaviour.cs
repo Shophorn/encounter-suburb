@@ -12,6 +12,9 @@ public class EnemyTankBehaviour : ScriptableObject
 	public float preferredShootDistance = 3f;
 	public float sqrPreferredShootDistance { get; private set; }
 	public bool preferBreakWalls = false;
+	
+	public enum PreferredTarget { None, Player, Base }
+	public PreferredTarget preferredTarget;
 
 	public void OnValidate()
 	{

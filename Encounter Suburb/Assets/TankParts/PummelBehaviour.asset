@@ -16,4 +16,4 @@ MonoBehaviour:
   engageRange: 5
   preferredShootDistance: 3
   preferBreakWalls: 1
-  preferTargetPlayer: 2
+  preferredTarget: 2

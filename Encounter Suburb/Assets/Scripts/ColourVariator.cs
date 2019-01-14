@@ -29,6 +29,8 @@ public class ColourVariator : MonoBehaviour
 			}
 		}
 		
+		Debug.Log($"{gameObject.name}: Color varied");
+		
 		Destroy(this);
 	}
 }

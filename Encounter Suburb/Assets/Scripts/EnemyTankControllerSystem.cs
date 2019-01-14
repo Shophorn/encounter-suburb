@@ -1,20 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using PathFinding;
 using UnityEngine;
-using Array = UnityScript.Lang.Array;
 
-public enum TankType { Hunter, Pummel, Heavy }
 
 public class EnemyTankControllerSystem : MonoBehaviour
 {
-	[System.Obsolete("Don't use system's Transform", true)]
+	[Obsolete("Don't use system's Transform", true)]
 	private new Transform transform;
 
 	[SerializeField] private EnemyTankBehaviour hunterBehaviour;
 	[SerializeField] private EnemyTankBehaviour pummelBehaviour;
 	[SerializeField] private EnemyTankBehaviour heavyBehaviour;
+
+	[SerializeField] private TankTypeArray<EnemyTankBehaviour> behaviours;
 
 	[SerializeField] private LayerMask tankCollisionMask;
 	[SerializeField] private float pathUpdateInterval = 0.25f;
@@ -29,7 +28,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[NonSerialized] public Vector3 playerBasePosition;
 
 	public event Action OnTankDestroyed;
-	
 
 	public void Begin(int hunterCount, int pummelCount, int heavyCount)
 	{
@@ -40,19 +38,26 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			[TankType.Heavy] = CreateTankUnit(heavyBehaviour, heavyCount)
 		};
 
-
+		behaviours = new TankTypeArray<EnemyTankBehaviour>
+		{
+			[TankType.Hunter] = hunterBehaviour,
+			[TankType.Pummel] = pummelBehaviour,
+			[TankType.Heavy] = heavyBehaviour,
+		};
+		
 		enabled = true;
 	}
 
 	private void Update()
 	{
-		UpdateUnitOfType(units[TankType.Hunter]);
-		UpdateUnitOfType(units[TankType.Pummel]);
-		UpdateUnitOfType(units[TankType.Heavy]);
+		UpdateUnit(TankType.Hunter);
+		UpdateUnit(TankType.Pummel);
+		UpdateUnit(TankType.Heavy);
 	}
 
-	private void UpdateUnitOfType(TankUnit unit)
+	private void UpdateUnit(TankType type)
 	{
+		var unit = units[type];
 		var playerPosition = playerTransform.position;
 		
 		for (int i = 0; i < unit.activeCount; i++)
@@ -67,6 +72,34 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			Vector3 targetPosition;
 			float sqrDistanceToTarget;
 
+			switch (behaviours[type].preferredTarget)
+			{
+				case EnemyTankBehaviour.PreferredTarget.Player:
+					targetPosition = playerPosition;
+					sqrDistanceToTarget = sqrDistanceToPlayer;
+					break;
+				case EnemyTankBehaviour.PreferredTarget.Base:
+					targetPosition = playerBasePosition;
+					sqrDistanceToTarget = (playerBasePosition - tankPosition).sqrMagnitude;
+					break;
+				default:
+				{
+					if (sqrDistanceToPlayer < hunterBehaviour.sqrEngageRange)
+					{
+						targetPosition = playerPosition;
+						sqrDistanceToTarget = sqrDistanceToPlayer;
+					}
+					else
+					{
+						targetPosition = playerBasePosition;
+						sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
+					}
+
+					break;
+				}
+			}
+			/*
+			// These should be computed later
 			if (sqrDistanceToPlayer < hunterBehaviour.sqrEngageRange)
 			{
 				targetPosition = playerPosition;
@@ -77,6 +110,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				targetPosition = playerBasePosition;
 				sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
 			}
+			*/
 			
 			// Follow Path
 			if (instance.path == null)
@@ -278,7 +312,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		enabled = false;
 		
 		StopAllCoroutines();
-		units.Dispose();
+		units.Unload();
 
 		units = null;
 	}
@@ -302,35 +336,4 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	
 }
 
-[Serializable]
-public class TankUnitArray : IDisposable
-{
-	public static readonly int Count = Enum.GetNames(typeof(TankType)).Length;
-	public int count => Count;
-	
-	private readonly TankUnit[] units = new TankUnit[Count];
 
-	public TankUnit this[TankType type]
-	{
-		get { return units[(int) type]; }
-		set { units[(int) type] = value; }
-	}
-
-	public TankUnit this[int index]
-	{
-		get { return units[index]; }
-		set { units[index] = value; }
-	}
-
-	public void Dispose()
-	{
-		// Unload Units
-		for (int i = 0; i < count; i++)
-		{
-			for (int ii = 0; ii < units[i].instances.Length; ii++)
-			{
-				UnityEngine.Object.Destroy(units[i].instances[ii].tank.gameObject);
-			}
-		}
-	}
-}

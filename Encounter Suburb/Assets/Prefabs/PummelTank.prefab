@@ -291,7 +291,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  changeValueRange: 0.1
+  changeValueRange: 0.3
   changeValue: 1
   renderers:
   - {fileID: 23656247245041430}
