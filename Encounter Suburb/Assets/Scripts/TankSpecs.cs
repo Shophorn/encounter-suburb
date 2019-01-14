@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu]
 public class TankSpecs : ScriptableObject
@@ -13,14 +12,20 @@ public class TankSpecs : ScriptableObject
 	
 	[Header("Gun")]
 	public ProjectileType projectile;
-	public float roundsPerSecond = 1;
-	public float reloadTime;
+	public int burstCount = 1;
+	public float fireRate = 1f;
+	public float burstCooldownTime = 2f;
 
-	public bool autoFire;
-	
-	private void OnValidate()
+	public Gun CreateGun(params Transform[] muzzles)
 	{
-		reloadTime = 1f /(float) roundsPerSecond;
+		float reloadTime = 1f / fireRate;
+		return new Gun
+		{
+			muzzles = muzzles,
+			projectile = projectile,
+			reloadTime = reloadTime,
+			burstCount = burstCount,
+			burstCooldownTime = Mathf.Max(0f, burstCooldownTime - reloadTime)
+		};
 	}
-
 }

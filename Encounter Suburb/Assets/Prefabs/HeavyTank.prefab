@@ -163,7 +163,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4900607772938316}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4482129856162618
 Transform:
@@ -176,7 +176,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4900607772938316}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4627326523847148
 Transform:
@@ -218,8 +218,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4672643303209652}
-  - {fileID: 4482129856162618}
   - {fileID: 4479654284943224}
+  - {fileID: 4482129856162618}
   m_Father: {fileID: 4627326523847148}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -390,17 +390,14 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
-  specs: {fileID: 11400000, guid: dc5412042ed01ae4b9bcf44a8af59f7a, type: 2}
-  fixedTurret: 0
-  gun:
-    type: {fileID: 11400000, guid: 1305724d946d1e04eaf90e30a16c8bb1, type: 2}
-    muzzles:
-    - {fileID: 4482129856162618}
-    - {fileID: 4479654284943224}
+  specs: {fileID: 11400000, guid: 7895db5937dc3434c92ca82f160b0cb8, type: 2}
   height: 1.5
   collider: {fileID: 65150223796190988}
   turretTransform: {fileID: 4900607772938316}
   turretRotation: {x: 0, y: 0, z: 0, w: 0}
+  muzzles:
+  - {fileID: 4479654284943224}
+  - {fileID: 4482129856162618}
 --- !u!114 &114408308543826216
 MonoBehaviour:
   m_ObjectHideFlags: 1

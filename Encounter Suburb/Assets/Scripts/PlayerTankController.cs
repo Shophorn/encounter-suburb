@@ -27,17 +27,11 @@ public class PlayerTankController : MonoBehaviour
 		}
 
 		// Shoot
-		tank.collider.enabled = false;
-		if (tank.gun.type.autoFire)
+		if (Input.GetButton("Fire1"))
 		{
-			if (Input.GetButton("Fire1"))
-				tank.gun.Fire();
+			tank.collider.enabled = false;
+			tank.gun.FireOnce();
+			tank.collider.enabled = true;
 		}
-		else
-		{
-			if (Input.GetButtonDown("Fire1"))
-				tank.gun.Fire();
-		}
-		tank.collider.enabled = true;
 	}
 }

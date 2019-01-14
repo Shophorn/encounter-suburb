@@ -2175,6 +2175,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!4 &1261359503 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4379320178397762, guid: 05920412fa6c99a40aa6c53215e84706,
+    type: 2}
+  m_PrefabInternal: {fileID: 1594728203}
 --- !u!1 &1360897327
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,6 +2584,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 435842467}
     m_Modifications:
+    - target: {fileID: 114606305492052466, guid: 05920412fa6c99a40aa6c53215e84706,
+        type: 2}
+      propertyPath: muzzles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4389194415528186, guid: 05920412fa6c99a40aa6c53215e84706, type: 2}
       propertyPath: m_LocalPosition.x
       value: 2.75
@@ -2611,6 +2621,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114606305492052466, guid: 05920412fa6c99a40aa6c53215e84706,
+        type: 2}
+      propertyPath: muzzles.Array.data[0]
+      value: 
+      objectReference: {fileID: 1261359503}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05920412fa6c99a40aa6c53215e84706, type: 2}
   m_IsPrefabAsset: 0

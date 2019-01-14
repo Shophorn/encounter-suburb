@@ -6,12 +6,9 @@ public static class MapTextureGenerator
 {
 	public static Texture2D Generate(Map map, int resolution)
 	{
-		float borderOffset = 0f;
-		
 		var constructionTilePositions = new List<Vector2Int>();
 		var forestTilePositions = new List<Vector2Int>();
 		var waterTilePositions = new List<Vector2Int>();
-
 		
 		for (int y = 0; y < map.size; y++)
 		{

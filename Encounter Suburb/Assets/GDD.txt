@@ -86,7 +86,6 @@ Next up:
     
     Clarify Enemy Tank Controller
     
-    
     BoxColliders' height should be enough(lot) so that heights don't matter
     
     

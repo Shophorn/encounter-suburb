@@ -13,6 +13,7 @@ public class PlayerTank : MonoBehaviour
 	
 	[Header("Turret")]
 	public Transform turretTransform;
+	public Transform muzzle;
 	
 	private void Awake()
 	{
@@ -20,6 +21,8 @@ public class PlayerTank : MonoBehaviour
 		rigidbody = GetComponent<Rigidbody>();
 
 		GetComponent<Breakable>().OnBreak += () => gameObject.SetActive(false);
+
+		gun = specs.CreateGun(muzzle);
 	}
 	
 	public void Drive(Vector3 input)

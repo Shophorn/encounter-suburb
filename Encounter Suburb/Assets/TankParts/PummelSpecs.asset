@@ -14,7 +14,7 @@ MonoBehaviour:
   moveSpeed: 2
   rotationSpeed: 90
   turretTurnSpeed: 0
-  projectile: {fileID: 0}
-  roundsPerSecond: 1
-  reloadTime: 1
-  autoFire: 0
+  projectile: {fileID: 11400000, guid: 757311aaf68fe624ea4d5e4381a8b605, type: 2}
+  burstCount: 1
+  fireRate: 1
+  burstCooldownTime: 1.5

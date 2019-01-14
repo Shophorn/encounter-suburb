@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyTankBehaviour : ScriptableObject
 {
 	public Tank prefab;
+	public TankSpecs specs;
 	
 	public float engageRange = 5f;
 	public float sqrEngageRange { get; private set; }

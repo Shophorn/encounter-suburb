@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: HunteBehaviour
   m_EditorClassIdentifier: 
   prefab: {fileID: 114606305492052466, guid: 05920412fa6c99a40aa6c53215e84706, type: 2}
+  specs: {fileID: 11400000, guid: dc5412042ed01ae4b9bcf44a8af59f7a, type: 2}
   engageRange: 10
   preferredShootDistance: 3
   preferBreakWalls: 0

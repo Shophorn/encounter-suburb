@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Tank : MonoBehaviour
@@ -7,7 +8,6 @@ public class Tank : MonoBehaviour
 	private Vector3[] collisionRayPoints;
 	public LayerMask collisionMask;
 	public TankSpecs specs;
-	public bool fixedTurret;
 	public Gun gun;
 	public float height; // For spawning enemytank from below ground
 
@@ -15,11 +15,14 @@ public class Tank : MonoBehaviour
 	public new BoxCollider collider;
 	public event Action<Breakable> OnCollideBreakable;
 	
-		
 	[Header("Turret")]
 	public Transform turretTransform;
-	public Vector3 turretForward => turretTransform.forward;
+	public Vector3 gunForward => TurretForwardGetter();
+	private Func<Vector3> TurretForwardGetter;
+	
 	public Quaternion turretRotation;
+	public Transform[] muzzles;
+	public bool fixedTurret { get; private set; }
 	
 	private void Awake()
 	{
@@ -41,6 +44,20 @@ public class Tank : MonoBehaviour
 				collisionRayPoints[i] = new Vector3(xx, yy, max.z); 
 			}
 		}
+
+		fixedTurret = turretTransform == null;
+		if (fixedTurret)
+		{
+			TurretForwardGetter = () => transform.forward;
+		}
+		else
+		{
+			TurretForwardGetter = () => turretTransform.forward;
+		}
+		
+		
+		
+		gun = specs.CreateGun(muzzles);
 	}
 	
 	public void Drive(Vector3 input)
@@ -128,8 +145,8 @@ public struct TankInstance
 	public float pathUpdateTime;
 	public bool hasRequestedPath;
 	public Breakable targetBreakable;
-		
-
+	public IEnumerator shootEnumerator;
+	
 	public TankInstance(Tank tank)
 	{
 		this.tank = tank;
@@ -137,6 +154,7 @@ public struct TankInstance
 		pathUpdateTime = 0f;
 		hasRequestedPath = false;
 		targetBreakable = null;
+		shootEnumerator = null;
 	}
 
 	public void Disable()
@@ -146,14 +164,15 @@ public struct TankInstance
 		pathUpdateTime = 0f;
 		hasRequestedPath = false;
 		targetBreakable = null;
+		shootEnumerator = null;
 	}
 }
 
-[System.Serializable]
+[Serializable]
 public class TankUnit
 {
 	public EnemyTankBehaviour behaviour;
-	public TankInstance[] units;
+	public TankInstance[] instances;
 	public int[] activeIndicesMap;
 	public int activeCount;
 	public int nextIndex;

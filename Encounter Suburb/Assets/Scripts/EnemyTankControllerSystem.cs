@@ -46,22 +46,21 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	private void Update()
 	{
-		UpdateUnitOfType(TankType.Hunter);
-		UpdateUnitOfType(TankType.Pummel);
-		UpdateUnitOfType(TankType.Heavy);
+		UpdateUnitOfType(units[TankType.Hunter]);
+		UpdateUnitOfType(units[TankType.Pummel]);
+		UpdateUnitOfType(units[TankType.Heavy]);
 	}
 
-	private void UpdateUnitOfType(TankType type)
+	private void UpdateUnitOfType(TankUnit unit)
 	{
-		var unit = units[type];
 		var playerPosition = playerTransform.position;
-
+		
 		for (int i = 0; i < unit.activeCount; i++)
 		{
-			// use this to refernce anything
+			// use this to reference anything, i points to different thing
 			int index = unit.activeIndicesMap[i];
 			
-			var instance = unit.units[index];
+			var instance = unit.instances[index];
 			var tankPosition = instance.tank.transform.position;
 			float sqrDistanceToPlayer = (playerPosition - tankPosition).sqrMagnitude;
 
@@ -83,7 +82,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			if (instance.path == null)
 			{
 				if (!instance.hasRequestedPath)
-					RequestPath(type, index, targetPosition);
+					RequestPath(unit, index, targetPosition);
 				continue;
 			}
 
@@ -96,7 +95,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				// If this is last, set null, it will be reset later
 				if (!instance.path.MoveNext())
 				{
-					unit.units[index].path = null;
+					unit.instances[index].path = null;
 					continue;
 				}
 
@@ -110,44 +109,51 @@ public class EnemyTankControllerSystem : MonoBehaviour
 			var driveVector = Vector3.ClampMagnitude(toWayPoint, maxMoveMagnitude);
 			instance.tank.Drive(driveVector);
 			
-			// Aim and Shoot
+			// TODO: explicitly set player, block or base as target
+			// Aim
 			if (instance.targetBreakable != null)
 			{
 				targetPosition = instance.targetBreakable.transform.position;
 				sqrDistanceToTarget = (tankPosition - targetPosition).sqrMagnitude;
 			}
-			
 			instance.tank.AimTurretAt(targetPosition);
-			const float shootDotThreshold = 0.95f;
-			Vector3 toTarget = targetPosition - tankPosition;
 
-			var gunForward = instance.tank.fixedTurret ? instance.tank.transform.forward : instance.tank.turretForward; 
-			
-			bool inRange = sqrDistanceToTarget < instance.tank.gun.type.projectile.sqrMaxRange;
-			bool inSight = Vector3.Dot(toTarget, gunForward) > shootDotThreshold;
-
-			if (inRange && inSight)
+			// Shoot, disable colliders before, so we don't hit ourselves
+			instance.tank.collider.enabled = false;
+			if (instance.shootEnumerator == null || !instance.shootEnumerator.MoveNext())
 			{
-				instance.tank.collider.enabled = false;
-				instance.tank.gun.Fire();
-				instance.tank.collider.enabled = true;
+				Vector3 toTarget = targetPosition - tankPosition;
+
+				const float inSightDotThreshold = 0.95f;
+				bool inSight = Vector3.Dot(toTarget, instance.tank.gunForward) > inSightDotThreshold;
+				bool inRange = sqrDistanceToTarget < instance.tank.gun.projectile.sqrMaxRange;
+
+				instance.shootEnumerator = 
+					inRange && inSight ? 
+						instance.tank.gun.FireBurst() : 
+						null;
 			}
+			// Done shooting, re-enable collider
+			instance.tank.collider.enabled = true;
+			
+			// instance is struct re-set
+			unit.instances[index] = instance;
 		}
 	}
 
 	private static TankUnit CreateTankUnit(EnemyTankBehaviour behaviour, int count)
 	{
-		var tanks = new TankInstance[count];
+		var instances = new TankInstance[count];
 		for (int i = 0; i < count; i++)
 		{
-			tanks[i] = new TankInstance(Instantiate(behaviour.prefab));
-			tanks[i].tank.gameObject.SetActive(false);
+			instances[i] = new TankInstance(Instantiate(behaviour.prefab));
+			instances[i].tank.gameObject.SetActive(false);
 		}
 
 		return new TankUnit
 		{
 			behaviour = behaviour,
-			units = tanks,
+			instances = instances,
 			activeIndicesMap = new int[count],
 			activeCount = 0,
 			nextIndex = 0
@@ -158,29 +164,28 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	{
 		// Do not add another tank or player as target
 		if (target.GetComponent<Tank>() != null || target.transform == playerTransform) return;
-		units[type].units[index].targetBreakable = target;
+		units[type].instances[index].targetBreakable = target;
 	}
 
 	// TODO: Only 1 usage, remove
-	private void RequestPath(TankType type, int index, Vector3 target)
+	private void RequestPath(TankUnit unit, int index, Vector3 target)
 	{
-		TankUnit unit = units[type];
-		unit.units[index].hasRequestedPath = true;
+		unit.instances[index].hasRequestedPath = true;
 		
 		PathRequestManager.RequestPath(
-			start:				unit.units[index].tank.transform.position,
+			start:				unit.instances[index].tank.transform.position,
 			end:				target, 
 			preferBreakWalls:	unit.behaviour.preferBreakWalls,
-			callback:			path => OnReceivePath(type, index, path)
+			callback:			path => OnReceivePath(unit, index, path)
 		);
 	}
 	
-	private void OnReceivePath(TankType type, int index, Path path)
+	private void OnReceivePath(TankUnit unit, int index, Path path)
 	{
-		units[type].units[index].path = path;
-		units[type].units[index].pathUpdateTime = Time.time + pathUpdateInterval;
+		unit.instances[index].path = path;
+		unit.instances[index].pathUpdateTime = Time.time + pathUpdateInterval;
 
-		units[type].units[index].hasRequestedPath = false;
+		unit.instances[index].hasRequestedPath = false;
 	}
 	
 	public void Spawn(TankType type, Vector3 position)
@@ -189,7 +194,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		int index = unit.nextIndex;
 		unit.nextIndex++;
 
-		var tank = unit.units[index].tank;
+		var tank = unit.instances[index].tank;
 		tank.GetComponent<Breakable>().OnBreak += () => UnSpawn(type, index);
 		tank.OnCollideBreakable += breakable => AddTargetBreakable(type, index, breakable);
 		tank.collisionMask = tankCollisionMask;
@@ -231,7 +236,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 
 	private void UnSpawn(TankType type, int index)
 	{
-		var tank = units[type].units[index];
+		var tank = units[type].instances[index];
 		tank.tank.gameObject.SetActive(false);
 		tank.path = null;
 		tank.targetBreakable = null;
@@ -256,7 +261,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				return i;
 			}
 		}
-
 		return -1;
 	}
 	
@@ -265,15 +269,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		enabled = false;
 		
 		StopAllCoroutines();
-
-		for (int i = 0; i < units.count; i++)
-		{
-			// Unload
-			for (int ii = 0; ii < units[i].units.Length; ii++)
-			{
-				Destroy(units[i].units[ii].tank.gameObject);
-			}
-		}
+		units.Dispose();
 
 		units = null;
 	}
@@ -297,7 +293,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	
 }
 
-public class TankUnitArray
+[Serializable]
+public class TankUnitArray : IDisposable
 {
 	public static readonly int Count = Enum.GetNames(typeof(TankType)).Length;
 	public int count => Count;
@@ -314,5 +311,17 @@ public class TankUnitArray
 	{
 		get { return units[index]; }
 		set { units[index] = value; }
+	}
+
+	public void Dispose()
+	{
+		// Unload Units
+		for (int i = 0; i < count; i++)
+		{
+			for (int ii = 0; ii < units[i].instances.Length; ii++)
+			{
+				UnityEngine.Object.Destroy(units[i].instances[ii].tank.gameObject);
+			}
+		}
 	}
 }

@@ -392,15 +392,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   specs: {fileID: 11400000, guid: dc5412042ed01ae4b9bcf44a8af59f7a, type: 2}
-  fixedTurret: 0
-  gun:
-    type: {fileID: 11400000, guid: 1305724d946d1e04eaf90e30a16c8bb1, type: 2}
-    muzzles:
-    - {fileID: 4379320178397762}
   height: 1.5
   collider: {fileID: 65978385156971950}
   turretTransform: {fileID: 4875936349427006}
   turretRotation: {x: 0, y: 0, z: 0, w: 0}
+  muzzles:
+  - {fileID: 4379320178397762}
 --- !u!114 &114955463159624210
 MonoBehaviour:
   m_ObjectHideFlags: 1

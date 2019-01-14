@@ -13,9 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: d17a2dab4c125234f8af66f1f70eab4d, type: 2}
-  speed: 30
+  speed: 8
   collisionRadius: 0.2
-  damage: 1
+  damage: 0
   blastRadius: 2
   blastFX: {fileID: 198806098259678606, guid: ce1ba1ae27426e046a643d81b4262116, type: 2}
   maxRange: 8

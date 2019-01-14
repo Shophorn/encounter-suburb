@@ -16,7 +16,7 @@
           <e p="EnemyTankBehaviour.cs" t="Include" />
           <e p="EnemyTankControllerSystem.cs" t="Include" />
           <e p="GameManager.cs" t="Include" />
-          <e p="GunType.cs" t="Include" />
+          <e p="Gun.cs" t="Include" />
           <e p="Level.cs" t="Include" />
           <e p="LevelBootstrap.cs" t="Include" />
           <e p="Map.cs" t="Include" />
