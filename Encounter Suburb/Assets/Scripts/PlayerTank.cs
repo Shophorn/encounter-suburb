@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerTank : MonoBehaviour
 {
 	public TankSpecs specs;
-	public bool fixedTurret;
 	public Gun gun;
 
 	public new BoxCollider collider { get; private set; }
@@ -42,11 +41,7 @@ public class PlayerTank : MonoBehaviour
 		
 		Quaternion targetRotation = Quaternion.LookRotation(input, transform.up);
 		rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, specs.rotationSpeed * Time.deltaTime));
-		
-		if (!fixedTurret)
-		{
-			turretTransform.rotation = turretRotation;
-		}
+		turretTransform.rotation = turretRotation;
 	}
 
 	public void AimTurretAt(Vector3 point)
