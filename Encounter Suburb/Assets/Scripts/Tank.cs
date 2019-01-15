@@ -47,15 +47,9 @@ public class Tank : MonoBehaviour
 
 		fixedTurret = turretTransform == null;
 		if (fixedTurret)
-		{
 			TurretForwardGetter = () => transform.forward;
-		}
 		else
-		{
 			TurretForwardGetter = () => turretTransform.forward;
-		}
-		
-		
 		
 		gun = specs.CreateGun(muzzles);
 	}
@@ -114,7 +108,7 @@ public class Tank : MonoBehaviour
 		return Mathf.Max(0f, drive - skinWidth);
 	}
 	
-	public void AimTurretAt(Vector3 point)
+	public void AimGunAt(Vector3 point)
 	{
 		if (fixedTurret)
 		{

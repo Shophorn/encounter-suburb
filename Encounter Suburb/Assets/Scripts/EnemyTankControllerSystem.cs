@@ -51,8 +51,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void Update()
 	{
 		UpdateUnit(TankType.Hunter);
-		UpdateUnit(TankType.Pummel);
-		UpdateUnit(TankType.Heavy);
+//		UpdateUnit(TankType.Pummel);
+//		UpdateUnit(TankType.Heavy);
 	}
 
 	private void UpdateUnit(TankType type)
@@ -84,7 +84,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 					break;
 				default:
 				{
-					if (sqrDistanceToPlayer < hunterBehaviour.sqrEngageRange)
+					if (sqrDistanceToPlayer < behaviours[type].sqrEngageRange)
 					{
 						targetPosition = playerPosition;
 						sqrDistanceToTarget = sqrDistanceToPlayer;
@@ -98,6 +98,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 					break;
 				}
 			}
+
 			/*
 			// These should be computed later
 			if (sqrDistanceToPlayer < hunterBehaviour.sqrEngageRange)
@@ -150,7 +151,7 @@ public class EnemyTankControllerSystem : MonoBehaviour
 				targetPosition = instance.targetBreakable.transform.position;
 				sqrDistanceToTarget = (tankPosition - targetPosition).sqrMagnitude;
 			}
-			instance.tank.AimTurretAt(targetPosition);
+			instance.tank.AimGunAt(targetPosition);
 
 			// Shoot, disable colliders before, so we don't hit ourselves
 			instance.tank.collider.enabled = false;
@@ -199,6 +200,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		// Do not add another tank or player as target
 		if (target.GetComponent<Tank>() != null || target.transform == playerTransform) return;
 		units[type].instances[index].targetBreakable = target;
+		
+		Debug.Log($"{units[type].instances[index].tank.name}: Add target breakable");
 	}
 
 	private void RequestPath(TankUnit unit, int index, Vector3 target)

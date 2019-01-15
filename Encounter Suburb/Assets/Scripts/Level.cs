@@ -131,6 +131,11 @@ public class Level
 		Camera.main.backgroundColor = backgroundColor;
 		RenderSettings.ambientLight = backgroundColor;
 
+		var hideBelowGroundObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
+		hideBelowGroundObject.name = "Hide Below Ground";
+		hideBelowGroundObject.transform.position = new Vector3(map.size / 2f, -0.0001f, map.size / 2f);
+		hideBelowGroundObject.transform.localScale = Vector3.one * 2 * map.size;
+		hideBelowGroundObject.transform.parent = mapObject.transform;
 	} // build map
 
 	private void BuildCollidersOnEdges()

@@ -15,6 +15,8 @@ public class ProjectileSystem : MonoBehaviour
 	private readonly int[] toExplode = new int[MAX_PROJECTILES_PER_TYPE];
 
 	public LayerMask hitMask;
+
+	private ComponentPool<ParticleSystem>[] explosions;
 	
 	private void Awake()
 	{
@@ -24,10 +26,13 @@ public class ProjectileSystem : MonoBehaviour
 		typeCount = types.Length;
 		projectiles = new SimpleTransform[typeCount][];
 		counts = new int[typeCount];
+		explosions = new ComponentPool<ParticleSystem>[typeCount];
 		for (int i = 0; i < typeCount; i++)
 		{
 			projectiles[i] = new SimpleTransform[MAX_PROJECTILES_PER_TYPE];
 			counts[i] = 0;
+			
+			explosions[i] = new ComponentPool<ParticleSystem>(10, types[i].blastFX);
 		}
 	}
 
@@ -55,6 +60,7 @@ public class ProjectileSystem : MonoBehaviour
 				if (Physics.SphereCast(current.position, radius, current.direction, out hitInfo, step, hitMask))
 				{
 					hitInfo.transform.GetComponent<Breakable>().Hit(damage);
+					current.distance += hitInfo.distance;
 					
 					toExplode[toExplodeCount++] = i;
 					continue;
@@ -75,7 +81,10 @@ public class ProjectileSystem : MonoBehaviour
 			SortReversed(toExplode, toExplodeCount);
 			for (int i = 0; i < toExplodeCount; i++) {
 				// TODO: use pool
-				Instantiate(type.blastFX, list[toExplode[i]].position, Quaternion.identity);
+//				Instantiate(type.blastFX, list[toExplode[i]].position, Quaternion.identity);
+				var blast = explosions[t].GetActive();
+				blast.transform.position = list[toExplode[i]].position;
+				blast.Play();
 				
 				// Swap with last, the other one doesn't matter
 				list[toExplode[i]] = list[counts[t] - 1];
