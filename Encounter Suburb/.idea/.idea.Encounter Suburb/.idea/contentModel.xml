@@ -10,7 +10,9 @@
         <e p="Scripts" t="Include">
           <e p="BackGroundMusic.cs" t="Include" />
           <e p="Breakable.cs" t="Include" />
+          <e p="ColorHSV.cs" t="Include" />
           <e p="ColourVariator.cs" t="Include" />
+          <e p="ComponentPool.cs" t="Include" />
           <e p="DisableInPlayMode.cs" t="Include" />
           <e p="DisablePostProcessingInEditMode.cs" t="Include" />
           <e p="EnemyTankBehaviour.cs" t="Include" />

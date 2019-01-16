@@ -1,3 +1,4 @@
+using System.Collections;
 using PathFinding;
 using UnityEngine;
 using Grid = PathFinding.Grid;
@@ -9,7 +10,9 @@ public class GameManager : MonoBehaviour
 	private int currentLevelIndex = -1;
 	private int nextLevelIndex => currentLevelIndex + 1;
 	private Level currentLevel = null;
+	
 	private Coroutine levelSpawner;
+	private Coroutine playUpdate;
 	
 	public PlayerTankController playerTankPrefab;
 	private PlayerTankController playerController;
@@ -27,6 +30,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private PlayerHpBar playerHpBar;
 	
 	public int skipToLevelIndex = -1;
+
+
 	
 	private void Awake()
 	{
@@ -59,6 +64,27 @@ public class GameManager : MonoBehaviour
 		ShowMainMenu();
 
 		maps = MapLoader.Load();
+	}
+
+	private IEnumerator UpdatePlay()
+	{
+		bool paused = false;
+		
+		while (true)
+		{
+			if (Input.GetButtonDown("Pause"))
+			{
+				paused = !paused;
+				
+				Time.timeScale = paused ? 0f : 1f;
+				playerController.enabled = !paused;
+				enemyController.enabled = !paused;
+				
+				menuSystem.ViewPause(paused);
+			}
+
+			yield return null;
+		}
 	}
 
 	private void LoadFirstLevel()
@@ -100,13 +126,15 @@ public class GameManager : MonoBehaviour
 		int pummelCount = enemyCounts[(int) TankType.Pummel];
 		int heavyCount = enemyCounts[(int) TankType.Heavy];
 		
-		enemyController.Begin(hunterCount, pummelCount, heavyCount);
-		levelSpawner = StartCoroutine(currentLevel.Spawn());
-		
-		backGroundMusic.Play(backGroundMusic.Game);
-		
 		playerHpBar.SetPlayer(playerController.GetComponent<Breakable>());
 		playerHpBar.SetBase(currentLevel.playerBaseBreakable);
+
+		// Setup done, start systems		
+		enemyController.Begin(hunterCount, pummelCount, heavyCount);
+		levelSpawner = StartCoroutine(currentLevel.Spawn());
+		backGroundMusic.Play(backGroundMusic.Game);
+		playUpdate = StartCoroutine(UpdatePlay());
+
 	}
 
 	private void UnloadLevel()
@@ -118,6 +146,7 @@ public class GameManager : MonoBehaviour
 		Destroy(playerController.gameObject);
 		playerController = null;
 		
+		StopCoroutine(playUpdate);
 		StopCoroutine(levelSpawner);
 		currentLevel.Unload();
 		currentLevel = null;

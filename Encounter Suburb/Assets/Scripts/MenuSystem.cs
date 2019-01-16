@@ -42,6 +42,9 @@ public class MenuSystem : MonoBehaviour
 	public GameObject gameCompleteView;
 	public Button gameComplete_Menu;
 
+	[Header("Pause")]
+	public GameObject pauseLabel;
+
 	public void Show(MenuView view)
 	{
 		Hide();
@@ -69,6 +72,7 @@ public class MenuSystem : MonoBehaviour
 		levelEndLabel.SetActive(false);
 		gameOverView.SetActive(false);
 		gameCompleteView.SetActive(false);
+		pauseLabel.SetActive(false);
 	}
 
 	public void ShowLevelStartInfo(string mapName, int number, Action callback)
@@ -107,5 +111,18 @@ public class MenuSystem : MonoBehaviour
 			Hide();
 			callback();
 		});
+	}
+
+	public void ViewPause(bool show)
+	{
+		Hide();
+
+		if (show)
+		{
+			backGround.SetActive(false);
+			
+			canvasObject.SetActive(true);
+			pauseLabel.SetActive(true);
+		}
 	}
 }

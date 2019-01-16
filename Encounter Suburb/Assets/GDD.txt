@@ -47,8 +47,12 @@ Done:
     New waves to spawn when last is killed
     Tanks rotate to base on spawn
     
+    Pause game
 
 Next up:
+    
+    Controls screen in menu
+    Pause menu, go to main menu or controls
     
     Hunters go for player, but will go for base if player unreachable
     pummels go for base, but will engage player if close enough
@@ -56,8 +60,6 @@ Next up:
     use explicit targets, similar to target breakables
     Enemies don't destroy walls anymore
     
-    Pause game
-    Controls screen in menu
     
     
     Effects

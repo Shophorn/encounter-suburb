@@ -132,10 +132,10 @@ public class Level
 		const float value = 0.7f;
 		enemyController.tankBaseColor = new ColorHSV(hue, saturation, value);
 		
-		
-		
 		BuildCollidersOnEdges();
 
+
+		// Set Background color and create same coloured plane on ground to hide tanks spawning underneath map
 		var backgroundColor = LevelBootstrap.RandomSkyColor(random);
 		Camera.main.backgroundColor = backgroundColor;
 		RenderSettings.ambientLight = backgroundColor;
@@ -145,6 +145,11 @@ public class Level
 		hideBelowGroundObject.transform.position = new Vector3(map.size / 2f, -0.0001f, map.size / 2f);
 		hideBelowGroundObject.transform.localScale = Vector3.one * 2 * map.size;
 		hideBelowGroundObject.transform.parent = mapObject.transform;
+		
+		var hideBelowMaterial = new Material(Shader.Find("Unlit/Color"));
+		hideBelowMaterial.color = backgroundColor;
+		hideBelowGroundObject.GetComponent<Renderer>().material = hideBelowMaterial;
+
 	} // build map
 
 	private void BuildCollidersOnEdges()
