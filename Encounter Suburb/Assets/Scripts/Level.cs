@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 using Object = UnityEngine.Object;
@@ -124,7 +125,15 @@ public class Level
 		playerBaseBreakable =
 			Object.Instantiate(LevelBootstrap.playerBasePrefab, basePosition, Quaternion.identity, mapObject.transform);
 		playerBaseBreakable.OnBreak += defeatCallback;
-
+		
+		// Tank base colour
+		float hue = (float) random.NextDouble() % 1f;
+		const float saturation = 0.7f;
+		const float value = 0.7f;
+		enemyController.tankBaseColor = new ColorHSV(hue, saturation, value);
+		
+		
+		
 		BuildCollidersOnEdges();
 
 		var backgroundColor = LevelBootstrap.RandomSkyColor(random);

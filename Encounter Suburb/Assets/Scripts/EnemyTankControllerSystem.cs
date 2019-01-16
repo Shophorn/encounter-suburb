@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using PathFinding;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class EnemyTankControllerSystem : MonoBehaviour
@@ -22,6 +23,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	[SerializeField] private ParticleSystem spawnEffect;
 
 	private TankUnitArray units;
+	[NonSerialized] public ColorHSV tankBaseColor;
+	
 	
 	// Target candidates
 	[NonSerialized] public Transform playerTransform;
@@ -51,8 +54,8 @@ public class EnemyTankControllerSystem : MonoBehaviour
 	private void Update()
 	{
 		UpdateUnit(TankType.Hunter);
-//		UpdateUnit(TankType.Pummel);
-//		UpdateUnit(TankType.Heavy);
+		UpdateUnit(TankType.Pummel);
+		UpdateUnit(TankType.Heavy);
 	}
 
 	private void UpdateUnit(TankType type)
@@ -98,20 +101,6 @@ public class EnemyTankControllerSystem : MonoBehaviour
 					break;
 				}
 			}
-
-			/*
-			// These should be computed later
-			if (sqrDistanceToPlayer < hunterBehaviour.sqrEngageRange)
-			{
-				targetPosition = playerPosition;
-				sqrDistanceToTarget = sqrDistanceToPlayer;
-			}
-			else
-			{
-				targetPosition = playerBasePosition;
-				sqrDistanceToTarget = (tankPosition - playerBasePosition).sqrMagnitude;
-			}
-			*/
 			
 			// Follow Path
 			if (instance.path == null)
@@ -176,13 +165,24 @@ public class EnemyTankControllerSystem : MonoBehaviour
 		}
 	}
 
-	private static TankUnit CreateTankUnit(EnemyTankBehaviour behaviour, int count)
+	private TankUnit CreateTankUnit(EnemyTankBehaviour behaviour, int count)
 	{
 		var instances = new TankInstance[count];
 		for (int i = 0; i < count; i++)
 		{
 			instances[i] = new TankInstance(Instantiate(behaviour.prefab));
 			instances[i].tank.gameObject.SetActive(false);
+
+			const float colorRandomRange = 0.8f;
+			var hsv = tankBaseColor;
+			hsv.value += Random.value * colorRandomRange - colorRandomRange / 2f;
+			hsv.saturation += Random.value * colorRandomRange - colorRandomRange / 2f;
+
+			var renderers = instances[i].tank.GetComponentsInChildren<MeshRenderer>();
+			for (int ii = 0; ii < renderers.Length; ii++)
+			{
+				renderers[ii].material.color = hsv;
+			}
 		}
 
 		return new TankUnit
