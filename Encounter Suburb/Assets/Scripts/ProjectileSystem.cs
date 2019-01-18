@@ -16,7 +16,8 @@ public class ProjectileSystem : MonoBehaviour
 
 	public LayerMask hitMask;
 
-	private ComponentPool<ParticleSystem>[] explosions;
+	private ComponentPool<ParticleSystem>[] hitEffects;
+	private ComponentPool<ParticleSystem>[] fireEffects;
 	
 	private void Awake()
 	{
@@ -26,13 +27,15 @@ public class ProjectileSystem : MonoBehaviour
 		typeCount = types.Length;
 		projectiles = new SimpleTransform[typeCount][];
 		counts = new int[typeCount];
-		explosions = new ComponentPool<ParticleSystem>[typeCount];
+		hitEffects = new ComponentPool<ParticleSystem>[typeCount];
+		fireEffects = new ComponentPool<ParticleSystem>[typeCount];
 		for (int i = 0; i < typeCount; i++)
 		{
 			projectiles[i] = new SimpleTransform[MAX_PROJECTILES_PER_TYPE];
 			counts[i] = 0;
 			
-			explosions[i] = new ComponentPool<ParticleSystem>(10, types[i].blastFX);
+			hitEffects[i] = new ComponentPool<ParticleSystem>(10, types[i].blastFx);
+			fireEffects[i] = new ComponentPool<ParticleSystem>(10, types[i].fireFx);
 		}
 	}
 
@@ -62,6 +65,11 @@ public class ProjectileSystem : MonoBehaviour
 					hitInfo.transform.GetComponent<Breakable>().Hit(damage);
 					current.distance += hitInfo.distance;
 					
+					
+					var blast = hitEffects[t].GetActive();
+					blast.transform.position = list[toExplode[i]].position;
+					blast.Play();
+					
 					toExplode[toExplodeCount++] = i;
 					continue;
 				}
@@ -81,10 +89,6 @@ public class ProjectileSystem : MonoBehaviour
 			SortReversed(toExplode, toExplodeCount);
 			for (int i = 0; i < toExplodeCount; i++) {
 				// TODO: use pool
-//				Instantiate(type.blastFX, list[toExplode[i]].position, Quaternion.identity);
-				var blast = explosions[t].GetActive();
-				blast.transform.position = list[toExplode[i]].position;
-				blast.Play();
 				
 				// Swap with last, the other one doesn't matter
 				list[toExplode[i]] = list[counts[t] - 1];
@@ -112,7 +116,7 @@ public class ProjectileSystem : MonoBehaviour
 		if (initialHits.Length > 0)
 		{
 			initialHits[0].GetComponent<Breakable>()?.Hit(type.damage);
-			Instantiate(type.blastFX, position, Quaternion.identity);
+			Instantiate(type.blastFx, position, Quaternion.identity);
 			return;
 		}
 
@@ -126,6 +130,10 @@ public class ProjectileSystem : MonoBehaviour
 			direction = rotation * Vector3.forward
 		};
 		instance.counts[typeIndex]++;
+
+		var blast = instance.fireEffects[typeIndex].GetActive();
+		blast.transform.position = position;
+		blast.Play();
 	}
 
 	private int GetTypeIndex(ProjectileType type)

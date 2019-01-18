@@ -3,7 +3,6 @@ using PathFinding;
 using UnityEngine;
 using Grid = PathFinding.Grid;
 
-[RequireComponent(typeof(MenuSystem), typeof(BackGroundMusic))]
 public class GameManager : MonoBehaviour
 {
 	private Texture2D[] maps;
@@ -17,7 +16,8 @@ public class GameManager : MonoBehaviour
 	public PlayerTankController playerTankPrefab;
 	private PlayerTankController playerController;
 
-	private MenuSystem menuSystem;
+	public MenuSystem menuSystem;
+	public BackGroundMusic backGroundMusic;
 
 	public EnemyTankControllerSystem enemyController;
 	
@@ -25,20 +25,11 @@ public class GameManager : MonoBehaviour
 	private const float cameraAngle = 50f;
 	private readonly Vector3 cameraPosRatio = new Vector3(1.0f, -0.16875f, -3.125f);
 
-	private BackGroundMusic backGroundMusic;
 
 	[SerializeField] private PlayerHpBar playerHpBar;
 	
 	public int skipToLevelIndex = -1;
-
-
 	
-	private void Awake()
-	{
-		menuSystem = GetComponent<MenuSystem>();
-		backGroundMusic = GetComponent<BackGroundMusic>();
-	}
-
 	private void Start()
 	{
 		enemyController.enabled = false;
@@ -95,8 +86,6 @@ public class GameManager : MonoBehaviour
 		{
 			currentLevelIndex = skipToLevelIndex - 1;
 		}
-		backGroundMusic.Play(backGroundMusic.None);
-
 		menuSystem.ShowLevelStartInfo(maps[0].name, 1, LoadNextLevel);
 	}
 	

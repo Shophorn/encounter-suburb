@@ -21,13 +21,14 @@ GameObject:
   - component: {fileID: 4449093913412856}
   - component: {fileID: 198806098259678606}
   - component: {fileID: 199738658569733164}
+  - component: {fileID: 114881429611872120}
   m_Layer: 0
   m_Name: SmallBulletsplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4449093913412856
 Transform:
   m_ObjectHideFlags: 1
@@ -41,6 +42,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114881429611872120
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1778194627758874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 723a8d3e10c64e84b3ec1f3860193126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 9007843d562a1fc4895896d5b3ff9b63, type: 3}
+  volume: 1
 --- !u!198 &198806098259678606
 ParticleSystem:
   m_ObjectHideFlags: 1

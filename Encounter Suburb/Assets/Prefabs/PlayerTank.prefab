@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 65242467264884844}
   - component: {fileID: 54914800648736684}
   - component: {fileID: 114071722502560620}
+  - component: {fileID: 81011487365117218}
   m_Layer: 11
   m_Name: PlayerTank
   m_TagString: Untagged
@@ -377,6 +378,13 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 2, z: 1.5}
   m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!81 &81011487365117218
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1301212164704414}
+  m_Enabled: 1
 --- !u!114 &114071722502560620
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: HeavyBehaviour
   m_EditorClassIdentifier: 
   prefab: {fileID: 114084118948515256, guid: dadaba2469946654bae81d480f232617, type: 2}
-  engageRange: 5
+  specs: {fileID: 0}
+  engageRange: 8
   preferredShootDistance: 3
   preferBreakWalls: 0
-  preferTargetPlayer: 0
+  preferredTarget: 0

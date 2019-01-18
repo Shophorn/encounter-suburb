@@ -35,6 +35,7 @@
           </e>
           <e p="PlayerHpBar.cs" t="Include" />
           <e p="PlayerTankController.cs" t="Include" />
+          <e p="PlaySoundOnEnable.cs" t="Include" />
           <e p="PositionVariator.cs" t="Include" />
           <e p="ProjectileSystem.cs" t="Include" />
           <e p="ProjectileType.cs" t="Include" />
